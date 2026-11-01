@@ -27,8 +27,12 @@ const MIME = {
   ".pdf": "application/pdf",
 };
 
-// Optional file probes the TeX engine makes that 404 harmlessly.
-const HARMLESS_404 = /\.(cfg|dfu|vf)$/;
+// Optional file probes the TeX engine makes that 404 harmlessly. `main.aux`
+// is the job's own aux: on a first pass it does not exist yet, so the engine
+// asks the network for it. It is never vendored — a stray copy once sat in
+// public/texlive, gitignored by `*.aux`, so the suite passed locally and
+// failed in CI, while every first pass read another document's labels.
+const HARMLESS_404 = /\.(cfg|dfu|vf)$|\/main\.aux$/;
 
 function arg(name) {
   const i = process.argv.indexOf(name);
