@@ -8,12 +8,13 @@
  */
 import { createServer } from "node:http";
 import { readFile, writeFile } from "node:fs/promises";
-import { existsSync, mkdtempSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync } from "node:fs";
 import { extname, join } from "node:path";
 import { homedir, tmpdir } from "node:os";
 import { globSync } from "node:fs";
 import { inflateSync } from "node:zlib";
 import { chromium } from "playwright-core";
+import { fontIds, themeIds } from "./tex-registry.mjs";
 
 const DIST = new URL("../dist/", import.meta.url).pathname;
 const MIME = {
@@ -33,6 +34,25 @@ const MIME = {
 // public/texlive, gitignored by `*.aux`, so the suite passed locally and
 // failed in CI, while every first pass read another document's labels.
 const HARMLESS_404 = /\.(cfg|dfu|vf)$|\/main\.aux$/;
+
+/* texlive/prefetch.json against the files actually in the build. A listed
+ * file the site lacks is a 404 on every first visit; a name listed as
+ * missing that has since been vendored is worse — the engine is told it is
+ * not there and never reads it, with no error anywhere. */
+function prefetchListProblems() {
+  const stale = (why) => `texlive/prefetch.json ${why} — run \`npm run make-prefetch\``;
+  const file = join(DIST, "texlive/prefetch.json");
+  if (!existsSync(file)) return [stale("is missing from the build")];
+  const list = JSON.parse(readFileSync(file, "utf8"));
+  const has = (key) => existsSync(join(DIST, "texlive/pdftex", key));
+  const out = [];
+  for (const t of themeIds()) if (!list.themes?.[t]) out.push(stale(`has no entry for theme "${t}"`));
+  for (const f of fontIds()) if (!list.fonts?.[f]) out.push(stale(`has no entry for font "${f}"`));
+  const listed = [list.core ?? [], ...Object.values(list.themes ?? {}), ...Object.values(list.fonts ?? {})].flat();
+  for (const k of listed) if (!has(k)) out.push(stale(`lists ${k}, which the site does not have`));
+  for (const k of list.missing ?? []) if (has(k)) out.push(stale(`says ${k} is missing, but it is vendored now`));
+  return out;
+}
 
 function arg(name) {
   const i = process.argv.indexOf(name);
@@ -808,7 +828,21 @@ async function main() {
   const browser = await chromium.launch({ executablePath: chromePath(), args: ["--no-sandbox"] });
   const page = await (await browser.newContext()).newPage();
 
-  const problems = [];
+  const problems = liveUrl ? [] : prefetchListProblems();
+  /* Every TeX file the engine fetches for itself is a blocking round trip,
+   * one after another — on the live site that came to 50s before the first
+   * page. src/prefetch.ts hands it everything texlive/prefetch.json lists
+   * before it starts, so on the sample's first compile the engine (a worker,
+   * whose requests are XHRs; the prefetch's are fetches) must ask the site
+   * for nothing. When it does, the list has gone stale. */
+  const lazy = [];
+  let firstCompile = true;
+  page.on("request", (r) => {
+    const path = new URL(r.url()).pathname;
+    if (firstCompile && r.resourceType() === "xhr" && path.includes("/texlive/pdftex/")) {
+      lazy.push(path.slice(path.indexOf("/texlive/pdftex/") + 16));
+    }
+  });
   page.on("response", (r) => {
     if (r.status() >= 400 && !HARMLESS_404.test(new URL(r.url()).pathname)) {
       problems.push(`HTTP ${r.status()} ${r.request().method()} ${r.url()}`);
@@ -864,6 +898,15 @@ async function main() {
   }
 
   await check("sample compiles");
+  firstCompile = false;
+  if (lazy.length) {
+    problems.push(
+      `the first compile fetched ${lazy.length} TeX file(s) one blocking request at a time, because ` +
+        `texlive/prefetch.json does not list them — run \`npm run make-prefetch\`: ${lazy.slice(0, 10).join(" ")}`,
+    );
+  } else {
+    console.log("ok: the first compile found every TeX file already fetched");
+  }
 
   for (const name of stepNames) await STEPS[name]({ page, check, recompile });
 

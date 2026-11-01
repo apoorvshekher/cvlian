@@ -96,9 +96,10 @@ npm run check-sync-live    # the real app against a stubbed Drive
 ```
 
 `npm run smoke` fails on **any** HTTP error except the engine's harmless
-`.cfg`/`.dfu`/`.vf` probes, which makes it the exact detector for a TeX file
-that was never vendored. Extra matrices cover the things unit tests cannot
-see:
+`.cfg`/`.dfu`/`.vf` probes and the first pass asking for its own `main.aux`,
+which makes it the exact detector for a TeX file that was never vendored. It
+also fails when `public/texlive/prefetch.json` has gone stale (see below).
+Extra matrices cover the things unit tests cannot see:
 
 ```bash
 node scripts/smoke.mjs --steps design,fonts,themes   # every design control at its extremes
@@ -117,6 +118,20 @@ the migration and read the diff — a toy fixture will not catch what that does:
 
 ```bash
 npm run check-migration -- resume.json
+```
+
+### The prefetch list
+
+pdfTeX opens TeX files one at a time, and in the browser each one is a
+blocking request to the host, so a first compile on GitHub Pages used to spend
+most of a minute just waiting. `public/texlive/prefetch.json` lists what a
+compile reads for each theme and font; the app downloads those all at once
+before the engine starts. The list is measured, not written: regenerate it
+after vendoring TeX files, adding a theme or font, or changing which packages
+the renderers load. The smoke run tells you when it is stale.
+
+```bash
+npm run make-prefetch      # build, compile every theme × font × size, rewrite the list
 ```
 
 ---

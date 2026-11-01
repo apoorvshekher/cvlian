@@ -4,7 +4,11 @@
  *   - compileFormat() resolves with the format bytes
  * The worker itself (public/swiftlatexpdftex.js) is also patched to fall
  * back to the requested filename when the `fileid`/`pkid` response header
- * is absent, since static hosts (GitHub Pages) can't send custom headers.
+ * is absent, since static hosts (GitHub Pages) can't send custom headers;
+ * to remember a 404 as "not there" (upstream only remembered its own
+ * server's 301, so every pass of every compile asked again); and to take
+ * a `preloadtexlive` command — files fetched ahead of a compile, in
+ * parallel (see src/prefetch.ts). Grep it for "cvlian patched".
  */
 
 export interface CompileResult {
@@ -114,6 +118,19 @@ export class PdfTeXEngine {
   writeMemFSFile(filename: string, srccode: string | Uint8Array): void {
     this.checkReady();
     this.worker?.postMessage({ cmd: "writefile", url: filename, src: srccode });
+  }
+
+  /* Hands over TeX files fetched ahead of a compile, keyed `<format>/<name>`
+   * exactly as the worker asks for them, plus names the site does not ship.
+   * The buffers are transferred, so they are unusable here afterwards. The
+   * worker handles messages in order, so a compile posted after this sees
+   * every file. */
+  preloadTexFiles(files: { key: string; data: ArrayBuffer }[], missing: string[]): void {
+    this.checkReady();
+    this.worker?.postMessage(
+      { cmd: "preloadtexlive", files, missing },
+      files.map((f) => f.data),
+    );
   }
 
   makeMemFSFolder(folder: string): void {

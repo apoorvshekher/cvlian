@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { PdfTeXEngine } from "./engine";
+import { preloadTexFiles, warmTexFiles } from "./prefetch";
 import { extractErrors, pageStats, renderTex } from "./render";
 import { STORE_KEY, fetchSample, loadStore, makeBranch, makeSection, markRemoved, normalizeData, normalizeStore, persistStore } from "./storage";
 import { absorb, contactKey, cutsBetween, masterOf, prune, type Cut } from "./master";
@@ -160,6 +161,9 @@ export default function App() {
     setNotice((n) => (n?.kind === "error" ? null : n));
     const t0 = performance.now();
     try {
+      /* the files this design reads, fetched in parallel rather than one
+       * blocking request at a time from inside the engine (src/prefetch.ts) */
+      await preloadTexFiles(engine, branch.data.design);
       const tex = renderTex(branch.data);
       engine.writeMemFSFile("main.tex", tex);
       engine.setEngineMainFile("main.tex");
@@ -301,6 +305,8 @@ export default function App() {
         setGreet(true);
       }
       setStore(s);
+      /* start the TeX downloads now, so they overlap the engine's start-up */
+      warmTexFiles((s.branches.find((b) => b.id === s.activeId) ?? s.branches[0]).data.design);
       setStatusText("Getting the typesetter ready…", "busy");
       try {
         engineRef.current = await initEngine();

@@ -12,7 +12,8 @@
     "check-migration": "node scripts/check-migration.mjs",
     "check-sync": "node scripts/check-sync.mjs",
     "check-sync-live": "node scripts/check-sync-live.mjs",
-    "make-og": "node scripts/make-og.mjs"
+    "make-og": "node scripts/make-og.mjs",
+    "make-prefetch": "npm run build && node scripts/make-prefetch.mjs"
   },
   "dependencies": {
     "react": "^19.2.8",
