@@ -1,0 +1,239 @@
+{
+  "personal": {
+    "name": "Alex Doe",
+    "contacts": [
+      {
+        "text": "alex@example.com",
+        "url": "mailto:alex@example.com",
+        "icon": "envelope"
+      },
+      {
+        "text": "alexdoe.example.com",
+        "url": "https://alexdoe.example.com",
+        "icon": "globe"
+      },
+      {
+        "text": "linkedin.com/in/alexdoe",
+        "url": "https://linkedin.com/in/alexdoe",
+        "icon": "linkedin"
+      },
+      {
+        "text": "github.com/alexdoe",
+        "url": "https://github.com/alexdoe",
+        "icon": "github"
+      }
+    ]
+  },
+  "sections": [
+    {
+      "title": "Profile",
+      "kind": "paragraph",
+      "entries": [
+        {
+          "kind": "paragraph",
+          "text": "Software engineer with 3+ years building web products end to end. Comfortable owning features from database to UI, with a soft spot for *fast feedback loops* and boring, reliable infrastructure."
+        }
+      ]
+    },
+    {
+      "title": "Education",
+      "kind": "education",
+      "entries": [
+        {
+          "kind": "education",
+          "school": "State University",
+          "degree": "Bachelor of Science",
+          "field": "Computer Science",
+          "location": "Ann Arbor, MI",
+          "gpa": "3.8/4.0",
+          "start": {
+            "month": "Sept",
+            "year": "2018"
+          },
+          "end": {
+            "month": "May",
+            "year": "2022"
+          },
+          "current": false,
+          "bullets": [
+            {
+              "text": "**Coursework:** Algorithms, Operating Systems, Databases, Machine Learning"
+            },
+            {
+              "text": "Dean's List, 2019–2022"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Experience",
+      "kind": "experience",
+      "entries": [
+        {
+          "kind": "experience",
+          "role": "Software Engineer",
+          "company": "Acme Corp",
+          "location": "Remote",
+          "start": {
+            "month": "June",
+            "year": "2022"
+          },
+          "end": {
+            "month": "",
+            "year": ""
+          },
+          "current": true,
+          "bullets": [
+            {
+              "text": "Built and maintained a customer-facing analytics dashboard used by **5,000+** weekly active users"
+            },
+            {
+              "text": "Reduced API p95 latency by 40% by profiling hot paths and adding query-level caching"
+            },
+            {
+              "text": "Mentored two interns; both projects shipped to production"
+            }
+          ]
+        },
+        {
+          "kind": "experience",
+          "role": "Software Engineering Intern",
+          "company": "Widget Labs",
+          "location": "",
+          "start": {
+            "month": "May",
+            "year": "2021"
+          },
+          "end": {
+            "month": "Aug",
+            "year": "2021"
+          },
+          "current": false,
+          "bullets": [
+            {
+              "text": "Prototyped an internal tool that cut weekly report preparation from hours to minutes"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Projects",
+      "kind": "project",
+      "entries": [
+        {
+          "kind": "project",
+          "name": "CVLian",
+          "link": "https://github.com/alexdoe/cvlian",
+          "start": {
+            "month": "",
+            "year": ""
+          },
+          "end": {
+            "month": "",
+            "year": ""
+          },
+          "current": false,
+          "bullets": [
+            {
+              "text": "Browser-based editor that compiles LaTeX to PDF entirely client-side via WebAssembly"
+            }
+          ],
+          "description": "this resume was written in it"
+        }
+      ]
+    },
+    {
+      "title": "Publications",
+      "kind": "publication",
+      "entries": [
+        {
+          "kind": "publication",
+          "title": "Typesetting Without a Server",
+          "authors": "**Alex Doe**, Sam Lee",
+          "venue": "Proceedings of the Web Conference (WWW)",
+          "link": "https://doi.org/10.0000/example",
+          "date": {
+            "month": "May",
+            "year": "2023"
+          },
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "title": "Certifications",
+      "kind": "certification",
+      "entries": [
+        {
+          "kind": "certification",
+          "name": "Certified Kubernetes Application Developer",
+          "issuer": "The Linux Foundation",
+          "link": "https://example.com/verify/alexdoe",
+          "date": {
+            "month": "Mar",
+            "year": "2024"
+          },
+          "bullets": []
+        }
+      ]
+    },
+    {
+      "title": "Skills",
+      "kind": "tags",
+      "entries": [
+        {
+          "kind": "tags",
+          "group": "",
+          "tags": [
+            "Python",
+            "TypeScript",
+            "React",
+            "SQL",
+            "C++",
+            "Linux",
+            "Git",
+            "Docker",
+            "PostgreSQL",
+            "AWS"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Languages",
+      "kind": "levels",
+      "entries": [
+        {
+          "kind": "levels",
+          "items": [
+            {
+              "name": "English",
+              "level": 5
+            },
+            {
+              "name": "Spanish",
+              "level": 3
+            },
+            {
+              "name": "German",
+              "level": 2
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "design": {
+    "themeId": "classic",
+    "accent": "#0b0b0a",
+    "font": "charter",
+    "fontSize": 10,
+    "margins": 2,
+    "density": 1,
+    "paper": "letter",
+    "nameSize": 25,
+    "dateColWidth": 4.5
+  }
+}

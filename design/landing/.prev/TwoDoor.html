@@ -1,0 +1,122 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+</head>
+<body>
+
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&display=swap">
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --w: #ffffff; --w2: #f6f6f4; --k: #0b0b0a; --k2: #55554f; --k3: #8b8b84;
+      --r: #e3e3df; --r2: #c9c9c3; --red: #d8341f;
+      --sans: "Archivo", ui-sans-serif, system-ui, "Helvetica Neue", Arial, sans-serif;
+    }
+    body { margin: 0; font-family: var(--sans); color: var(--k); background: var(--w); }
+    a { color: var(--red); text-decoration: none; }
+    a:hover { color: #a82716; }
+    .page { width: 1440px; height: 900px; display: flex; flex-direction: column; }
+
+    .top { padding: 46px 56px 34px; }
+    .wm { font-size: 15px; font-weight: 700; letter-spacing: -0.02em; text-transform: uppercase; }
+    .wm i { color: var(--red); font-style: normal; }
+    h1 { margin: 26px 0 0; font-size: 54px; line-height: 1.02; letter-spacing: -0.038em; font-weight: 700; max-width: 900px; }
+    .lede { margin: 18px 0 0; font-size: 16px; line-height: 1.55; color: var(--k2); max-width: 660px; }
+    .lede b { color: var(--k); font-weight: 600; }
+
+    .doors { flex: 1; display: flex; border-top: 1px solid var(--k); min-height: 0; }
+    .door { flex: 1; padding: 40px 56px 44px; display: flex; flex-direction: column; }
+    .door.dark { background: var(--k); color: var(--w); }
+    .door + .door { border-left: 1px solid var(--k); }
+
+    .dnum { font-size: 10.5px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--k3); }
+    .door.dark .dnum { color: rgba(255,255,255,0.5); }
+    .dtitle { margin: 16px 0 0; font-size: 32px; font-weight: 700; letter-spacing: -0.03em; line-height: 1.08; }
+    .dsub { margin: 12px 0 0; font-size: 14px; line-height: 1.6; color: var(--k2); max-width: 440px; }
+    .door.dark .dsub { color: rgba(255,255,255,0.72); }
+
+    .points { margin: 26px 0 0; padding: 0; list-style: none; }
+    .points li { display: flex; gap: 11px; padding: 9px 0; border-top: 1px solid var(--r); font-size: 13.5px; line-height: 1.5; }
+    .door.dark .points li { border-top-color: rgba(255,255,255,0.16); }
+    .points .tick { color: var(--red); font-weight: 700; flex: none; width: 14px; }
+    .points .x { color: var(--k3); font-weight: 700; flex: none; width: 14px; }
+    .door.dark .points .x { color: rgba(255,255,255,0.45); }
+    .points .muted { color: var(--k3); }
+    .door.dark .points .muted { color: rgba(255,255,255,0.5); }
+
+    .act { margin-top: auto; }
+    .btn { display: flex; align-items: center; justify-content: center; gap: 11px; height: 54px; width: 100%; max-width: 420px;
+      font-size: 13.5px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+      border: 1px solid var(--k); background: var(--k); color: var(--w); }
+    .door.dark .btn { background: var(--w); color: var(--k); border-color: var(--w); }
+    .gmark { width: 18px; height: 18px; flex: none; display: block; }
+    .fine { font-size: 11.5px; line-height: 1.55; color: var(--k3); max-width: 420px; padding-top: 12px; }
+    .door.dark .fine { color: rgba(255,255,255,0.5); }
+
+    .swap { padding: 18px 56px 22px; font-size: 12px; color: var(--k3); border-top: 1px solid var(--r); }
+    .swap b { color: var(--k); font-weight: 600; }
+  </style>
+
+
+<div class="page">
+  <div class="top">
+    <span class="wm">Resume<i>&#8202;/&#8202;</i>Editor</span>
+    <h1>A résumé editor that compiles real LaTeX in your browser.</h1>
+    <p class="lede">
+      No server sees your résumé, because there is no server. Choose where you
+      want it kept &mdash; <b>you can change your mind later without losing anything</b>.
+    </p>
+  </div>
+
+  <div class="doors">
+    <div class="door">
+      <div class="dnum">Option one</div>
+      <div class="dtitle">Keep it on this machine</div>
+      <p class="dsub">Nothing leaves the browser. Start typing in about two seconds, with no sign-in of any kind.</p>
+      <ul class="points">
+        <li><span class="tick">&#10003;</span><span>No account, no email address, no consent screen</span></li>
+        <li><span class="tick">&#10003;</span><span>Works offline once the page has loaded</span></li>
+        <li><span class="x">&mdash;</span><span class="muted">Stays in this one browser on this one machine</span></li>
+        <li><span class="x">&mdash;</span><span class="muted">Clearing site data erases it &mdash; export a backup</span></li>
+      </ul>
+      <div class="act">
+        <span class="btn">Start without an account</span>
+        <p class="fine">Your workspace lives in this browser's storage. Export writes a single JSON file you can re-import anywhere.</p>
+      </div>
+    </div>
+
+    <div class="door dark">
+      <div class="dnum">Option two</div>
+      <div class="dtitle">Sync it to your own Drive</div>
+      <p class="dsub">One file in your Google Drive, written straight from this page. Your résumé follows you between machines.</p>
+      <ul class="points">
+        <li><span class="tick">&#10003;</span><span>Same résumé on your laptop, desktop and any browser</span></li>
+        <li><span class="tick">&#10003;</span><span>We can only see the one file we create, never the rest of your Drive</span></li>
+        <li><span class="tick">&#10003;</span><span>We never learn your name or email &mdash; we don't ask for them</span></li>
+        <li><span class="x">&mdash;</span><span class="muted">Needs a Google account and a one-time consent screen</span></li>
+      </ul>
+      <div class="act">
+        <span class="btn">
+          <svg class="gmark" viewBox="0 0 18 18" aria-hidden="true">
+            <path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 01-1.8 2.72v2.26h2.92c1.7-1.57 2.68-3.88 2.68-6.62z"/>
+            <path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.92-2.26c-.81.54-1.84.86-3.04.86-2.34 0-4.32-1.58-5.03-3.7H.96v2.33A9 9 0 009 18z"/>
+            <path fill="#FBBC05" d="M3.97 10.72a5.41 5.41 0 010-3.44V4.95H.96a9 9 0 000 8.1l3.01-2.33z"/>
+            <path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 00.96 4.95l3.01 2.33C4.68 5.16 6.66 3.58 9 3.58z"/>
+          </svg>
+          Continue with Google
+        </span>
+        <p class="fine">Uses the <span style="color:#fff">drive.file</span> scope: per-file access, granted by Google, limited to files this app created.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="swap">
+    <b>Either way, the editor is identical.</b> Start locally and connect Drive later, or disconnect and keep working &mdash; your branches and saved versions come with you.
+  </div>
+</div>
+
+</body>
+</html>

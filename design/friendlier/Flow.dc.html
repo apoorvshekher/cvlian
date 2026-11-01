@@ -1,0 +1,423 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap">
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --paper: #faf8f5; --card: #ffffff; --sink: #f3f0ea;
+      --ink: #1b1a17; --ink2: #5c584f; --ink3: #8d887c;
+      --rule: #e8e3da; --rule2: #d8d1c4;
+      --acc: #2f7a5f; --acc-dk: #24614b; --acc-sf: #e9f2ee; --acc-rg: #bcd8cd;
+      --amb: #a8622a; --amb-sf: #f8ece1; --amb-rg: #e6c9ad;
+      --sans: "Figtree", ui-sans-serif, system-ui, "Helvetica Neue", Arial, sans-serif;
+    }
+    body { margin: 0; font-family: var(--sans); color: var(--ink); background: var(--paper); }
+    a { color: var(--acc); text-decoration: none; }
+    a:hover { color: var(--acc-dk); }
+    .i { width: 16px; height: 16px; flex: none; display: block; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+    .i.sm { width: 13px; height: 13px; }
+
+    .sheet { width: 2320px; min-height: 1900px; background: var(--paper); padding: 46px 40px 60px; display: flex; flex-direction: column; gap: 30px; }
+
+    /* ---------- header ---------- */
+    .top { display: flex; align-items: flex-end; gap: 44px; }
+    .top h1 { font-size: 34px; font-weight: 700; letter-spacing: -0.03em; margin: 0 0 8px; }
+    .top p { font-size: 14.5px; line-height: 1.55; color: var(--ink2); margin: 0; max-width: 68ch; }
+    .legend { display: flex; gap: 26px; margin-left: auto; padding-bottom: 3px; }
+    .lg { display: flex; align-items: center; gap: 9px; font-size: 12.5px; color: var(--ink2); }
+    .lgline { width: 34px; height: 2px; background: var(--ink2); border-radius: 2px; }
+    .lgline.dash { background: none; border-top: 2px dashed var(--ink3); }
+    .lgnew { display: inline-flex; align-items: center; height: 19px; padding: 0 7px; border-radius: 20px; background: var(--acc-sf); color: var(--acc-dk); font-size: 10.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; }
+
+    /* ---------- bands ---------- */
+    .band { display: flex; flex-direction: column; gap: 14px; }
+    .bhead { display: flex; align-items: baseline; gap: 12px; }
+    .bnum { width: 26px; height: 26px; border-radius: 50%; background: var(--ink); color: #fff; font-size: 12.5px; font-weight: 700; display: flex; align-items: center; justify-content: center; align-self: center; }
+    .btitle { font-size: 17px; font-weight: 700; letter-spacing: -0.01em; }
+    .bsub { font-size: 13.5px; color: var(--ink2); }
+    .bbody { position: relative; }
+    .row { display: flex; align-items: stretch; }
+
+    /* ---------- cards ---------- */
+    .c { background: var(--card); border: 1px solid var(--rule); border-radius: 13px; padding: 15px 16px; display: flex; flex-direction: column; gap: 7px; }
+    .c .ct { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; display: flex; align-items: center; gap: 8px; }
+    .c .cd { font-size: 12.8px; line-height: 1.5; color: var(--ink2); }
+    .c .cd b { font-weight: 600; color: var(--ink); }
+    .c.hub { background: var(--acc-sf); border-color: var(--acc-rg); }
+    .c.hub .ct { font-size: 17px; }
+    .c.soft { background: var(--sink); border-color: var(--rule); }
+    .c.warn { border-color: var(--amb-rg); }
+    .chip { display: inline-flex; align-items: center; height: 19px; padding: 0 7px; border-radius: 20px; background: var(--acc-sf); color: var(--acc-dk); font-size: 10.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; flex: none; }
+    .chip.scr { background: var(--sink); color: var(--ink2); gap: 5px; }
+    .chip.amb { background: var(--amb-sf); color: var(--amb); }
+
+    /* connectors */
+    .conn { width: 60px; flex: none; display: flex; align-items: center; justify-content: center; color: var(--ink3); }
+    .conn.sm { width: 34px; }
+
+    /* a group of small steps inside a card */
+    .grp { display: flex; flex-direction: column; gap: 6px; padding: 11px 12px; border-radius: 10px; background: var(--sink); }
+    .grp .gt { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink3); }
+    .step { display: flex; align-items: flex-start; gap: 8px; font-size: 12.6px; line-height: 1.45; color: var(--ink2); }
+    .step .n { width: 16px; height: 16px; border-radius: 50%; background: var(--rule2); color: #fff; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex: none; margin-top: 1px; }
+    .step b { font-weight: 600; color: var(--ink); }
+
+    /* two doors inside the "where does it live" card */
+    .doors { display: flex; gap: 12px; }
+    .door { flex: 1; border: 1px solid var(--rule); border-radius: 10px; padding: 11px 12px; display: flex; flex-direction: column; gap: 5px; }
+    .door .dt { font-size: 13.5px; font-weight: 600; }
+    .door .dd { font-size: 12.4px; line-height: 1.45; color: var(--ink2); }
+
+    /* the loop */
+    .loop { display: flex; align-items: stretch; }
+    .lp { width: 232px; flex: none; background: var(--card); border: 1px solid var(--rule); border-radius: 13px; padding: 14px 15px; display: flex; flex-direction: column; gap: 6px; }
+    .lp .lt { font-size: 14.5px; font-weight: 600; }
+    .lp .ld { font-size: 12.6px; line-height: 1.45; color: var(--ink2); }
+    .lp .tm { font-size: 11.5px; font-weight: 600; color: var(--acc-dk); background: var(--acc-sf); border-radius: 20px; padding: 2px 8px; align-self: flex-start; }
+    .loopback { position: absolute; left: 0; width: 1046px; top: 0; height: 42px; border: 2px dashed var(--rule2); border-bottom: 0; border-radius: 12px 12px 0 0; }
+    .loopback .ll { position: absolute; left: 50%; top: -11px; transform: translateX(-50%); background: var(--paper); padding: 0 10px; font-size: 12px; font-weight: 600; color: var(--ink3); white-space: nowrap; }
+    .loopback .ar { position: absolute; left: -6px; bottom: -7px; width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid var(--rule2); }
+
+    /* the bypass bracket in band 1 */
+    .bypass { position: absolute; left: 340px; width: 980px; top: 0; height: 50px; border: 2px dashed var(--rule2); border-bottom: 0; border-radius: 12px 12px 0 0; }
+    .bypass .bl { position: absolute; left: 50%; top: -11px; transform: translateX(-50%); background: var(--paper); padding: 0 10px; font-size: 12.5px; font-weight: 600; color: var(--ink3); white-space: nowrap; }
+    .bypass .ar { position: absolute; right: -7px; bottom: -7px; width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid var(--rule2); }
+
+    .sidegrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+    .keeps { display: flex; align-items: stretch; }
+    .trouble { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+    .tro { background: var(--card); border: 1px solid var(--rule); border-radius: 13px; overflow: hidden; display: flex; flex-direction: column; }
+    .tro .th { display: flex; align-items: center; gap: 9px; padding: 12px 15px; background: var(--amb-sf); font-size: 13.8px; font-weight: 600; color: #6f3f18; }
+    .tro .tb { padding: 13px 15px 15px; font-size: 12.8px; line-height: 1.5; color: var(--ink2); display: flex; flex-direction: column; gap: 8px; }
+    .tro .tb b { font-weight: 600; color: var(--ink); }
+
+    .exits { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+    .inset { display: flex; gap: 12px; align-items: flex-start; background: var(--card); border: 1px solid var(--acc-rg); border-radius: 13px; padding: 14px 16px; }
+    .inset .ii { color: var(--acc); margin-top: 1px; }
+    .inset .it { font-size: 13.2px; line-height: 1.55; color: var(--ink2); }
+    .inset .it b { font-weight: 600; color: var(--ink); }
+  </style>
+</helmet>
+
+<div class="sheet">
+
+  <!-- ================= header ================= -->
+  <div class="top">
+    <div>
+      <h1>The whole flow · Direction A</h1>
+      <p>Every path through the app, from the link to the PDF. The five bands are in the order a person meets them, and band 2 is where almost all of the time goes.</p>
+    </div>
+    <div class="legend">
+      <span class="lg"><i class="lgline"></i>the path most people take</span>
+      <span class="lg"><i class="lgline dash"></i>a path you can skip</span>
+      <span class="lg"><i class="lgnew">new</i>doesn't exist today</span>
+      <span class="lg"><i class="chip scr"><svg class="i sm" viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="10" rx="1.6"></rect></svg>drawn</i>screen on the next page</span>
+    </div>
+  </div>
+
+  <!-- ================= band 1 ================= -->
+  <div class="band">
+    <div class="bhead">
+      <span class="bnum">1</span>
+      <span class="btitle">Getting in</span>
+      <span class="bsub">Two kinds of arrival, and only one of them asks a question.</span>
+    </div>
+
+    <div class="bbody" style="padding-top:66px">
+      <div class="bypass">
+        <span class="bl">Been here before, or already have a workspace → straight in, no question asked</span>
+        <i class="ar"></i>
+      </div>
+
+      <div class="row">
+        <div class="c" style="width:340px">
+          <div class="ct">Opens the link</div>
+          <div class="cd">A bookmark, a link from a phone, or <b>?landing</b> to see the front door again on purpose.</div>
+          <div class="cd">Nothing is installed and nothing is signed into yet.</div>
+        </div>
+
+        <div class="conn">
+          <svg width="48" height="14" viewBox="0 0 48 14" fill="none"><path d="M0 7h38" stroke="currentColor" stroke-width="2"></path><path d="M34 2.5 39.5 7 34 11.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        </div>
+
+        <div class="c" style="width:860px">
+          <div class="ct">
+            Where should this live?
+            <span class="chip scr"><svg class="i sm" viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="10" rx="1.6"></rect></svg>First run</span>
+          </div>
+          <div class="cd">One question, asked once, reversible afterwards. The wording carries the whole privacy story: there is no server on either path.</div>
+          <div class="doors">
+            <div class="door">
+              <div class="dt">On this machine</div>
+              <div class="dd">Writing in about two seconds. No account, no email address, works offline. Lives in this browser only — an export is the backup.</div>
+            </div>
+            <div class="door">
+              <div class="dt">In your Google Drive</div>
+              <div class="dd">The same resume on every machine. One file, created by the app, and that is all it can see.</div>
+              <div class="grp" style="margin-top:4px">
+                <div class="gt">The Drive door only</div>
+                <div class="step"><i class="n">1</i><span>Google's consent screen — <b>drive.file</b>, one file</span></div>
+                <div class="step"><i class="n">2</i><span>We look for a workspace already there</span></div>
+                <div class="step"><i class="n">3</i><span><b>Found it</b> → that workspace opens, not the sample</span></div>
+                <div class="step"><i class="n">4</i><span><b>Nothing there</b> → a new file, and the sample opens</span></div>
+                <div class="step"><i class="n">5</i><span><b>Said no</b> → back here, with a plain reason, other door still open</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="conn">
+          <svg width="48" height="14" viewBox="0 0 48 14" fill="none"><path d="M0 7h38" stroke="currentColor" stroke-width="2"></path><path d="M34 2.5 39.5 7 34 11.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        </div>
+
+        <div class="c hub" style="width:380px">
+          <div class="ct">
+            The editor
+            <span class="chip scr"><svg class="i sm" viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="10" rx="1.6"></rect></svg>Editor</span>
+          </div>
+          <div class="cd">Everything below happens here. Sections on the left, one section at a time in the middle, the page on the right — always current.</div>
+          <div class="cd">Both doors land in exactly this screen.</div>
+        </div>
+
+        <div class="conn">
+          <svg width="48" height="14" viewBox="0 0 48 14" fill="none"><path d="M0 7h38" stroke="currentColor" stroke-width="2"></path><path d="M34 2.5 39.5 7 34 11.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        </div>
+
+        <div class="c" style="width:440px">
+          <div class="ct">
+            The first thing on screen
+            <span class="chip">new</span>
+            <span class="chip scr"><svg class="i sm" viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="10" rx="1.6"></rect></svg>First minute</span>
+          </div>
+          <div class="cd">Today a stranger's resume is simply there, with no explanation. Instead, one quiet strip above the page:</div>
+          <div class="grp">
+            <div class="step"><i class="n">A</i><span><b>Make this mine</b> — the sample stays as scaffolding, the name field takes focus</span></div>
+            <div class="step"><i class="n">B</i><span><b>I already have one</b> — import a resume.json or an old backup</span></div>
+            <div class="step"><i class="n">C</i><span><b>Start empty</b> — keep only the section titles</span></div>
+          </div>
+          <div class="cd">Dismissed by starting to type. It never comes back.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= band 2 ================= -->
+  <div class="band">
+    <div class="bhead">
+      <span class="bnum">2</span>
+      <span class="btitle">The loop</span>
+      <span class="bsub">Ninety-five percent of every session. Nothing in it is a button you have to find.</span>
+    </div>
+
+    <div class="bbody" style="padding-top:58px">
+      <div class="loopback">
+        <span class="ll">glance at the page, pick the next thing — no gear change between reading and writing</span>
+        <i class="ar"></i>
+      </div>
+
+      <div class="loop">
+        <div class="lp">
+          <div class="lt">Pick a section</div>
+          <div class="ld">Plain names in the left rail — Profile, Education, Experience. One click, no accordion to fight.</div>
+        </div>
+        <div class="conn sm"><svg width="26" height="14" viewBox="0 0 26 14" fill="none"><path d="M0 7h18" stroke="currentColor" stroke-width="2"></path><path d="M14 2.5 19.5 7 14 11.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
+        <div class="lp">
+          <div class="lt">Type into a field</div>
+          <div class="ld">Labelled in questions — <b>What was your job title?</b> — so nothing has to be guessed from a placeholder.</div>
+        </div>
+        <div class="conn sm"><svg width="26" height="14" viewBox="0 0 26 14" fill="none"><path d="M0 7h18" stroke="currentColor" stroke-width="2"></path><path d="M14 2.5 19.5 7 14 11.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
+        <div class="lp">
+          <div class="lt">It saves itself</div>
+          <div class="ld">Straight to this browser, on every keystroke's heels. No save button exists to forget.</div>
+          <span class="tm">about 0.3s</span>
+        </div>
+        <div class="conn sm"><svg width="26" height="14" viewBox="0 0 26 14" fill="none"><path d="M0 7h18" stroke="currentColor" stroke-width="2"></path><path d="M14 2.5 19.5 7 14 11.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
+        <div class="lp">
+          <div class="lt">The page redraws</div>
+          <div class="ld"><b>Two seconds</b> after the last keystroke — long enough that a sentence gets finished before anything happens, and few enough compiles to keep a laptop quiet.</div>
+          <div class="ld">The section you are in is tinted, so you can see where the words landed. The old page holds still until the new one is ready: no flicker, no spinner, no scroll jump.</div>
+          <span class="tm">2s pause, then 1.5–2s compiling</span>
+        </div>
+        <div class="conn sm"><svg width="26" height="14" viewBox="0 0 26 14" fill="none"><path d="M0 7h18" stroke="currentColor" stroke-width="2"></path><path d="M14 2.5 19.5 7 14 11.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
+        <div class="c" style="width:430px">
+          <div class="ct">Never blocks</div>
+          <div class="cd">The redraw runs behind the editor. Typing through it is fine — the next one picks up what you typed, and the old page stays up until the new one is ready.</div>
+          <div class="cd"><b>Ctrl+S</b> still forces one, for the people who will press it anyway.</div>
+        </div>
+      </div>
+
+      <div class="sidegrid" style="padding-top:16px">
+        <div class="c soft">
+          <div class="ct">Change the shape</div>
+          <div class="cd">Add a section from a type menu · drag to reorder · rename in place · turn an entry into another type when it turns out to be a certificate, not a job.</div>
+        </div>
+        <div class="c soft">
+          <div class="ct">Delete anything</div>
+          <div class="cd">An inline strip where the thing is — <b>Delete · Keep</b> — and a few seconds to undo. No system dialog, ever.</div>
+        </div>
+        <div class="c soft">
+          <div class="ct">
+            Your details
+            <span class="chip scr"><svg class="i sm" viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="10" rx="1.6"></rect></svg>Details</span>
+          </div>
+          <div class="cd">Name, and the ways to reach you. Each row says what it shows and where it goes; the link half fills itself in.</div>
+        </div>
+        <div class="c soft">
+          <div class="ct">
+            Look &amp; feel
+            <span class="chip scr"><svg class="i sm" viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="10" rx="1.6"></rect></svg>Look &amp; feel</span>
+          </div>
+          <div class="cd">Three layouts as pictures, four typefaces as specimens, one accent. The centimetre sliders wait behind <b>Fine-tune</b>.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= band 3 ================= -->
+  <div class="band">
+    <div class="bhead">
+      <span class="bnum">3</span>
+      <span class="btitle">Keeping it</span>
+      <span class="bsub">Four different meanings of "saved", and only two of them are the person's job.</span>
+    </div>
+
+    <div class="bbody">
+      <div class="keeps">
+        <div class="c" style="width:400px">
+          <div class="ct">This browser</div>
+          <div class="cd"><b>Automatic.</b> Every change, a third of a second later, and once more on the way out of the tab.</div>
+          <div class="cd">Clearing site data is the one thing that erases it — which is what the export exists for.</div>
+        </div>
+        <div class="conn"><svg width="48" height="14" viewBox="0 0 48 14" fill="none"><path d="M0 7h38" stroke="currentColor" stroke-width="2" stroke-dasharray="4 4"></path><path d="M34 2.5 39.5 7 34 11.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
+        <div class="c" style="width:400px">
+          <div class="ct">Your Drive</div>
+          <div class="cd"><b>Automatic, if you chose it.</b> A few seconds behind the local save, so the editor never waits on a network.</div>
+          <div class="cd">The chip in the bar says which of the five states it is in, in words: not connected, connecting, synced, syncing, or a problem.</div>
+        </div>
+        <div class="conn"><svg width="48" height="14" viewBox="0 0 48 14" fill="none"><path d="M0 7h38" stroke="currentColor" stroke-width="2"></path><path d="M34 2.5 39.5 7 34 11.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
+        <div class="c" style="width:400px">
+          <div class="ct">
+            Snapshots
+            <span class="chip scr"><svg class="i sm" viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="10" rx="1.6"></rect></svg>Copies</span>
+          </div>
+          <div class="cd"><b>On purpose.</b> A named point you can come back to — "before the big rewrite" — while you carry on editing.</div>
+          <div class="cd">Restore it over what you have, or open it as a copy of its own.</div>
+        </div>
+        <div class="conn"><svg width="48" height="14" viewBox="0 0 48 14" fill="none"><path d="M0 7h38" stroke="currentColor" stroke-width="2"></path><path d="M34 2.5 39.5 7 34 11.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
+        <div class="c" style="width:400px">
+          <div class="ct">Copies</div>
+          <div class="cd"><b>On purpose.</b> One per job worth tailoring for — "Data Scientist", "Frontend". Each carries its own snapshots.</div>
+          <div class="cd">The same feature that is called a branch today, under the word people already use — <b>renamed in the interface only.</b> The exported JSON keeps saying <b>branches</b>, so every backup ever written still imports.</div>
+        </div>
+      </div>
+
+      <div class="inset" style="margin-top:14px">
+        <svg class="i ii" viewBox="0 0 16 16"><path d="M8 1.8 13.4 4v4c0 3-2.3 5.2-5.4 6.2C4.9 13.2 2.6 11 2.6 8V4z"></path><path d="M5.8 8.2 7.3 9.7l3-3.4"></path></svg>
+        <span class="it"><b>Two machines that both moved on:</b> the newer working copy stays live and the older one is kept as a snapshot inside the same copy — nothing is discarded and no merge screen ever appears. The panel says what it did, in one line, and you can restore the other side. <b>This rule already exists in the app; the flow just has to say it out loud.</b></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= band 4 ================= -->
+  <div class="band">
+    <div class="bhead">
+      <span class="bnum">4</span>
+      <span class="btitle">When it goes wrong</span>
+      <span class="bsub">Four real failures. In none of them does the page go blank or the writing stop.</span>
+    </div>
+
+    <div class="bbody">
+      <div class="trouble">
+        <div class="tro warn">
+          <div class="th">
+            <svg class="i" viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.8"></circle><path d="M8 5.2v3.4M8 10.6v.4"></path></svg>
+            A stray character in a bullet
+            <span class="chip scr" style="margin-left:auto"><svg class="i sm" viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="10" rx="1.6"></rect></svg>Trouble</span>
+          </div>
+          <div class="tb">
+            <span>By far the most common failure, and the app already knows which line it was.</span>
+            <span><b>A sentence, not a log.</b> The bullet is quoted with the offending character marked, and one button removes it.</span>
+            <span><b>The last good page stays on screen</b> with a note saying how old it is.</span>
+          </div>
+        </div>
+
+        <div class="tro warn">
+          <div class="th">
+            <svg class="i" viewBox="0 0 16 16"><path d="M2.6 2.6 13.4 13.4"></path><circle cx="8" cy="8" r="5.8"></circle></svg>
+            The typesetter didn't load
+          </div>
+          <div class="tb">
+            <span>The WASM engine or its format file failed to arrive — a bad network, or a half-deployed site.</span>
+            <span><b>One line and a Retry</b>, where the page would be.</span>
+            <span>Writing and saving carry on working; only the PDF is unavailable, and the bar says so.</span>
+          </div>
+        </div>
+
+        <div class="tro warn">
+          <div class="th">
+            <svg class="i" viewBox="0 0 16 16"><path d="M4.5 10.5a2.8 2.8 0 0 1 .3-5.6 3.7 3.7 0 0 1 7-1 3 3 0 0 1 .5 6"></path><path d="M6.4 12.4 9.6 9.2M9.6 12.4 6.4 9.2"></path></svg>
+            Drive said no
+          </div>
+          <div class="tb">
+            <span>The access token is in memory only, so it expires — closing the laptop is enough.</span>
+            <span><b>The chip turns amber and says "needs a reconnect".</b> One click re-consents, silently if Google will allow it.</span>
+            <span>Every edit in the meantime is already saved locally and pushes on reconnect.</span>
+          </div>
+        </div>
+
+        <div class="tro warn">
+          <div class="th">
+            <svg class="i" viewBox="0 0 16 16"><path d="M2 5.5a9 9 0 0 1 12 0"></path><path d="M4.6 8.4a6 6 0 0 1 6.8 0"></path><path d="M7 11.2a2.2 2.2 0 0 1 2 0"></path><path d="M2.6 2.6 13.4 13.4"></path></svg>
+            Offline
+          </div>
+          <div class="tb">
+            <span>The whole app is static and the typesetter's files are cached, so the loop in band 2 keeps running.</span>
+            <span><b>Nothing is announced</b> beyond the Drive chip saying it is waiting.</span>
+            <span>The push goes out when the network comes back. No queue for the person to manage.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= band 5 ================= -->
+  <div class="band">
+    <div class="bhead">
+      <span class="bnum">5</span>
+      <span class="btitle">Leaving with something</span>
+      <span class="bsub">The point of the whole thing, and the one place a button is the right answer.</span>
+    </div>
+
+    <div class="bbody">
+      <div class="exits">
+        <div class="c">
+          <div class="ct">Download the PDF</div>
+          <div class="cd">The one primary button in the bar. Named from the resume and the copy — <b>Alex_Doe_Resume_Data_Scientist.pdf</b> — so a folder of applications stays legible.</div>
+        </div>
+        <div class="c">
+          <div class="ct">Open it in a tab</div>
+          <div class="cd">For reading at full size, printing, or dropping into an application form. The preview keeps its own small link for this.</div>
+        </div>
+        <div class="c">
+          <div class="ct">Export a backup</div>
+          <div class="cd">One JSON file with every copy and every snapshot. The answer to "what if I clear my browser", and the way into another machine.</div>
+        </div>
+        <div class="c soft">
+          <div class="ct">Just close the tab</div>
+          <div class="cd">Already saved, both places. Coming back skips band 1 entirely and lands on the copy that was open.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>

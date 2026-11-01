@@ -1,0 +1,32 @@
+{
+  "exportedAt": "2026-08-18T12:00:00.000Z",
+  "activeId": "old-1",
+  "versions": [
+    {
+      "id": "old-1",
+      "name": "Old format",
+      "createdAt": "2026-08-18T12:00:00.000Z",
+      "updatedAt": "2026-08-18T12:00:00.000Z",
+      "data": {
+        "personal": {
+          "name": "Old Format",
+          "contacts": [
+            { "text": "old@example.com", "url": "mailto:old@example.com", "icon": "envelope" }
+          ]
+        },
+        "sections": [
+          {
+            "title": "Experience",
+            "entries": [
+              {
+                "left": "**Old Corp**\n*Engineer*",
+                "right": "2019 – 2022",
+                "bullets": ["Pre-id string bullets", "Survive normalization with **markdown** intact"]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

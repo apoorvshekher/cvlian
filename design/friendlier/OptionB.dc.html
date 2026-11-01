@@ -1,0 +1,351 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --bg: #eef0f3; --panel: #ffffff; --sink: #f4f5f7;
+      --ink: #15171c; --ink2: #5a6070; --ink3: #8d94a3;
+      --rule: #e3e6eb; --rule2: #d3d7df;
+      --acc: #4a58d1; --acc-dk: #3a46ad; --acc-sf2: #edeefb; --acc-rg: rgba(74,88,209,0.20);
+      --sans: "IBM Plex Sans", ui-sans-serif, system-ui, "Helvetica Neue", Arial, sans-serif;
+      --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+      --serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+    }
+    body { margin: 0; font-family: var(--sans); color: var(--ink); background: var(--bg); }
+    a { color: var(--acc); text-decoration: none; }
+    a:hover { color: var(--acc-dk); }
+    .i { width: 16px; height: 16px; flex: none; display: block; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+    .i.sm { width: 13px; height: 13px; }
+    .i.dots { stroke-width: 2.2; }
+
+    .app { width: 1440px; height: 900px; display: flex; flex-direction: column; background: var(--bg); overflow: hidden; }
+
+    /* ---------- top bar ---------- */
+    .bar { height: 52px; flex: none; display: flex; align-items: center; gap: 12px; padding: 0 16px; background: var(--panel); border-bottom: 1px solid var(--rule); position: relative; z-index: 3; }
+    .iconbtn { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--ink2); }
+    .iconbtn.on { background: var(--acc-sf2); color: var(--acc); }
+    .docname { font-size: 14px; font-weight: 600; }
+    .copy { display: flex; align-items: center; gap: 5px; font-size: 13px; color: var(--ink2); }
+    .savedchip { font-family: var(--mono); font-size: 11px; color: var(--ink3); border: 1px solid var(--rule); border-radius: 6px; padding: 3px 7px; }
+    .spacer { flex: 1; }
+    .zoomer { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 2px; height: 30px; padding: 0 4px; border: 1px solid var(--rule); border-radius: 8px; background: var(--panel); }
+    .zoomer .zb { width: 26px; height: 24px; display: flex; align-items: center; justify-content: center; color: var(--ink2); border-radius: 6px; }
+    .zoomer .zv { font-family: var(--mono); font-size: 12px; width: 46px; text-align: center; color: var(--ink); }
+    .zoomer .zf { font-size: 12px; color: var(--ink2); padding: 0 8px; border-left: 1px solid var(--rule); height: 16px; display: flex; align-items: center; }
+    .btn { display: inline-flex; align-items: center; gap: 7px; height: 32px; padding: 0 12px; border: 1px solid var(--rule2); border-radius: 8px; background: var(--panel); color: var(--ink); font-size: 13px; font-weight: 500; }
+    .btn.primary { background: var(--acc); border-color: var(--acc); color: #fff; font-weight: 600; }
+
+    /* ---------- canvas ---------- */
+    .canvas { flex: 1; position: relative; overflow: hidden; background:
+      radial-gradient(circle at 1px 1px, #dfe3e9 1px, transparent 0) 0 0/22px 22px, var(--bg); }
+
+    /* floating panels */
+    .float { position: absolute; background: var(--panel); border: 1px solid var(--rule); border-radius: 12px; box-shadow: 0 1px 2px rgba(21,23,28,0.05), 0 10px 30px rgba(21,23,28,0.09); }
+    .outline { left: 18px; top: 18px; width: 210px; padding: 10px; display: flex; flex-direction: column; gap: 2px; }
+    .phead { display: flex; align-items: center; gap: 8px; padding: 2px 6px 8px; font-size: 11px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink3); }
+    .orow { display: flex; align-items: center; gap: 8px; height: 34px; padding: 0 8px; border-radius: 8px; font-size: 13px; color: var(--ink); }
+    .orow .on2 { flex: 1; }
+    .orow.sel { background: var(--acc-sf2); color: var(--acc-dk); font-weight: 600; }
+    .orow .cn { font-family: var(--mono); font-size: 11px; color: var(--ink3); }
+    .orow .gr { color: var(--rule2); }
+    .odiv { height: 1px; background: var(--rule); margin: 7px 4px; }
+    .oadd { display: flex; align-items: center; gap: 8px; height: 34px; padding: 0 8px; border-radius: 8px; font-size: 13px; color: var(--ink2); }
+
+    .insp { right: 18px; top: 18px; width: 302px; display: flex; flex-direction: column; overflow: hidden; }
+    .ihead { display: flex; align-items: center; gap: 8px; padding: 12px 14px; border-bottom: 1px solid var(--rule); }
+    .ikind { display: flex; align-items: center; gap: 6px; height: 26px; padding: 0 9px; border-radius: 7px; background: var(--acc-sf2); color: var(--acc-dk); font-size: 12px; font-weight: 600; }
+    .itabs { display: flex; gap: 4px; padding: 10px 12px 0; }
+    .itab { font-size: 12.5px; font-weight: 500; color: var(--ink3); padding: 6px 10px; border-radius: 7px; }
+    .itab.on { background: var(--sink); color: var(--ink); }
+    .ibody { padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 11px; }
+    .fld { display: flex; flex-direction: column; gap: 5px; min-width: 0; flex: 1; }
+    .fld label { font-size: 11.5px; font-weight: 500; color: var(--ink2); }
+    .in { height: 34px; border: 1px solid var(--rule2); border-radius: 8px; display: flex; align-items: center; padding: 0 10px; font-size: 13px; background: var(--panel); }
+    .in.focus { border-color: var(--acc); box-shadow: 0 0 0 3px var(--acc-sf2); }
+    .in.off { background: var(--sink); color: var(--ink3); border-color: var(--rule); }
+    .frow { display: flex; gap: 8px; }
+    .dsel { width: 88px; justify-content: space-between; color: var(--ink2); }
+    .switchrow { display: flex; align-items: center; gap: 9px; font-size: 12.5px; }
+    .switch { width: 34px; height: 20px; border-radius: 20px; background: var(--acc); position: relative; flex: none; }
+    .switch i { position: absolute; top: 2.5px; left: 16.5px; width: 15px; height: 15px; border-radius: 50%; background: #fff; }
+    .note { display: flex; gap: 8px; font-size: 12px; line-height: 1.45; color: var(--ink2); background: var(--sink); border-radius: 9px; padding: 10px 11px; }
+    .note .i { color: var(--acc); margin-top: 1px; }
+
+    /* the page itself */
+    .page { position: absolute; left: 368px; top: 24px; width: 612px; height: 792px; background: #fff; box-shadow: 0 2px 8px rgba(21,23,28,0.08), 0 24px 60px rgba(21,23,28,0.12); padding: 46px 54px; font-family: var(--serif); color: #14130f; }
+    .rname { text-align: center; font-size: 27px; }
+    .rcontacts { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; font-size: 9.6px; color: #3a382f; padding-top: 7px; }
+    .rsec { padding-top: 16px; }
+    .rsh { font-size: 12.4px; font-weight: 700; border-bottom: 1px solid #14130f; padding-bottom: 2px; }
+    .rp { font-size: 10.4px; line-height: 1.45; padding-top: 5px; }
+    .rp i { font-style: italic; }
+    .rentry { padding-top: 6px; }
+    .rtop { display: flex; justify-content: space-between; gap: 14px; font-size: 10.6px; }
+    .rtop b { font-weight: 700; }
+    .rsub { font-size: 10.4px; font-style: italic; color: #2c2a23; }
+    .rbul { font-size: 10.2px; line-height: 1.45; padding-left: 13px; position: relative; }
+    .rbul::before { content: "•"; position: absolute; left: 3px; }
+    .rbul b { font-weight: 700; }
+    .rtags { display: flex; flex-wrap: wrap; gap: 5px; padding-top: 5px; }
+    .rtags span { font-size: 9.4px; background: #f1efe9; padding: 2px 5px; }
+    .rlev { display: flex; justify-content: space-between; font-size: 10.4px; }
+    .rlev i { display: flex; gap: 3px; align-items: center; font-style: normal; }
+    .rlev u { width: 5px; height: 5px; border-radius: 50%; background: #14130f; display: block; }
+    .rlev u.o { background: transparent; border: 1px solid #14130f; }
+
+    /* direct-manipulation affordances */
+    .sel-wrap { position: relative; outline: 2px solid var(--acc); outline-offset: 6px; border-radius: 2px; margin-top: 36px; }
+    .sel-chip { position: absolute; left: -6px; top: -30px; display: flex; align-items: center; gap: 6px; height: 22px; padding: 0 8px; border-radius: 6px; background: var(--acc); color: #fff; font-family: var(--sans); font-size: 11px; font-weight: 600; }
+    .sel-tools { position: absolute; right: -6px; top: -34px; display: flex; align-items: center; gap: 1px; padding: 3px; border-radius: 8px; background: var(--panel); border: 1px solid var(--rule); box-shadow: 0 6px 16px rgba(21,23,28,0.14); }
+    .sel-tools span { width: 26px; height: 22px; display: flex; align-items: center; justify-content: center; color: var(--ink2); border-radius: 5px; }
+    .sel-tools span.del { color: #b3261e; }
+    .sel-tools .vr { width: 1px; height: 14px; background: var(--rule); margin: 0 3px; }
+    .textsel { background: var(--acc-rg); }
+    .caret { display: inline-block; width: 1.5px; height: 11px; background: var(--acc); vertical-align: -1px; }
+    .hoverline { position: relative; height: 0; }
+    .hoverline .hl { position: absolute; left: -8px; right: -8px; top: 7px; height: 2px; background: var(--acc); border-radius: 2px; }
+    .hoverline .hb { position: absolute; left: 50%; top: -2px; transform: translateX(-50%); display: flex; align-items: center; gap: 5px; height: 22px; padding: 0 9px; border-radius: 20px; background: var(--acc); color: #fff; font-family: var(--sans); font-size: 11px; font-weight: 600; }
+
+    .pagechip { position: absolute; right: 338px; bottom: 16px; font-family: var(--mono); font-size: 11px; color: var(--ink2); background: rgba(255,255,255,0.9); border: 1px solid var(--rule); border-radius: 7px; padding: 4px 9px; }
+  </style>
+</helmet>
+
+<div class="app">
+
+  <!-- ===== top bar ===== -->
+  <header class="bar">
+    <div class="iconbtn on">
+      <svg class="i" viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="10" rx="1.6"></rect><path d="M6.5 3v10"></path></svg>
+    </div>
+    <div class="docname">Alex Doe</div>
+    <div class="copy">
+      Main copy
+      <svg class="i sm" viewBox="0 0 16 16"><path d="M4 6.5 8 10.5 12 6.5"></path></svg>
+    </div>
+    <div class="savedchip">all changes saved</div>
+
+    <div class="zoomer">
+      <span class="zb"><svg class="i sm" viewBox="0 0 16 16"><path d="M4 8h8"></path></svg></span>
+      <span class="zv">75%</span>
+      <span class="zb"><svg class="i sm" viewBox="0 0 16 16"><path d="M8 4v8M4 8h8"></path></svg></span>
+      <span class="zf">Fit</span>
+    </div>
+
+    <div class="spacer"></div>
+    <div class="btn">
+      <svg class="i" viewBox="0 0 16 16"><path d="M2.5 5h11M2.5 11h11"></path><circle cx="6" cy="5" r="1.9"></circle><circle cx="10.5" cy="11" r="1.9"></circle></svg>
+      Look &amp; feel
+    </div>
+    <div class="btn">Snapshots</div>
+    <div class="btn primary">
+      <svg class="i" viewBox="0 0 16 16"><path d="M8 2.5v8"></path><path d="M4.8 7.6 8 10.8l3.2-3.2"></path><path d="M3 13h10"></path></svg>
+      Download PDF
+    </div>
+  </header>
+
+  <!-- ===== canvas ===== -->
+  <div class="canvas">
+
+    <!-- the page -->
+    <div class="page">
+      <div class="rname">Alex Doe</div>
+      <div class="rcontacts">
+        <span>alex@example.com</span><span>·</span>
+        <span>alexdoe.example.com</span><span>·</span>
+        <span>linkedin.com/in/alexdoe</span><span>·</span>
+        <span>github.com/alexdoe</span>
+      </div>
+
+      <div class="rsec">
+        <div class="rsh">Profile</div>
+        <div class="rp">Software engineer with 3+ years building web products end to end. Comfortable owning features from database to UI, with a soft spot for <i>fast feedback loops</i> and boring, reliable infrastructure.</div>
+      </div>
+
+      <div class="rsec">
+        <div class="rsh">Education</div>
+        <div class="rentry">
+          <div class="rtop"><span><b>State University</b> — Ann Arbor, MI</span><span>Sept 2018 – May 2022</span></div>
+          <div class="rsub">Bachelor of Science in Computer Science · GPA 3.8/4.0</div>
+          <div class="rbul"><b>Coursework:</b> Algorithms, Operating Systems, Databases, Machine Learning</div>
+          <div class="rbul">Dean's List, 2019–2022</div>
+        </div>
+      </div>
+
+      <div class="rsec">
+        <div class="rsh">Experience</div>
+
+        <!-- selected entry -->
+        <div class="rentry sel-wrap">
+          <div class="sel-chip">
+            <svg class="i sm dots" viewBox="0 0 16 16"><circle cx="6" cy="4" r=".8"></circle><circle cx="10" cy="4" r=".8"></circle><circle cx="6" cy="8" r=".8"></circle><circle cx="10" cy="8" r=".8"></circle><circle cx="6" cy="12" r=".8"></circle><circle cx="10" cy="12" r=".8"></circle></svg>
+            Experience
+          </div>
+          <div class="sel-tools">
+            <span><svg class="i sm" viewBox="0 0 16 16"><path d="M8 12V4"></path><path d="M4.8 7.2 8 4l3.2 3.2"></path></svg></span>
+            <span><svg class="i sm" viewBox="0 0 16 16"><path d="M8 4v8"></path><path d="M4.8 8.8 8 12l3.2-3.2"></path></svg></span>
+            <span><svg class="i sm" viewBox="0 0 16 16"><rect x="5.5" y="5.5" width="7.5" height="7.5" rx="1.3"></rect><path d="M10.5 3H3.6a.6.6 0 0 0-.6.6v6.9"></path></svg></span>
+            <i class="vr"></i>
+            <span class="del"><svg class="i sm" viewBox="0 0 16 16"><path d="M3.5 4.5h9"></path><path d="M5.5 4.5V3.2h5v1.3"></path><path d="M4.7 4.5 5.2 13h5.6l.5-8.5"></path></svg></span>
+          </div>
+
+          <div class="rtop"><span><b><span class="textsel">Software Engineer</span></b><i class="caret"></i></span><span>June 2022 – Present</span></div>
+          <div class="rsub">Acme Corp — Remote</div>
+          <div class="rbul">Built and maintained a customer-facing analytics dashboard used by <b>5,000+</b> weekly active users</div>
+          <div class="rbul">Reduced API p95 latency by 40% by profiling hot paths and adding query-level caching</div>
+          <div class="rbul">Mentored two interns; both projects shipped to production</div>
+        </div>
+
+        <div class="rentry" style="padding-top:18px">
+          <div class="rtop"><span><b>Software Engineering Intern</b></span><span>May 2021 – Aug 2021</span></div>
+          <div class="rsub">Widget Labs</div>
+          <div class="rbul">Prototyped an internal tool that cut weekly report preparation from hours to minutes</div>
+        </div>
+      </div>
+
+      <div class="rsec">
+        <div class="rsh">Projects</div>
+        <div class="rentry">
+          <div class="rtop"><span><b>Resume Editor</b> — this resume was written in it</span><span></span></div>
+          <div class="rbul">Browser-based editor that compiles LaTeX to PDF entirely client-side via WebAssembly</div>
+        </div>
+      </div>
+
+      <!-- insert affordance between sections -->
+      <div class="hoverline">
+        <i class="hl"></i>
+        <span class="hb">
+          <svg class="i sm" viewBox="0 0 16 16"><path d="M8 3.5v9M3.5 8h9"></path></svg>
+          Add a section here
+        </span>
+      </div>
+
+      <div class="rsec" style="padding-top:22px">
+        <div class="rsh">Skills</div>
+        <div class="rtags">
+          <span>Python</span><span>TypeScript</span><span>React</span><span>SQL</span><span>C++</span><span>Linux</span><span>Git</span><span>Docker</span><span>PostgreSQL</span><span>AWS</span>
+        </div>
+      </div>
+
+      <div class="rsec">
+        <div class="rsh">Languages</div>
+        <div class="rentry">
+          <div class="rlev"><span>English</span><i><u></u><u></u><u></u><u></u><u></u></i></div>
+          <div class="rlev"><span>Spanish</span><i><u></u><u></u><u></u><u class="o"></u><u class="o"></u></i></div>
+          <div class="rlev"><span>German</span><i><u></u><u></u><u class="o"></u><u class="o"></u><u class="o"></u></i></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- outline -->
+    <div class="float outline">
+      <div class="phead">
+        Outline
+        <span class="spacer"></span>
+        <svg class="i sm" viewBox="0 0 16 16"><path d="M10 4 6 8l4 4"></path></svg>
+      </div>
+      <div class="orow">
+        <svg class="i sm" viewBox="0 0 16 16"><circle cx="8" cy="5.5" r="2.6"></circle><path d="M3 13.5c.6-2.4 2.5-3.6 5-3.6s4.4 1.2 5 3.6"></path></svg>
+        <span class="on2">Your details</span>
+      </div>
+      <div class="odiv"></div>
+      <div class="orow">
+        <svg class="i sm dots gr" viewBox="0 0 16 16"><circle cx="6" cy="4" r=".8"></circle><circle cx="10" cy="4" r=".8"></circle><circle cx="6" cy="8" r=".8"></circle><circle cx="10" cy="8" r=".8"></circle><circle cx="6" cy="12" r=".8"></circle><circle cx="10" cy="12" r=".8"></circle></svg>
+        <span class="on2">Profile</span><span class="cn">1</span>
+      </div>
+      <div class="orow">
+        <svg class="i sm dots gr" viewBox="0 0 16 16"><circle cx="6" cy="4" r=".8"></circle><circle cx="10" cy="4" r=".8"></circle><circle cx="6" cy="8" r=".8"></circle><circle cx="10" cy="8" r=".8"></circle><circle cx="6" cy="12" r=".8"></circle><circle cx="10" cy="12" r=".8"></circle></svg>
+        <span class="on2">Education</span><span class="cn">1</span>
+      </div>
+      <div class="orow sel">
+        <svg class="i sm dots gr" viewBox="0 0 16 16"><circle cx="6" cy="4" r=".8"></circle><circle cx="10" cy="4" r=".8"></circle><circle cx="6" cy="8" r=".8"></circle><circle cx="10" cy="8" r=".8"></circle><circle cx="6" cy="12" r=".8"></circle><circle cx="10" cy="12" r=".8"></circle></svg>
+        <span class="on2">Experience</span><span class="cn">2</span>
+      </div>
+      <div class="orow">
+        <svg class="i sm dots gr" viewBox="0 0 16 16"><circle cx="6" cy="4" r=".8"></circle><circle cx="10" cy="4" r=".8"></circle><circle cx="6" cy="8" r=".8"></circle><circle cx="10" cy="8" r=".8"></circle><circle cx="6" cy="12" r=".8"></circle><circle cx="10" cy="12" r=".8"></circle></svg>
+        <span class="on2">Projects</span><span class="cn">1</span>
+      </div>
+      <div class="orow">
+        <svg class="i sm dots gr" viewBox="0 0 16 16"><circle cx="6" cy="4" r=".8"></circle><circle cx="10" cy="4" r=".8"></circle><circle cx="6" cy="8" r=".8"></circle><circle cx="10" cy="8" r=".8"></circle><circle cx="6" cy="12" r=".8"></circle><circle cx="10" cy="12" r=".8"></circle></svg>
+        <span class="on2">Skills</span><span class="cn">1</span>
+      </div>
+      <div class="orow">
+        <svg class="i sm dots gr" viewBox="0 0 16 16"><circle cx="6" cy="4" r=".8"></circle><circle cx="10" cy="4" r=".8"></circle><circle cx="6" cy="8" r=".8"></circle><circle cx="10" cy="8" r=".8"></circle><circle cx="6" cy="12" r=".8"></circle><circle cx="10" cy="12" r=".8"></circle></svg>
+        <span class="on2">Languages</span><span class="cn">1</span>
+      </div>
+      <div class="odiv"></div>
+      <div class="oadd">
+        <svg class="i sm" viewBox="0 0 16 16"><path d="M8 3.5v9M3.5 8h9"></path></svg>
+        Add a section
+      </div>
+    </div>
+
+    <!-- inspector -->
+    <div class="float insp">
+      <div class="ihead">
+        <div class="ikind">
+          Experience
+          <svg class="i sm" viewBox="0 0 16 16"><path d="M4 6.5 8 10.5 12 6.5"></path></svg>
+        </div>
+        <span class="spacer"></span>
+        <svg class="i sm" viewBox="0 0 16 16" style="color:#8d94a3"><path d="M4.5 4.5 11.5 11.5M11.5 4.5 4.5 11.5"></path></svg>
+      </div>
+      <div class="itabs">
+        <span class="itab on">This entry</span>
+        <span class="itab">Look &amp; feel</span>
+      </div>
+      <div class="ibody">
+        <div class="fld">
+          <label>Job title</label>
+          <div class="in focus">Software Engineer</div>
+        </div>
+        <div class="fld">
+          <label>Company</label>
+          <div class="in">Acme Corp</div>
+        </div>
+        <div class="fld">
+          <label>City, or remote</label>
+          <div class="in">Remote</div>
+        </div>
+        <div class="frow">
+          <div class="fld">
+            <label>Started</label>
+            <div class="frow">
+              <div class="in dsel">June <svg class="i sm" viewBox="0 0 16 16"><path d="M4 6.5 8 10.5 12 6.5"></path></svg></div>
+              <div class="in" style="width:56px">2022</div>
+            </div>
+          </div>
+        </div>
+        <div class="frow">
+          <div class="fld">
+            <label>Ended</label>
+            <div class="frow">
+              <div class="in dsel off">Month <svg class="i sm" viewBox="0 0 16 16"><path d="M4 6.5 8 10.5 12 6.5"></path></svg></div>
+              <div class="in off" style="width:56px">Year</div>
+            </div>
+          </div>
+        </div>
+        <div class="switchrow">
+          <span class="switch"><i></i></span>
+          I still work here
+        </div>
+        <div class="note">
+          <svg class="i sm" viewBox="0 0 16 16"><path d="M11.5 3.2 12.8 4.5 6 11.3l-2 .7.7-2z"></path></svg>
+          The three bullets live on the page — click any line to type straight into it.
+        </div>
+      </div>
+    </div>
+
+    <div class="pagechip">1 page · Letter</div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

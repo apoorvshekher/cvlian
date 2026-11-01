@@ -1,0 +1,301 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --paper: #faf8f5; --card: #ffffff; --sink: #f3f0ea;
+      --ink: #1b1a17; --ink2: #5c584f; --ink3: #8d887c;
+      --rule: #e8e3da; --rule2: #d8d1c4;
+      --acc: #2f7a5f; --acc-dk: #24614b; --acc-sf: #e9f2ee; --acc-rg: #bcd8cd;
+      --amb: #a8622a; --amb-sf: #f8ece1;
+      --sans: "Figtree", ui-sans-serif, system-ui, "Helvetica Neue", Arial, sans-serif;
+      --serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+    }
+    body { margin: 0; font-family: var(--sans); color: var(--ink); background: var(--paper); }
+    a { color: var(--acc); text-decoration: none; }
+    a:hover { color: var(--acc-dk); }
+    .i { width: 16px; height: 16px; flex: none; display: block; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+    .i.sm { width: 13px; height: 13px; }
+    .spacer { flex: 1; }
+
+    .app { width: 1440px; height: 900px; display: flex; flex-direction: column; background: var(--paper); overflow: hidden; position: relative; }
+
+    /* ---------- the bar it opens from ---------- */
+    .bar { height: 58px; flex: none; display: flex; align-items: center; gap: 14px; padding: 0 18px; background: var(--card); border-bottom: 1px solid var(--rule); }
+    .wordmark { font-size: 15px; font-weight: 600; letter-spacing: -0.015em; }
+    .wordmark i { color: var(--acc); font-style: normal; }
+    .docchip { display: flex; align-items: center; gap: 9px; height: 34px; padding: 0 10px 0 12px; border-radius: 9px; background: var(--acc-sf); color: var(--acc-dk); }
+    .docchip .dn { font-size: 13px; font-weight: 700; }
+    .docchip .dc { font-size: 12px; }
+    .barmuted { font-size: 12.5px; color: var(--ink3); }
+
+    .scrim { flex: 1; display: flex; align-items: center; justify-content: center; background: rgba(27, 26, 23, 0.28); }
+
+    /* ---------- the sheet ---------- */
+    .sheet { width: 1160px; height: 700px; background: var(--card); border-radius: 16px; box-shadow: 0 30px 70px rgba(27,26,23,0.28); display: flex; flex-direction: column; overflow: hidden; }
+    .sh-head { height: 68px; flex: none; display: flex; align-items: center; gap: 12px; padding: 0 22px; border-bottom: 1px solid var(--rule); }
+    .sh-head h1 { margin: 0; font-size: 19px; font-weight: 600; letter-spacing: -0.02em; }
+    .sh-head .sub { font-size: 12.5px; color: var(--ink3); }
+    .sh-body { flex: 1; display: flex; min-height: 0; }
+
+    /* ---------- left: the copies ---------- */
+    .copies { width: 306px; flex: none; border-right: 1px solid var(--rule); background: var(--paper); padding: 16px 14px; display: flex; flex-direction: column; gap: 8px; }
+    .cl-label { font-size: 10px; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--ink3); padding: 2px 4px 4px; }
+    .ccard { display: flex; gap: 12px; padding: 11px; border: 1px solid var(--rule); border-radius: 12px; background: var(--card); }
+    .ccard.sel { border-color: var(--acc); box-shadow: 0 0 0 3px var(--acc-sf); }
+    .ccard .ct { display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 1; }
+    .ccard .cn { font-size: 13.5px; font-weight: 600; display: flex; align-items: center; gap: 7px; }
+    .ccard .cm { font-size: 11.5px; color: var(--ink3); line-height: 1.4; }
+    .ccard .cfrom { font-size: 11px; color: var(--ink3); display: flex; align-items: center; gap: 5px; }
+    .livetag { font-size: 10px; font-weight: 600; color: var(--acc-dk); background: var(--acc-sf); border-radius: 20px; padding: 2px 7px; white-space: nowrap; }
+    .cadd { display: flex; align-items: center; justify-content: center; gap: 8px; height: 54px; border: 1px dashed var(--rule2); border-radius: 12px; color: var(--acc-dk); background: var(--acc-sf); font-size: 13px; font-weight: 600; }
+    .cnote { font-size: 11.5px; line-height: 1.5; color: var(--ink3); padding: 0 4px; }
+
+    /* a page, drawn as bars — enough to tell them apart at a glance */
+    .pg { width: 54px; height: 70px; flex: none; background: #fff; border: 1px solid var(--rule2); border-radius: 3px; padding: 5px 6px; display: flex; flex-direction: column; gap: 2.5px; overflow: hidden; }
+    .pg i { display: block; height: 1.5px; background: #e0dcd3; border-radius: 1px; }
+    .pg i.n { height: 4px; width: 60%; align-self: center; background: #b9b3a8; }
+    .pg i.c { height: 1.5px; width: 76%; align-self: center; }
+    .pg i.h { height: 2.5px; width: 42%; background: #b9b3a8; margin-top: 3px; }
+    .pg.two { background: linear-gradient(#fff 0 66%, #f2efe9 66% 100%); }
+
+    /* ---------- right: the copy you are looking at ---------- */
+    .detail { flex: 1; min-width: 0; display: flex; flex-direction: column; padding: 20px 22px 22px; gap: 16px; }
+    .dt-head { display: flex; align-items: flex-start; gap: 12px; }
+    .dt-name { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
+    .dt-for { font-size: 12.5px; color: var(--ink2); padding-top: 4px; line-height: 1.5; }
+    .btn { display: inline-flex; align-items: center; gap: 7px; height: 34px; padding: 0 13px; border: 1px solid var(--rule2); border-radius: 9px; background: var(--card); font-size: 13px; font-weight: 500; color: var(--ink); }
+    .btn.primary { background: var(--acc); border-color: var(--acc); color: #fff; font-weight: 600; }
+    .btn.sm { height: 30px; font-size: 12.5px; padding: 0 11px; }
+    .btn.ghost { border-color: transparent; color: var(--ink2); }
+    .icobtn { width: 34px; height: 34px; border: 1px solid var(--rule2); border-radius: 9px; display: flex; align-items: center; justify-content: center; color: var(--ink2); }
+
+    .dt-body { flex: 1; display: flex; gap: 24px; min-height: 0; }
+
+    /* the page you are looking at */
+    .viewer { width: 306px; flex: none; display: flex; flex-direction: column; gap: 9px; }
+    .vframe { position: relative; }
+    .vcap { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--ink3); }
+    .vcap b { color: var(--ink2); font-weight: 600; }
+    .vband { display: flex; align-items: center; gap: 8px; padding: 8px 11px; background: var(--amb-sf); border-bottom: 1px solid #e6c9ad; font-size: 11.5px; font-weight: 600; color: #6f3f18; border-radius: 10px 10px 0 0; }
+    .page.banded { border-radius: 0 0 10px 10px; border-top: none; }
+
+    .page { width: 306px; height: 396px; background: #fff; border: 1px solid var(--rule2); border-radius: 10px; box-shadow: 0 2px 6px rgba(27,26,23,0.05), 0 14px 30px rgba(27,26,23,0.07); padding: 20px 22px; font-family: var(--serif); color: #14130f; overflow: hidden; }
+    .page.past { box-shadow: 0 2px 6px rgba(168,98,42,0.10), 0 14px 30px rgba(168,98,42,0.12); border-color: #e6c9ad; }
+    .rname { text-align: center; font-size: 13px; }
+    .rcon { display: flex; justify-content: center; flex-wrap: wrap; gap: 5px; font-size: 4.8px; color: #3a382f; padding-top: 3px; }
+    .rsec { padding-top: 7px; }
+    .rsh { font-size: 6px; font-weight: 700; border-bottom: 0.6px solid #14130f; padding-bottom: 1px; }
+    .rp { font-size: 5px; line-height: 1.45; padding-top: 2px; }
+    .rp i { font-style: italic; }
+    .rent { padding-top: 3px; }
+    .rtop { display: flex; justify-content: space-between; gap: 8px; font-size: 5.2px; }
+    .rtop b { font-weight: 700; }
+    .rsub { font-size: 5px; font-style: italic; color: #2c2a23; }
+    .rb { font-size: 5px; line-height: 1.45; padding-left: 6px; position: relative; }
+    .rb::before { content: "\2022"; position: absolute; left: 1.5px; }
+    .rtags { display: flex; flex-wrap: wrap; gap: 2.5px; padding-top: 2px; }
+    .rtags span { font-size: 4.6px; background: #f1efe9; padding: 1px 2.5px; }
+
+    /* the history */
+    .hist { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    .h-top { display: flex; align-items: baseline; gap: 10px; padding-bottom: 3px; }
+    .h-label { font-size: 10px; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--ink3); }
+    .h-note { font-size: 11.5px; color: var(--ink3); }
+    .h-list { display: flex; flex-direction: column; padding-top: 8px; }
+    .hrow { display: flex; gap: 12px; padding: 9px 10px; border-radius: 10px; position: relative; }
+    .hrow.sel { background: var(--amb-sf); }
+    .hrow.now { background: var(--acc-sf); }
+    /* the thread the points hang on */
+    .hrow::before { content: ""; position: absolute; left: 16px; top: 0; bottom: 0; width: 1.5px; background: var(--rule); }
+    .hrow:first-child::before { top: 20px; }
+    .hrow:last-child::before { bottom: calc(100% - 20px); }
+    .hdot { width: 13px; height: 13px; border-radius: 50%; border: 2px solid var(--rule2); background: var(--card); flex: none; margin: 3px 0 0 0; position: relative; z-index: 1; }
+    .hdot.live { border-color: var(--acc); background: var(--acc); }
+    .hdot.named { border-color: var(--acc-dk); background: var(--card); }
+    .hdot.here { border-color: var(--amb); background: var(--amb); }
+    .hdot.auto { border-color: var(--rule2); }
+    .htx { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+    .h1l { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; }
+    .h1l .nm { font-weight: 600; }
+    .h2l { font-size: 11.5px; color: var(--ink3); line-height: 1.45; }
+    .hact { display: flex; align-items: center; gap: 7px; padding-top: 4px; }
+    .tagpin { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 600; color: var(--acc-dk); background: var(--acc-sf); border-radius: 20px; padding: 2px 7px; }
+    .tagcloud { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 600; color: var(--ink2); background: var(--sink); border-radius: 20px; padding: 2px 7px; }
+    .hname { display: flex; align-items: center; gap: 8px; padding: 10px 10px 0 41px; font-size: 12.5px; color: var(--ink2); }
+    .promise { display: flex; gap: 9px; align-items: flex-start; margin-top: auto; padding: 11px 13px; background: var(--acc-sf); border-radius: 11px; font-size: 12px; line-height: 1.5; color: var(--acc-dk); }
+    .promise .i { color: var(--acc); margin-top: 1px; }
+    .empty { display: flex; flex-direction: column; gap: 8px; padding: 16px 14px; border: 1px dashed var(--rule2); border-radius: 12px; background: var(--paper); }
+    .empty b { font-size: 13px; font-weight: 600; }
+    .empty p { margin: 0; font-size: 12.5px; line-height: 1.55; color: var(--ink2); }
+  </style>
+</helmet>
+
+<div class="app">
+  <header class="bar">
+    <div class="wordmark">Resume<i>&#8202;/&#8202;</i>Editor</div>
+    <div class="docchip"><span class="dn">Alex Doe</span><span class="dc">Main</span><svg class="i sm" viewBox="0 0 16 16"><path d="M4 6.5 8 10.5 12 6.5"></path></svg></div>
+    <div class="spacer"></div>
+    <div class="barmuted">Saved · preview up to date</div>
+  </header>
+  <div class="scrim">
+    <div class="sheet">
+      <div class="sh-head">
+        <h1>Your résumé</h1>
+        <span class="sub">3 copies · 11 points kept</span>
+        <div class="spacer"></div>
+        <span class="icobtn"><svg class="i" viewBox="0 0 16 16"><path d="M4.5 4.5 11.5 11.5M11.5 4.5 4.5 11.5"></path></svg></span>
+      </div>
+
+      <div class="sh-body">
+      <div class="copies">
+        <div class="cl-label">Copies of this résumé</div>
+
+        <div class="ccard">
+          <div class="pg"><i class="n"></i><i class="c"></i><i class="h"></i><i></i><i></i><i class="h"></i><i></i><i></i><i class="h"></i><i></i><i></i><i class="h"></i><i></i><i></i><i class="h"></i><i></i><i></i></div>
+          <span class="ct">
+            <span class="cn">Main <span class="livetag">editing now</span></span>
+            <span class="cm">1 page · 2 minutes ago</span>
+          </span>
+        </div>
+
+        <div class="ccard sel">
+          <div class="pg"><i class="n"></i><i class="c"></i><i class="h"></i><i></i><i></i><i class="h"></i><i></i><i></i><i class="h"></i><i></i><i></i><i class="h"></i><i></i><i></i><i class="h"></i><i></i><i></i></div>
+          <span class="ct">
+            <span class="cn">Data Scientist</span>
+            <span class="cm">1 page · Tuesday</span>
+            <span class="cfrom"><svg class="i sm" viewBox="0 0 16 16"><circle cx="4.5" cy="3.5" r="1.8"></circle><circle cx="4.5" cy="12.5" r="1.8"></circle><circle cx="11.5" cy="7" r="1.8"></circle><path d="M4.5 5.3v5.4M6.3 7h3.4"></path></svg> made from Main</span>
+          </span>
+        </div>
+
+        <div class="ccard">
+          <div class="pg two"><i class="n"></i><i class="c"></i><i class="h"></i><i></i><i></i><i class="h"></i><i></i><i></i><i class="h"></i><i></i><i></i><i class="h"></i><i></i><i></i><i class="h"></i><i></i><i></i></div>
+          <span class="ct">
+            <span class="cn">Frontend · Acme</span>
+            <span class="cm">2 pages · 3 weeks ago</span>
+            <span class="cfrom"><svg class="i sm" viewBox="0 0 16 16"><circle cx="4.5" cy="3.5" r="1.8"></circle><circle cx="4.5" cy="12.5" r="1.8"></circle><circle cx="11.5" cy="7" r="1.8"></circle><path d="M4.5 5.3v5.4M6.3 7h3.4"></path></svg> made from Main</span>
+          </span>
+        </div>
+
+        <div class="cadd"><svg class="i" viewBox="0 0 16 16"><path d="M8 3.5v9M3.5 8h9"></path></svg> Tailor one for a job</div>
+
+        <p class="cnote">Every copy is a whole résumé of its own. Editing one never touches another.</p>
+      </div>
+
+        <div class="detail">
+          <div class="dt-head">
+            <span>
+              <div class="dt-name">Data Scientist</div>
+              <div class="dt-for">You are editing <b>Main</b> — looking here changes nothing.</div>
+            </span>
+            <div class="spacer"></div>
+            <span class="btn primary">Edit this one</span>
+            <span class="btn">Rename</span>
+            <span class="icobtn"><svg class="i" viewBox="0 0 16 16" style="stroke-width:2.2"><circle cx="3.5" cy="8" r=".8"></circle><circle cx="8" cy="8" r=".8"></circle><circle cx="12.5" cy="8" r=".8"></circle></svg></span>
+          </div>
+
+          <div class="dt-body">
+            <div class="viewer">
+              <div class="vframe">
+          <div class="vband"><svg class="i" viewBox="0 0 16 16"><path d="M10 4 6 8l4 4"></path></svg>Tuesday 14:20 — before the rewrite</div>
+          <div class="page past banded">
+            <div class="rname">Alex Doe</div>
+            <div class="rcon"><span>alex@example.com</span><span>·</span><span>linkedin.com/in/alexdoe</span><span>·</span><span>github.com/alexdoe</span></div>
+            <div class="rsec"><div class="rsh">Profile</div><div class="rp">Machine-learning engineer. Ships models to production and owns the pipeline around them, from labelling to monitoring.</div></div>
+            <div class="rsec"><div class="rsh">Experience</div><div class="rent"><div class="rtop"><span><b>Machine Learning Engineer</b></span><span>June 2022 – Present</span></div><div class="rsub">Acme Corp — Remote</div><div class="rb">Owned the recommendation model serving 5,000+ weekly active users</div><div class="rb">Cut retraining time 40% by profiling the feature pipeline</div><div class="rb">Built the labelling review loop two annotators now run unaided</div></div><div class="rent"><div class="rtop"><span><b>Data Science Intern</b></span><span>May – Aug 2021</span></div><div class="rsub">Widget Labs</div><div class="rb">Prototyped the churn model that became the retention team's baseline</div><div class="rb">Wrote the evaluation harness the team still runs nightly</div></div></div>
+            <div class="rsec"><div class="rsh">Education</div>
+              <div class="rent"><div class="rtop"><span><b>State University</b> — Ann Arbor, MI</span><span>2018 – 2022</span></div>
+              <div class="rsub">Bachelor of Science in Computer Science · GPA 3.8/4.0</div></div>
+            </div>
+            <div class="rsec"><div class="rsh">Projects</div>
+              <div class="rent"><div class="rtop"><span><b>Résumé Editor</b> — this résumé was written in it</span><span></span></div>
+              <div class="rb">Browser-based editor that compiles LaTeX to PDF entirely client-side</div></div>
+            </div>
+            <div class="rsec"><div class="rsh">Skills</div>
+              <div class="rtags"><span>Python</span><span>PyTorch</span><span>scikit-learn</span><span>SQL</span><span>Airflow</span><span>AWS</span></div>
+            </div>
+            <div class="rsec"><div class="rsh">Languages</div>
+              <div class="rent"><div class="rtop"><span>English</span><span>Native</span></div></div>
+              <div class="rent"><div class="rtop"><span>Spanish</span><span>Working</span></div></div>
+            </div>
+          </div>
+        </div>
+              <div class="vcap">Looking back · <b>32 minutes</b> before now · 1 page</div>
+            </div>
+
+            <div class="hist">
+              <div class="h-top">
+                <span class="h-label">History of this copy</span>
+                <span class="h-note">kept as you work</span>
+              </div>
+        <div class="h-list">
+          <div class="hrow now">
+            <i class="hdot live"></i>
+            <span class="htx">
+              <span class="h1l">Now</span>
+              <span class="h2l">Tuesday 14:52 · 1 page · this is what the copy contains</span>
+            </span>
+          </div>
+
+          <div class="hrow sel">
+            <i class="hdot here"></i>
+            <span class="htx">
+              <span class="h1l"><span class="nm">Before the rewrite</span> <span class="tagpin"><svg class="i sm" viewBox="0 0 16 16"><path d="M8 2.2 9.7 5.9l4 .6-2.9 2.8.7 4-3.5-1.9-3.5 1.9.7-4L2.3 6.5l4-.6z"></path></svg> kept for good</span></span>
+              <span class="h2l">Tuesday 14:20 · Experience and Skills changed since · 1 page</span>
+              <span class="hact">
+                <span class="btn sm primary">Put this back</span>
+                <span class="btn sm">Open as a copy</span>
+                <span class="btn sm ghost">Back to now</span>
+              </span>
+            </span>
+          </div>
+
+          <div class="hrow">
+            <i class="hdot auto"></i>
+            <span class="htx">
+              <span class="h1l">Tuesday 11:05</span>
+              <span class="h2l">Profile changed since · 1 page</span>
+            </span>
+          </div>
+
+          <div class="hrow">
+            <i class="hdot auto"></i>
+            <span class="htx">
+              <span class="h1l">Tuesday 10:18 <span class="tagcloud"><svg class="i sm" viewBox="0 0 16 16"><path d="M4.5 11.5a2.8 2.8 0 0 1 .3-5.6 3.7 3.7 0 0 1 7-1 3 3 0 0 1 .5 6"></path></svg> from your other machine</span></span>
+              <span class="h2l">Kept when this copy and Drive had both moved on · 1 page</span>
+            </span>
+          </div>
+
+          <div class="hrow">
+            <i class="hdot named"></i>
+            <span class="htx">
+              <span class="h1l">Made from Main</span>
+              <span class="h2l">Tuesday 09:40 · where this copy began</span>
+            </span>
+          </div>
+        </div>
+
+        <div class="hname"><svg class="i" viewBox="0 0 16 16"><path d="M8 3.5v9M3.5 8h9"></path></svg> Name this moment, so it is kept for good</div>
+
+              <div class="promise">
+                <svg class="i" viewBox="0 0 16 16"><path d="M8 1.8 13.4 4v4c0 3-2.3 5.2-5.4 6.2C4.9 13.2 2.6 11 2.6 8V4z"></path><path d="M5.8 8.2 7.3 9.7l3-3.4"></path></svg>
+                <span><b>Putting this back is not a one-way door.</b> Where you are now becomes a point in this list first, so you can step straight back to it.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

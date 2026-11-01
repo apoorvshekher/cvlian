@@ -1,0 +1,296 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --paper: #faf8f5; --card: #ffffff; --sink: #f3f0ea;
+      --ink: #1b1a17; --ink2: #5c584f; --ink3: #8d887c;
+      --rule: #e8e3da; --rule2: #d8d1c4;
+      --acc: #2f7a5f; --acc-dk: #24614b; --acc-sf: #e9f2ee; --acc-rg: #bcd8cd;
+      --sans: "Figtree", ui-sans-serif, system-ui, "Helvetica Neue", Arial, sans-serif;
+      --serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+    }
+    body { margin: 0; font-family: var(--sans); color: var(--ink); background: var(--paper); }
+    a { color: var(--acc); text-decoration: none; }
+    a:hover { color: var(--acc-dk); }
+    .i { width: 16px; height: 16px; flex: none; display: block; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+    .i.sm { width: 13px; height: 13px; }
+    .i.lg { width: 18px; height: 18px; }
+    .i.dots { stroke-width: 2.2; }
+
+    .app { width: 1440px; height: 900px; display: flex; flex-direction: column; background: var(--paper); overflow: hidden; }
+
+    /* ---------- top bar ---------- */
+    .bar { height: 62px; flex: none; display: flex; align-items: center; gap: 14px; padding: 0 20px; background: var(--card); border-bottom: 1px solid var(--rule); }
+    .mark { width: 28px; height: 28px; border-radius: 8px; background: var(--acc); color: #fff; display: flex; align-items: center; justify-content: center; }
+    .wordmark { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
+    .docchip { display: flex; align-items: center; gap: 8px; height: 34px; padding: 0 10px 0 12px; border-radius: 9px; background: var(--sink); color: var(--ink); }
+    .docchip .dn { font-size: 14px; font-weight: 600; }
+    .docchip .dv { font-size: 12.5px; color: var(--ink2); }
+    .spacer { flex: 1; }
+    .saved { display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--ink2); }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--acc); flex: none; }
+    .btn { display: inline-flex; align-items: center; gap: 7px; height: 36px; padding: 0 13px; border: 1px solid var(--rule2); border-radius: 9px; background: var(--card); color: var(--ink); font-size: 13.5px; font-weight: 500; }
+    .btn.quiet { border-color: transparent; background: transparent; color: var(--ink2); }
+    .btn.primary { background: var(--acc); border-color: var(--acc); color: #fff; font-weight: 600; }
+    .btn.drive { gap: 6px; color: var(--ink2); }
+    .sep { width: 1px; height: 24px; background: var(--rule); }
+
+    /* ---------- shell ---------- */
+    .body { flex: 1; display: flex; min-height: 0; }
+
+    /* ---------- left nav ---------- */
+    .nav { width: 232px; flex: none; border-right: 1px solid var(--rule); display: flex; flex-direction: column; padding: 14px 12px; gap: 3px; }
+    .nrow { display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 10px; border-radius: 9px; color: var(--ink2); font-size: 13.5px; font-weight: 500; }
+    .nrow .nm { flex: 1; color: var(--ink); }
+    .nrow.on { background: var(--acc-sf); color: var(--acc-dk); }
+    .nrow.on .nm { color: var(--acc-dk); font-weight: 600; }
+    .ncount { font-size: 11.5px; color: var(--ink3); background: var(--sink); border-radius: 20px; padding: 2px 7px; font-weight: 500; }
+    .nrow.on .ncount { background: #fff; color: var(--acc-dk); }
+    .nlabel { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink3); padding: 16px 10px 7px; }
+    .nlist { display: flex; flex-direction: column; gap: 2px; }
+    .ndrag { color: var(--rule2); }
+    .nadd { margin-top: auto; display: flex; align-items: center; gap: 9px; height: 40px; padding: 0 10px; border-radius: 9px; border: 1px dashed var(--rule2); color: var(--ink2); font-size: 13.5px; font-weight: 500; }
+
+    /* ---------- editor ---------- */
+    .edit { width: 508px; flex: none; background: var(--card); border-right: 1px solid var(--rule); display: flex; flex-direction: column; }
+    .ehead { padding: 22px 26px 16px; border-bottom: 1px solid var(--rule); display: flex; flex-direction: column; gap: 5px; }
+    .etitle-row { display: flex; align-items: center; gap: 10px; }
+    .etitle { font-size: 23px; font-weight: 600; letter-spacing: -0.02em; border-bottom: 1px dashed var(--rule2); padding-bottom: 1px; }
+    .ehelp { font-size: 12.5px; color: var(--ink3); line-height: 1.5; }
+    .ebody { flex: 1; padding: 18px 26px 24px; display: flex; flex-direction: column; gap: 12px; overflow: hidden; }
+
+    .entry { border: 1px solid var(--rule); border-radius: 12px; background: var(--card); }
+    .entry.open { border-color: var(--acc-rg); box-shadow: 0 1px 2px rgba(27,26,23,0.04), 0 6px 18px rgba(27,26,23,0.05); }
+    .ehd { display: flex; align-items: center; gap: 10px; padding: 13px 14px; }
+    .ehd .grip { color: var(--rule2); }
+    .ehd .t { font-size: 14px; font-weight: 600; }
+    .ehd .s { font-size: 12.5px; color: var(--ink2); }
+    .ehd .when { font-size: 12.5px; color: var(--ink3); margin-left: auto; }
+    .fields { padding: 4px 14px 14px; display: flex; flex-direction: column; gap: 12px; }
+    .frow { display: flex; gap: 10px; }
+    .fld { flex: 1; display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+    .fld label { font-size: 12px; font-weight: 500; color: var(--ink2); }
+    .in { height: 38px; border: 1px solid var(--rule2); border-radius: 9px; background: var(--card); display: flex; align-items: center; padding: 0 11px; font-size: 13.5px; }
+    .in.ph { color: var(--ink3); }
+    .in.focus { border-color: var(--acc); box-shadow: 0 0 0 3px var(--acc-sf); }
+    .dates { display: flex; gap: 6px; }
+    .dates .m { width: 82px; justify-content: space-between; gap: 6px; color: var(--ink2); }
+    .dates .y { flex: 1; }
+    .off { background: var(--sink); color: var(--ink3); border-color: var(--rule); }
+    .switchrow { display: flex; align-items: center; gap: 9px; font-size: 13px; color: var(--ink); }
+    .switch { width: 36px; height: 21px; border-radius: 20px; background: var(--acc); position: relative; flex: none; }
+    .switch i { position: absolute; top: 2.5px; left: 18px; width: 16px; height: 16px; border-radius: 50%; background: #fff; }
+
+    .blabel { display: flex; align-items: baseline; gap: 8px; font-size: 12px; font-weight: 500; color: var(--ink2); }
+    .bullets { display: flex; flex-direction: column; gap: 7px; }
+    .brow { display: flex; align-items: flex-start; gap: 9px; padding: 9px 11px; border: 1px solid var(--rule); border-radius: 9px; font-size: 13.5px; line-height: 1.5; }
+    .brow .grip { color: var(--rule2); margin-top: 2px; }
+    .brow .bm { width: 5px; height: 5px; border-radius: 50%; background: var(--ink3); flex: none; margin-top: 7px; }
+    .brow .bt { flex: 1; }
+    .brow b { font-weight: 700; }
+    .tip { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--ink2); background: var(--acc-sf); border-radius: 9px; padding: 9px 11px; }
+    .tip .i { color: var(--acc); }
+    .addb { display: flex; align-items: center; gap: 8px; align-self: flex-start; height: 34px; padding: 0 12px 0 10px; border-radius: 9px; color: var(--ink2); font-size: 13px; font-weight: 500; background: var(--sink); }
+    .addbig { display: flex; align-items: center; justify-content: center; gap: 8px; height: 46px; border: 1px dashed var(--rule2); border-radius: 12px; color: var(--acc-dk); background: var(--acc-sf); font-size: 13.5px; font-weight: 600; }
+
+    /* ---------- preview ---------- */
+    .prev { flex: 1; min-width: 0; display: flex; flex-direction: column; background: var(--paper); }
+    .pchrome { height: 44px; flex: none; display: flex; align-items: center; gap: 12px; padding: 0 20px; border-bottom: 1px solid var(--rule); }
+    .pchrome .pl { font-size: 12.5px; color: var(--ink3); }
+    .zoom { display: flex; align-items: center; gap: 4px; height: 28px; padding: 0 4px 0 10px; border-radius: 8px; background: var(--sink); font-size: 12.5px; color: var(--ink2); }
+    .pstage { flex: 1; display: flex; align-items: flex-start; justify-content: center; padding: 22px 0 0; }
+
+    .page { width: 566px; height: 734px; background: #fff; border: 1px solid var(--rule2); box-shadow: 0 2px 6px rgba(27,26,23,0.06), 0 18px 40px rgba(27,26,23,0.07); padding: 34px 40px; font-family: var(--serif); color: #14130f; overflow: hidden; }
+    .rname { text-align: center; font-size: 22px; font-weight: 400; letter-spacing: 0.01em; }
+    .rcontacts { display: flex; justify-content: center; flex-wrap: wrap; gap: 9px; font-size: 8px; color: #3a382f; padding-top: 6px; }
+    .rcontacts span { display: flex; align-items: center; gap: 3px; }
+    .rsec { padding-top: 13px; }
+    .rsh { font-size: 10px; font-weight: 700; border-bottom: 0.8px solid #14130f; padding-bottom: 1.5px; }
+    .rp { font-size: 8.4px; line-height: 1.45; padding-top: 4px; }
+    .rp i { font-style: italic; }
+    .rentry { padding-top: 5px; }
+    .rtop { display: flex; justify-content: space-between; gap: 12px; font-size: 8.6px; }
+    .rtop b { font-weight: 700; }
+    .rsub { font-size: 8.4px; font-style: italic; color: #2c2a23; }
+    .rbul { font-size: 8.2px; line-height: 1.45; padding-left: 11px; position: relative; }
+    .rbul::before { content: "•"; position: absolute; left: 3px; }
+    .rbul b { font-weight: 700; }
+    .rtags { display: flex; flex-wrap: wrap; gap: 4px; padding-top: 4px; }
+    .rtags span { font-size: 7.6px; background: #f1efe9; padding: 1.5px 4px; }
+    .rlev { display: flex; justify-content: space-between; font-size: 8.4px; }
+    .rlev i { display: flex; gap: 2.5px; align-items: center; font-style: normal; }
+    .rlev u { width: 4px; height: 4px; border-radius: 50%; background: #14130f; display: block; }
+    .rlev u.o { background: transparent; border: 0.8px solid #14130f; }
+    .live { background: var(--acc-sf); box-shadow: 0 0 0 5px var(--acc-sf); border-radius: 2px; }
+    .rsh.withtag { display: flex; align-items: baseline; justify-content: space-between; }
+    .etag { font-family: var(--sans); font-size: 7.4px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--acc-dk); }
+  
+    /* adding something you already wrote somewhere else */
+    .addrow2 { display: flex; gap: 8px; }
+    .addrow2 .addbig { flex: 1; }
+    .libbtn { display: flex; align-items: center; justify-content: center; gap: 8px; height: 46px; flex: 1; border: 1px dashed var(--rule2); border-radius: 12px; background: var(--card); color: var(--ink2); font-size: 13.5px; font-weight: 500; }
+    .libbtn.on { border-color: var(--acc-rg); background: var(--acc-sf); color: var(--acc-dk); font-weight: 600; }
+    .lib { border: 1px solid var(--acc-rg); border-radius: 12px; overflow: hidden; background: var(--card); margin-top: 10px; }
+    .lib-head { display: flex; align-items: baseline; gap: 9px; padding: 11px 13px 8px; }
+    .lib-h { font-size: 12px; font-weight: 600; }
+    .lib-s { font-size: 11.5px; color: var(--ink3); }
+    .lib-row { display: flex; align-items: center; gap: 10px; padding: 10px 13px; border-top: 1px solid var(--rule); }
+    .lib-row:hover { background: var(--acc-sf); }
+    .lib-tx { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+    .lib-t { font-size: 13px; font-weight: 600; }
+    .lib-m { font-size: 11.5px; color: var(--ink3); }
+    .lib-from { font-size: 10.5px; font-weight: 600; color: var(--ink2); background: var(--sink); border-radius: 20px; padding: 2px 8px; white-space: nowrap; }
+    .lib-add { width: 30px; height: 30px; border: 1px solid var(--rule2); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--acc-dk); flex: none; }
+    .lib-foot { padding: 10px 13px 12px; font-size: 11.5px; line-height: 1.5; color: var(--ink3); border-top: 1px solid var(--rule); }
+  </style>
+</helmet>
+
+<div class="app">
+  <header class="bar">
+    <div class="mark"><svg class="i sm" viewBox="0 0 16 16"><path d="M4 2h5l3 3v9H4z"></path><path d="M9 2v3h3"></path><path d="M6 8.5h4M6 11h3"></path></svg></div>
+    <div class="wordmark">Resume Editor</div>
+    <div class="sep"></div>
+    <div class="docchip"><span class="dn">Alex Doe</span><span class="dv">Data Scientist</span><svg class="i sm" viewBox="0 0 16 16"><path d="M4 6.5 8 10.5 12 6.5"></path></svg></div>
+    <div class="spacer"></div>
+    <div class="saved"><i class="dot"></i>Saved · preview up to date</div>
+  </header>
+
+  <div class="body">
+    <nav class="nav">
+      <div class="nlabel">Sections</div>
+      <div class="nlist">
+          <div class="nrow">
+            <svg class="i" viewBox="0 0 16 16" style="stroke-width:2.2"><circle cx="6" cy="4" r=".7"></circle><circle cx="10" cy="4" r=".7"></circle><circle cx="6" cy="8" r=".7"></circle><circle cx="10" cy="8" r=".7"></circle><circle cx="6" cy="12" r=".7"></circle><circle cx="10" cy="12" r=".7"></circle></svg>
+            <span class="rnum">01</span>
+            <span class="nm">Your details</span><span class="ncount">4</span>
+          </div>
+          <div class="nrow">
+            <svg class="i" viewBox="0 0 16 16" style="stroke-width:2.2"><circle cx="6" cy="4" r=".7"></circle><circle cx="10" cy="4" r=".7"></circle><circle cx="6" cy="8" r=".7"></circle><circle cx="10" cy="8" r=".7"></circle><circle cx="6" cy="12" r=".7"></circle><circle cx="10" cy="12" r=".7"></circle></svg>
+            <span class="rnum">02</span>
+            <span class="nm">Profile</span><span class="ncount">1</span>
+          </div>
+          <div class="nrow on">
+            <svg class="i" viewBox="0 0 16 16" style="stroke-width:2.2"><circle cx="6" cy="4" r=".7"></circle><circle cx="10" cy="4" r=".7"></circle><circle cx="6" cy="8" r=".7"></circle><circle cx="10" cy="8" r=".7"></circle><circle cx="6" cy="12" r=".7"></circle><circle cx="10" cy="12" r=".7"></circle></svg>
+            <span class="rnum">03</span>
+            <span class="nm">Experience</span><span class="ncount">2</span>
+          </div>
+          <div class="nrow">
+            <svg class="i" viewBox="0 0 16 16" style="stroke-width:2.2"><circle cx="6" cy="4" r=".7"></circle><circle cx="10" cy="4" r=".7"></circle><circle cx="6" cy="8" r=".7"></circle><circle cx="10" cy="8" r=".7"></circle><circle cx="6" cy="12" r=".7"></circle><circle cx="10" cy="12" r=".7"></circle></svg>
+            <span class="rnum">04</span>
+            <span class="nm">Projects</span><span class="ncount">1</span>
+          </div>
+          <div class="nrow">
+            <svg class="i" viewBox="0 0 16 16" style="stroke-width:2.2"><circle cx="6" cy="4" r=".7"></circle><circle cx="10" cy="4" r=".7"></circle><circle cx="6" cy="8" r=".7"></circle><circle cx="10" cy="8" r=".7"></circle><circle cx="6" cy="12" r=".7"></circle><circle cx="10" cy="12" r=".7"></circle></svg>
+            <span class="rnum">05</span>
+            <span class="nm">Skills</span><span class="ncount">1</span>
+          </div>
+      </div>
+      <div class="nadd"><svg class="i " viewBox="0 0 16 16"><path d="M8 3.5v9M3.5 8h9"></path></svg> Add a section</div>
+      <div class="nrow fixed" style="margin-top:auto">
+        <svg class="i " viewBox="0 0 16 16"><path d="M2.5 5h11M2.5 11h11"></path><circle cx="6" cy="5" r="1.9"></circle><circle cx="10.5" cy="11" r="1.9"></circle></svg>
+        <span class="nm">Look &amp; feel</span>
+      </div>
+    </nav>
+
+    <section class="edit">
+      <div class="ehead">
+        <div class="etitle-row"><span class="etitle">Experience</span></div>
+        <div class="ehelp">Jobs, internships and volunteering — newest first.</div>
+      </div>
+
+      <div class="ebody">
+        <div class="entry">
+          <div class="ehd">
+            <svg class="i" viewBox="0 0 16 16" style="stroke-width:2.2"><circle cx="6" cy="4" r=".7"></circle><circle cx="10" cy="4" r=".7"></circle><circle cx="6" cy="8" r=".7"></circle><circle cx="10" cy="8" r=".7"></circle><circle cx="6" cy="12" r=".7"></circle><circle cx="10" cy="12" r=".7"></circle></svg>
+            <span class="t">Machine Learning Engineer</span>
+            <span class="s">Acme Corp</span>
+            <span class="when">Jun 2022 – now</span>
+            <svg class="i sm" viewBox="0 0 16 16"><path d="M4 6.5 8 10.5 12 6.5"></path></svg>
+          </div>
+        </div>
+        <div class="entry">
+          <div class="ehd">
+            <svg class="i" viewBox="0 0 16 16" style="stroke-width:2.2"><circle cx="6" cy="4" r=".7"></circle><circle cx="10" cy="4" r=".7"></circle><circle cx="6" cy="8" r=".7"></circle><circle cx="10" cy="8" r=".7"></circle><circle cx="6" cy="12" r=".7"></circle><circle cx="10" cy="12" r=".7"></circle></svg>
+            <span class="t">Data Science Intern</span>
+            <span class="s">Widget Labs</span>
+            <span class="when">May – Aug 2021</span>
+            <svg class="i sm" viewBox="0 0 16 16"><path d="M4 6.5 8 10.5 12 6.5"></path></svg>
+          </div>
+        </div>
+
+        <div class="addrow2">
+          <div class="addbig"><svg class="i " viewBox="0 0 16 16"><path d="M8 3.5v9M3.5 8h9"></path></svg> Add a job</div>
+          <div class="libbtn on"><svg class="i sm" viewBox="0 0 16 16"><path d="M8 2 14 5l-6 3-6-3z"></path><path d="M2 8l6 3 6-3"></path><path d="M2 11l6 3 6-3"></path></svg> From your library</div>
+        </div>
+
+        <div class="lib">
+          <div class="lib-head">
+            <span class="lib-h">Written elsewhere, not in this copy</span>
+            <span class="lib-s">3 things</span>
+          </div>
+          <div class="lib-row">
+            <span class="lib-tx">
+              <span class="lib-t">Software Engineering Intern</span>
+              <span class="lib-m">Widget Labs · May – Aug 2021</span>
+            </span>
+            <span class="lib-from">from Master</span>
+            <span class="lib-add"><svg class="i sm" viewBox="0 0 16 16"><path d="M8 3.5v9M3.5 8h9"></path></svg></span>
+          </div>
+          <div class="lib-row">
+            <span class="lib-tx">
+              <span class="lib-t">Teaching Assistant</span>
+              <span class="lib-m">State University · Sept 2020 – May 2021</span>
+            </span>
+            <span class="lib-from">from Master</span>
+            <span class="lib-add"><svg class="i sm" viewBox="0 0 16 16"><path d="M8 3.5v9M3.5 8h9"></path></svg></span>
+          </div>
+          <div class="lib-row">
+            <span class="lib-tx">
+              <span class="lib-t">Open-source maintainer · pdfkit</span>
+              <span class="lib-m">no dates</span>
+            </span>
+            <span class="lib-from">from Frontend · Acme</span>
+            <span class="lib-add"><svg class="i sm" viewBox="0 0 16 16"><path d="M8 3.5v9M3.5 8h9"></path></svg></span>
+          </div>
+          <div class="lib-foot">
+            Everything you have written in another copy that is missing from this one. Adding
+            brings the words across; the copy you took them from is untouched.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="prev">
+      <div class="pchrome"><span class="pl">Page 1 of 1</span><div class="spacer"></div></div>
+      <div class="pstage"><div class="page">
+        <div class="rname">Alex Doe</div>
+        <div class="rcontacts"><span>alex@example.com</span><span>·</span><span>linkedin.com/in/alexdoe</span><span>·</span><span>github.com/alexdoe</span></div>
+        <div class="rsec"><div class="rsh">Profile</div><div class="rp">Machine-learning engineer. Ships models to production and owns the pipeline around them, from labelling to monitoring.</div></div>
+        <div class="rsec"><div class="rsh">Experience</div>
+          <div class="rentry"><div class="rtop"><span><b>Machine Learning Engineer</b></span><span>June 2022 – Present</span></div><div class="rsub">Acme Corp — Remote</div>
+            <div class="rbul">Owned the recommendation model serving 5,000+ weekly active users</div>
+            <div class="rbul">Built the labelling review loop two annotators now run unaided</div></div>
+          <div class="rentry"><div class="rtop"><span><b>Data Science Intern</b></span><span>May 2021 – Aug 2021</span></div><div class="rsub">Widget Labs</div>
+            <div class="rbul">Prototyped the churn model that became the retention team's baseline</div></div>
+        </div>
+        <div class="rsec"><div class="rsh">Projects</div>
+          <div class="rentry"><div class="rtop"><span><b>Résumé Editor</b> — this résumé was written in it</span><span></span></div>
+            <div class="rbul">Browser-based editor that compiles LaTeX to PDF entirely client-side</div></div></div>
+        <div class="rsec"><div class="rsh">Skills</div>
+          <div class="rtags"><span>Python</span><span>PyTorch</span><span>scikit-learn</span><span>SQL</span><span>Airflow</span><span>AWS</span></div></div>
+      </div></div>
+    </section>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

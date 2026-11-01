@@ -1,0 +1,18 @@
+{
+  "pages": [
+    { "id": "page-1", "name": "Design" },
+    { "id": "page-2", "name": "Explored" }
+  ],
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 1440, "h": 900, "title": "Resume Editor — Swiss", "page": "page-1" },
+    { "file": "EntryFields.dc.html", "x": 1560, "y": 0, "w": 940, "h": 1700, "title": "Structured fields", "page": "page-1" },
+    { "file": "DirectionA.dc.html", "x": 0, "y": 0, "w": 1440, "h": 900, "title": "Direction A — Editorial", "page": "page-2" },
+    { "file": "DirectionB.dc.html", "x": 1560, "y": 0, "w": 1440, "h": 900, "title": "Direction B — Studio", "page": "page-2" }
+  ],
+  "annotations": [
+    { "id": "note-chosen", "x": 0, "y": -150, "w": 620, "page": "page-1", "text": "CHOSEN DIRECTION — Swiss utility\nHairline rules instead of cards, numbered section index, zero rounded corners, black + one red accent, Archivo throughout. Dense and typographic; the tool is a precise instrument, the page is the only soft thing on screen." },
+    { "id": "note-fields", "x": 1560, "y": -150, "w": 620, "page": "page-1", "text": "THE FIELD FIX\nEach section type carries its own fields — School, Degree, Year from, Year to — so structure comes from the form, never from asterisks. Markdown survives only for emphasis inside a sentence. Anything unusual stays free-form under Custom." },
+    { "id": "note-explored", "x": 0, "y": -150, "w": 620, "page": "page-2", "text": "NOT CHOSEN — kept for reference.\nA: warm editorial paper, serif wordmark, soft cards.\nB: dark studio, section tabs, mono metadata." }
+  ],
+  "launch": { "view": "canvas", "page": "page-1" }
+}

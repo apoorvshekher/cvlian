@@ -1,0 +1,36 @@
+{
+  "personal": {
+    "name": "Alex\u000bDoe",
+    "contacts": [
+      { "text": "alex@example.com\u0000", "url": "https://ok.example/\nbroken-line\t", "icon": "envelope" }
+    ]
+  },
+  "sections": [
+    {
+      "title": "Work Experience",
+      "kind": "experience",
+      "entries": [
+        {
+          "kind": "experience",
+          "role": "Data\fScientist",
+          "company": "Acme\u007f",
+          "location": "Remote\n\nUS",
+          "start": { "month": "Jan", "year": "2021" },
+          "end": { "month": "", "year": "" },
+          "current": true,
+          "bullets": [
+            { "text": "Built a pipeline\u000bthat \u001bships\n\nevery week" }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Skills\n\n",
+      "kind": "tags",
+      "entries": [
+        { "kind": "tags", "group": "Lang\u0008uages", "tags": ["Python ", "SQL"] }
+      ]
+    }
+  ],
+  "v": 3
+}

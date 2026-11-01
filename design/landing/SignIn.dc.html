@@ -1,0 +1,127 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&display=swap">
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --w: #ffffff; --w2: #f6f6f4; --k: #0b0b0a; --k2: #55554f; --k3: #8b8b84;
+      --r: #e3e3df; --r2: #c9c9c3; --red: #d8341f; --red-sf: rgba(216,52,31,0.07);
+      --sans: "Archivo", ui-sans-serif, system-ui, "Helvetica Neue", Arial, sans-serif;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+    body { margin: 0; font-family: var(--sans); color: var(--k); background: var(--w2); }
+    a { color: var(--red); text-decoration: none; }
+    a:hover { color: #a82716; }
+
+    .stage { width: 920px; min-height: 760px; display: flex; align-items: center; justify-content: center; padding: 40px; }
+    .card { width: 100%; background: var(--w); border: 1px solid var(--k); }
+
+    .chead { padding: 24px 30px 20px; border-bottom: 1px solid var(--k); }
+    .wm { font-size: 13px; font-weight: 700; letter-spacing: -0.02em; text-transform: uppercase; }
+    .wm i { color: var(--red); font-style: normal; }
+    h2 { margin: 14px 0 0; font-size: 27px; font-weight: 700; letter-spacing: -0.03em; }
+    .sub { margin: 9px 0 0; font-size: 13.5px; line-height: 1.55; color: var(--k2); max-width: 520px; }
+
+    .opt { display: flex; gap: 16px; padding: 22px 30px; border-bottom: 1px solid var(--r); }
+    .opt.on { background: var(--red-sf); }
+    .radio { width: 17px; height: 17px; border: 1.5px solid var(--r2); flex: none; margin-top: 3px; }
+    .opt.on .radio { border-color: var(--red); background: var(--red); box-shadow: inset 0 0 0 3px var(--w); }
+    .obody { flex: 1; min-width: 0; }
+    .otitle { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 700; letter-spacing: -0.015em; }
+    .gmark { width: 17px; height: 17px; flex: none; display: block; }
+    .otag { font-size: 9.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--k3);
+      border: 1px solid var(--r); padding: 2px 6px; }
+    .otext { font-size: 13px; line-height: 1.6; color: var(--k2); padding-top: 7px; }
+    .grants { display: flex; flex-wrap: wrap; gap: 6px; padding-top: 11px; }
+    .grant { font-size: 11px; padding: 3px 8px; background: var(--w2); border: 1px solid var(--r); color: var(--k2); }
+    .grant.no { color: var(--k3); text-decoration: line-through; }
+
+    .trust { padding: 18px 30px; border-bottom: 1px solid var(--r); display: flex; gap: 13px; }
+    .trust .bar { width: 3px; background: var(--red); flex: none; }
+    .trust p { margin: 0; font-size: 12.5px; line-height: 1.62; color: var(--k2); }
+    .trust b { color: var(--k); font-weight: 600; }
+    .trust code { font-family: var(--mono); font-size: 11.5px; color: var(--red); }
+
+    .foot { display: flex; align-items: center; gap: 14px; padding: 20px 30px 22px; }
+    .btn { display: flex; align-items: center; justify-content: center; gap: 10px; height: 48px; padding: 0 28px;
+      font-size: 13px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+      border: 1px solid var(--k); background: var(--k); color: var(--w); }
+    .later { font-size: 12px; color: var(--k3); line-height: 1.5; }
+    .later b { color: var(--k2); font-weight: 600; }
+  </style>
+</helmet>
+
+<div class="stage">
+  <div class="card">
+    <div class="chead">
+      <span class="wm">Resume<i>&#8202;/&#8202;</i>Editor</span>
+      <h2>Where should your résumé live?</h2>
+      <p class="sub">This decides where the file is kept, nothing else. The editor is identical either way, and you can switch later without losing anything.</p>
+    </div>
+
+    <div class="opt on">
+      <i class="radio"></i>
+      <div class="obody">
+        <div class="otitle">
+          <svg class="gmark" viewBox="0 0 18 18" aria-hidden="true">
+            <path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 01-1.8 2.72v2.26h2.92c1.7-1.57 2.68-3.88 2.68-6.62z"/>
+            <path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.92-2.26c-.81.54-1.84.86-3.04.86-2.34 0-4.32-1.58-5.03-3.7H.96v2.33A9 9 0 009 18z"/>
+            <path fill="#FBBC05" d="M3.97 10.72a5.41 5.41 0 010-3.44V4.95H.96a9 9 0 000 8.1l3.01-2.33z"/>
+            <path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 00.96 4.95l3.01 2.33C4.68 5.16 6.66 3.58 9 3.58z"/>
+          </svg>
+          My Google Drive
+          <span class="otag">follows you between devices</span>
+        </div>
+        <p class="otext">One file, <span style="color:var(--k);font-weight:600">resume-editor.json</span>, written straight from this page into your own Drive. Open the app on another machine and it is already there.</p>
+        <div class="grants">
+          <span class="grant">Create one file</span>
+          <span class="grant">Read and update that file</span>
+          <span class="grant no">See your other Drive files</span>
+          <span class="grant no">Know your name or email</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="opt">
+      <i class="radio"></i>
+      <div class="obody">
+        <div class="otitle">
+          This browser only
+          <span class="otag">no sign-in at all</span>
+        </div>
+        <p class="otext">Everything stays in this browser's storage. Nothing is sent anywhere, and you can start typing immediately.</p>
+        <div class="grants">
+          <span class="grant">Instant, no consent screen</span>
+          <span class="grant">Works offline</span>
+          <span class="grant no">Syncs to other devices</span>
+          <span class="grant no">Survives clearing site data</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="trust">
+      <i class="bar"></i>
+      <p>
+        Whichever you pick, <b>your résumé is never sent to us</b> &mdash; this app has no
+        server and no database. Drive access uses the <code>drive.file</code> scope,
+        which Google restricts to files this app created; that limit is enforced by
+        Google, not by our code. You can revoke it any time in your Google account.
+      </p>
+    </div>
+
+    <div class="foot">
+      <span class="btn">Continue</span>
+      <span class="later"><b>Not sure?</b> Start in this browser &mdash; connecting Drive later<br>keeps every branch and saved version you have made.</span>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

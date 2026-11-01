@@ -1,0 +1,240 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&display=swap">
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --w: #ffffff; --w2: #f6f6f4; --k: #0b0b0a; --k2: #55554f; --k3: #8b8b84;
+      --r: #e3e3df; --r2: #c9c9c3;
+      --red: #d8341f; --red-sf: rgba(216,52,31,0.07);
+      --sans: "Archivo", ui-sans-serif, system-ui, sans-serif;
+    }
+    body { margin: 0; font-family: var(--sans); color: var(--k); background: var(--w); }
+    a { color: var(--red); text-decoration: none; }
+    a:hover { color: #a82716; }
+    .i { width: 15px; height: 15px; flex: none; display: block; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: square; stroke-linejoin: miter; }
+    .i.dots { stroke-width: 2; stroke-linecap: round; }
+    .i.sm { width: 12px; height: 12px; }
+
+    .app { width: 1440px; height: 900px; display: flex; flex-direction: column; background: var(--w); overflow: hidden; }
+
+    .bar { height: 54px; flex: none; display: flex; align-items: center; gap: 16px; padding: 0 20px; border-bottom: 1px solid var(--k); }
+    .wm { font-size: 15px; font-weight: 700; letter-spacing: -0.02em; text-transform: uppercase; }
+    .wm i { color: var(--red); font-style: normal; }
+    .dv { font-size: 12px; color: var(--k2); border-left: 1px solid var(--r); padding-left: 16px; }
+    .dv b { font-weight: 600; color: var(--k); }
+    .grow { flex: 1; }
+    .st { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--k); display: flex; align-items: center; gap: 7px; }
+    .st i { width: 6px; height: 6px; background: var(--red); display: block; }
+    .acts { display: flex; align-items: center; gap: 0; }
+    .b { height: 30px; padding: 0 13px; display: flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--k2); }
+    .b.out { border: 1px solid var(--k); color: var(--k); margin-left: 8px; }
+    .b.pri { background: var(--k); color: var(--w); margin-left: 8px; }
+    .b.pri span { font-weight: 500; opacity: 0.6; letter-spacing: 0; text-transform: none; }
+    .ib { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; color: var(--k2); margin-left: 8px; border: 1px solid var(--r); }
+
+    .body { flex: 1; display: flex; min-height: 0; }
+
+    /* index rail */
+    .rail { width: 222px; flex: none; border-right: 1px solid var(--k); }
+    .rt { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--k3); padding: 14px 16px 10px; border-bottom: 1px solid var(--r); }
+    .ir { display: flex; align-items: center; gap: 10px; height: 38px; padding: 0 16px; border-bottom: 1px solid var(--r); font-size: 13px; font-weight: 500; }
+    .ir .num { font-size: 10.5px; font-weight: 700; color: var(--k3); font-variant-numeric: tabular-nums; width: 15px; }
+    .ir .n { margin-left: auto; font-size: 10.5px; font-weight: 600; color: var(--k3); font-variant-numeric: tabular-nums; }
+    .ir.on { background: var(--k); color: var(--w); font-weight: 600; }
+    .ir.on .num { color: var(--red); }
+    .ir.on .n { color: rgba(255,255,255,0.55); }
+    .ir.add { color: var(--k3); font-weight: 500; }
+
+    /* editor */
+    .edit { width: 486px; flex: none; border-right: 1px solid var(--k); padding: 0; }
+    .eh { padding: 16px 20px 14px; border-bottom: 1px solid var(--k); display: flex; align-items: flex-end; gap: 10px; }
+    .eh .num { font-size: 11px; font-weight: 700; color: var(--red); letter-spacing: 0.08em; }
+    .eh .t { font-size: 24px; font-weight: 700; letter-spacing: -0.025em; line-height: 1; }
+    .eh .k { margin-left: auto; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--k3); }
+    .ez { padding: 0; }
+
+    .en { border-bottom: 1px solid var(--k); }
+    .enh { display: flex; align-items: center; gap: 10px; padding: 11px 20px; background: var(--w2); }
+    .enh .grip { color: var(--k3); }
+    .enh .t { font-size: 13px; font-weight: 700; flex: 1; }
+    .enh .d { font-size: 11px; font-weight: 500; color: var(--k2); font-variant-numeric: tabular-nums; }
+    .enb { padding: 4px 20px 18px; }
+
+    .fr { display: flex; border-bottom: 1px solid var(--r); }
+    .fr > .f { flex: 1; min-width: 0; padding: 9px 0; }
+    .fr > .f + .f { border-left: 1px solid var(--r); padding-left: 12px; }
+    .f > label { display: block; font-size: 9.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--k3); padding-bottom: 3px; }
+    .f > .v { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .f > .v.mute { color: var(--k3); font-weight: 400; }
+    .f.act { position: relative; }
+    .f.act > label { color: var(--red); }
+    .f.act > .v { box-shadow: inset 0 -2px 0 0 var(--red); padding-bottom: 1px; }
+    .f.act > .v .c { display: inline-block; width: 1.5px; height: 14px; background: var(--red); vertical-align: -2px; margin-left: 1px; }
+
+    .lb { font-size: 9.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--k3); padding: 15px 0 8px; display: flex; align-items: center; }
+    .lb .r { margin-left: auto; letter-spacing: 0; text-transform: none; font-weight: 500; font-size: 10.5px; }
+    .bu { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-top: 1px solid var(--r); }
+    .bu .mk { width: 4px; height: 4px; background: var(--k); margin-top: 7px; flex: none; }
+    .bu .tx { flex: 1; font-size: 12.5px; line-height: 1.5; }
+    .bu .tx b { font-weight: 700; }
+    .bu .grip, .bu .xb { color: var(--k3); margin-top: 3px; }
+    .addb { border-top: 1px solid var(--r); padding: 10px 0 0; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--k2); display: flex; align-items: center; gap: 7px; }
+    .adde { padding: 13px 20px; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--k2); display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--k); }
+
+    /* preview */
+    .prev { flex: 1; min-width: 0; background: var(--w2); display: flex; flex-direction: column; align-items: center; padding: 18px 20px; }
+    .pc { width: 100%; display: flex; align-items: baseline; gap: 12px; padding-bottom: 14px; }
+    .pc .l { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--k3); }
+    .pc .f { font-size: 11.5px; color: var(--k2); }
+    .pc .p { margin-left: auto; font-size: 11px; font-weight: 600; color: var(--k3); font-variant-numeric: tabular-nums; }
+    .page { width: 520px; height: 674px; background: #fff; border: 1px solid var(--r2); padding: 35px 40px; font-family: Georgia, "Times New Roman", serif; color: #14130f; }
+    .ph { text-align: center; font-size: 26px; }
+    .pcont { text-align: center; font-size: 8.4px; color: var(--red); padding-top: 8px; }
+    .psec { font-size: 10.5px; font-weight: 700; margin: 14px 0 0; letter-spacing: 0.06em; text-transform: uppercase; }
+    .prule { height: 1.6px; background: #14130f; margin: 3px 0 6px; }
+    .pb { font-size: 8.6px; line-height: 1.5; }
+    .prow { display: flex; align-items: baseline; gap: 10px; }
+    .prow .l { flex: 1; }
+    .prow .r { white-space: nowrap; font-size: 8.4px; }
+    .bold { font-weight: 700; }
+    .ital { font-style: italic; }
+    .plist { margin: 3px 0 0; padding-left: 12px; }
+    .plist li { font-size: 8.6px; line-height: 1.55; margin-bottom: 1.5px; }
+    .pch { display: flex; flex-wrap: wrap; gap: 4px; padding-top: 3px; }
+    .pch span { font-size: 8px; padding: 2px 5px; background: var(--red-sf); }
+  </style>
+</helmet>
+
+<div class="app">
+  <header class="bar">
+    <span class="wm">Resume<i>&#8202;/&#8202;</i>Editor</span>
+    <span class="dv"><b>Alex Doe</b> &nbsp;&mdash;&nbsp; Main</span>
+    <div class="grow"></div>
+    <span class="st"><i></i>Compiled 1.8s</span>
+    <div class="acts">
+      <span class="b">Import</span>
+      <span class="b">Export</span>
+      <span class="b out"><svg class="i sm" viewBox="0 0 16 16"><path d="M8 3v7.5M5 8l3 3 3-3M3.5 13h9"/></svg>PDF</span>
+      <span class="b pri">Compile <span>&#8984;S</span></span>
+      <span class="ib"><svg class="i" viewBox="0 0 16 16"><path d="M13 9.6A5.6 5.6 0 016.4 3 5.6 5.6 0 1013 9.6z"/></svg></span>
+    </div>
+  </header>
+
+  <div class="body">
+    <aside class="rail">
+      <div class="rt">Sections</div>
+      <div class="ir"><span class="num">01</span>Profile</div>
+      <div class="ir on"><span class="num">02</span>Education<span class="n">2</span></div>
+      <div class="ir"><span class="num">03</span>Experience<span class="n">2</span></div>
+      <div class="ir"><span class="num">04</span>Projects<span class="n">1</span></div>
+      <div class="ir"><span class="num">05</span>Skills<span class="n">10</span></div>
+      <div class="ir"><span class="num">06</span>Languages<span class="n">3</span></div>
+      <div class="ir add"><span class="num"><svg class="i sm" viewBox="0 0 16 16"><path d="M8 3.5v9M3.5 8h9"/></svg></span>Add section</div>
+    </aside>
+
+    <main class="edit">
+      <div class="eh">
+        <span class="num">02</span>
+        <span class="t">Education</span>
+        <span class="k">Typed fields</span>
+      </div>
+      <div class="ez">
+        <div class="en">
+          <div class="enh">
+            <span class="grip"><svg class="i dots" viewBox="0 0 16 16"><path d="M6 4h.01M10 4h.01M6 8h.01M10 8h.01M6 12h.01M10 12h.01"/></svg></span>
+            <span class="t">State University</span>
+            <span class="d">2018&ndash;2022</span>
+            <svg class="i sm" viewBox="0 0 16 16"><path d="M4 6.5l4 4 4-4"/></svg>
+          </div>
+          <div class="enb">
+            <div class="fr">
+              <div class="f act"><label>School</label><div class="v">State University<i class="c"></i></div></div>
+            </div>
+            <div class="fr">
+              <div class="f"><label>Degree</label><div class="v">Bachelor of Science</div></div>
+              <div class="f"><label>Field of study</label><div class="v">Computer Science</div></div>
+            </div>
+            <div class="fr">
+              <div class="f"><label>Location</label><div class="v">Ann Arbor, MI</div></div>
+              <div class="f"><label>GPA</label><div class="v">3.8 / 4.0</div></div>
+            </div>
+            <div class="fr">
+              <div class="f"><label>Start</label><div class="v">Sept 2018</div></div>
+              <div class="f"><label>End</label><div class="v">May 2022</div></div>
+              <div class="f"><label>Present</label><div class="v mute">No</div></div>
+            </div>
+            <div class="lb">Highlights <span class="r">**bold** for emphasis</span></div>
+            <div class="bu">
+              <span class="grip"><svg class="i dots" viewBox="0 0 16 16"><path d="M6 4h.01M10 4h.01M6 8h.01M10 8h.01M6 12h.01M10 12h.01"/></svg></span>
+              <i class="mk"></i>
+              <span class="tx"><b>Coursework:</b> Algorithms, Operating Systems, Databases, Machine Learning</span>
+              <span class="xb"><svg class="i sm" viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8"/></svg></span>
+            </div>
+            <div class="bu">
+              <span class="grip"><svg class="i dots" viewBox="0 0 16 16"><path d="M6 4h.01M10 4h.01M6 8h.01M10 8h.01M6 12h.01M10 12h.01"/></svg></span>
+              <i class="mk"></i>
+              <span class="tx">Dean&#39;s List, 2019&ndash;2022</span>
+              <span class="xb"><svg class="i sm" viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8"/></svg></span>
+            </div>
+            <div class="addb"><svg class="i sm" viewBox="0 0 16 16"><path d="M8 3.5v9M3.5 8h9"/></svg>Add highlight</div>
+          </div>
+        </div>
+        <div class="en">
+          <div class="enh">
+            <span class="grip"><svg class="i dots" viewBox="0 0 16 16"><path d="M6 4h.01M10 4h.01M6 8h.01M10 8h.01M6 12h.01M10 12h.01"/></svg></span>
+            <span class="t">Lakeside High School</span>
+            <span class="d">2014&ndash;2018</span>
+            <svg class="i sm" viewBox="0 0 16 16" style="transform: rotate(-90deg)"><path d="M4 6.5l4 4 4-4"/></svg>
+          </div>
+        </div>
+        <div class="adde"><svg class="i sm" viewBox="0 0 16 16"><path d="M8 3.5v9M3.5 8h9"/></svg>Add education entry</div>
+      </div>
+    </main>
+
+    <section class="prev">
+      <div class="pc">
+        <span class="l">Preview</span>
+        <span class="f">Alex_Doe_Resume.pdf</span>
+        <span class="p">1 / 1</span>
+      </div>
+      <div class="page">
+        <div class="ph">Alex Doe</div>
+        <div class="pcont">alex@example.com &nbsp;|&nbsp; alexdoe.example.com &nbsp;|&nbsp; linkedin.com/in/alexdoe &nbsp;|&nbsp; github.com/alexdoe</div>
+        <div class="psec">Profile</div>
+        <div class="prule"></div>
+        <div class="pb">Software engineer with 3+ years building web products end to end. Comfortable owning features from database to UI, with a soft spot for <span class="ital">fast feedback loops</span> and boring, reliable infrastructure.</div>
+        <div class="psec">Education</div>
+        <div class="prule"></div>
+        <div class="pb">
+          <div class="prow"><div class="l"><span class="bold">State University</span> &mdash; Ann Arbor, MI</div><div class="r">Sept 2018 &ndash; May 2022</div></div>
+          <div class="prow"><div class="l ital">BS in Computer Science &middot; GPA 3.8/4.0</div></div>
+          <ul class="plist"><li><span class="bold">Coursework:</span> Algorithms, Operating Systems, Databases, Machine Learning</li><li>Dean&#39;s List, 2019&ndash;2022</li></ul>
+        </div>
+        <div class="psec">Experience</div>
+        <div class="prule"></div>
+        <div class="pb">
+          <div class="prow"><div class="l"><span class="bold">Software Engineer</span></div><div class="r">June 2022 &ndash; Present</div></div>
+          <div class="prow"><div class="l ital">Acme Corp &mdash; Remote</div></div>
+          <ul class="plist"><li>Built and maintained a customer-facing analytics dashboard used by <span class="bold">5,000+</span> weekly active users</li><li>Reduced API p95 latency by 40% by profiling hot paths and adding query-level caching</li><li>Mentored two interns; both projects shipped to production</li></ul>
+          <div class="prow" style="padding-top: 5px"><div class="l"><span class="bold">Software Engineering Intern</span></div><div class="r">May 2021 &ndash; Aug 2021</div></div>
+          <div class="prow"><div class="l ital">Widget Labs</div></div>
+          <ul class="plist"><li>Prototyped an internal tool that cut weekly report preparation from hours to minutes</li></ul>
+        </div>
+        <div class="psec">Skills</div>
+        <div class="prule"></div>
+        <div class="pch"><span>Python</span><span>TypeScript</span><span>React</span><span>SQL</span><span>C++</span><span>Linux</span><span>Git</span><span>Docker</span><span>PostgreSQL</span><span>AWS</span></div>
+      </div>
+    </section>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

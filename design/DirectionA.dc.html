@@ -1,0 +1,373 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@400;500;600;700&display=swap">
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --paper: #faf8f4;
+      --surface: #ffffff;
+      --surface2: #f4f1ea;
+      --ink: #1c1a16;
+      --ink2: #57534a;
+      --ink3: #8c877c;
+      --rule: #e7e2d7;
+      --rule2: #d6d0c1;
+      --clay: #a15a34;
+      --clay-dk: #85472a;
+      --clay-sf: rgba(161, 90, 52, 0.09);
+      --clay-rg: rgba(161, 90, 52, 0.20);
+      --green: #4a7a52;
+      --sans: "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
+      --serif: "Instrument Serif", Georgia, "Times New Roman", serif;
+    }
+    body { margin: 0; font-family: var(--sans); color: var(--ink); background: var(--paper); }
+    a { color: var(--clay); text-decoration: none; }
+    a:hover { color: var(--clay-dk); }
+    .i { width: 15px; height: 15px; flex: none; display: block; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+    .i.dots { stroke-width: 2.1; }
+    .i.sm { width: 13px; height: 13px; }
+
+    .app { width: 1440px; height: 900px; display: flex; flex-direction: column; background: var(--paper); overflow: hidden; }
+
+    /* ---------- top bar ---------- */
+    .bar { height: 57px; flex: none; display: flex; align-items: center; gap: 14px; padding: 0 18px; background: rgba(255,255,255,0.72); border-bottom: 1px solid var(--rule); }
+    .brand { display: flex; align-items: center; gap: 9px; }
+    .mark { width: 27px; height: 27px; border-radius: 8px; background: var(--clay); color: #fff; display: flex; align-items: center; justify-content: center; }
+    .mark .i { width: 15px; height: 15px; stroke-width: 1.5; }
+    .wm { font-family: var(--serif); font-size: 19px; letter-spacing: 0.005em; }
+    .docchip { display: flex; align-items: center; gap: 7px; height: 31px; padding: 0 11px; border: 1px solid var(--rule); border-radius: 9px; background: var(--surface); font-size: 13px; font-weight: 500; }
+    .docchip .v { color: var(--ink3); font-weight: 400; }
+    .grow { flex: 1; }
+    .status { display: flex; align-items: center; gap: 7px; height: 27px; padding: 0 11px; border-radius: 99px; background: rgba(74,122,82,0.10); color: var(--green); font-size: 12.5px; font-weight: 500; }
+    .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex: none; }
+    .acts { display: flex; align-items: center; gap: 6px; }
+    .tbtn { display: flex; align-items: center; gap: 6px; height: 32px; padding: 0 11px; border-radius: 8px; font-size: 13px; font-weight: 500; color: var(--ink2); }
+    .tbtn.q { color: var(--ink3); }
+    .tbtn.out { background: var(--surface); border: 1px solid var(--rule); color: var(--ink); }
+    .tbtn.pri { background: var(--clay); color: #fff; padding: 0 13px; font-weight: 600; box-shadow: 0 1px 2px rgba(133,71,42,0.30); }
+    .tbtn.pri kbd { font-family: inherit; font-size: 10.5px; font-weight: 600; padding: 1.5px 5px; border-radius: 4px; background: rgba(255,255,255,0.22); }
+    .ibtn { width: 31px; height: 31px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--ink3); }
+    .vr { width: 1px; height: 20px; background: var(--rule); }
+
+    /* ---------- body ---------- */
+    .body { flex: 1; display: flex; min-height: 0; }
+
+    /* ---------- left rail ---------- */
+    .rail { width: 236px; flex: none; border-right: 1px solid var(--rule); padding: 16px 12px; display: flex; flex-direction: column; gap: 2px; }
+    .rlabel { font-size: 10.5px; font-weight: 600; letter-spacing: 0.10em; text-transform: uppercase; color: var(--ink3); padding: 0 8px 8px; }
+    .srow { display: flex; align-items: center; gap: 9px; height: 34px; padding: 0 8px 0 6px; border-radius: 8px; font-size: 13px; font-weight: 500; color: var(--ink2); }
+    .srow .grip { color: transparent; }
+    .srow.on { background: var(--clay-sf); color: var(--clay-dk); font-weight: 600; position: relative; }
+    .srow.on::before { content: ""; position: absolute; left: -7px; top: 7px; bottom: 7px; width: 2.5px; border-radius: 0 2px 2px 0; background: var(--clay); }
+    .srow.on .grip { color: var(--clay); opacity: 0.6; }
+    .srow .n { margin-left: auto; font-size: 11.5px; font-weight: 500; color: var(--ink3); font-variant-numeric: tabular-nums; }
+    .srow.on .n { color: var(--clay); }
+    .railfoot { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--rule); }
+    .addsec { display: flex; align-items: center; justify-content: center; gap: 7px; height: 34px; border: 1px dashed var(--rule2); border-radius: 9px; font-size: 12.5px; font-weight: 500; color: var(--ink2); }
+
+    /* ---------- editor ---------- */
+    .edit { width: 468px; flex: none; border-right: 1px solid var(--rule); overflow: hidden; padding: 20px 20px 0; }
+    .ehead { display: flex; align-items: baseline; gap: 10px; padding-bottom: 4px; }
+    .etitle { font-family: var(--serif); font-size: 25px; line-height: 1.1; }
+    .kind { font-size: 10.5px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--clay-dk); background: var(--clay-sf); border-radius: 5px; padding: 3px 7px; }
+    .esub { font-size: 12.5px; color: var(--ink3); padding: 2px 0 16px; }
+
+    .card { background: var(--surface); border: 1px solid var(--rule); border-radius: 13px; box-shadow: 0 1px 2px rgba(28,26,22,0.03), 0 12px 24px -20px rgba(28,26,22,0.30); margin-bottom: 11px; }
+    .chead { display: flex; align-items: center; gap: 8px; padding: 11px 12px; }
+    .chead .grip { color: var(--ink3); opacity: 0.55; }
+    .ctitle { font-size: 13.5px; font-weight: 600; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .cmeta { font-size: 12px; color: var(--ink3); font-weight: 400; }
+    .cbody { padding: 2px 13px 14px; }
+    .divide { height: 1px; background: var(--rule); margin: 0 13px 12px; }
+
+    .grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 12px; }
+    .f { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+    .f > label { font-size: 11.5px; font-weight: 500; color: var(--ink2); }
+    .in { height: 33px; display: flex; align-items: center; gap: 7px; padding: 0 10px; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface2); font-size: 13px; color: var(--ink); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+    .in.focus { background: var(--surface); border-color: var(--clay); box-shadow: 0 0 0 3px var(--clay-rg); }
+    .in.mute { color: var(--ink3); }
+    .in .caret { width: 1.5px; height: 15px; background: var(--clay); margin-left: -2px; }
+    .in .cal { color: var(--ink3); }
+    .in .sep { width: 1px; height: 16px; background: var(--rule2); }
+    .in .yr { color: var(--ink2); }
+    .dtrow { display: flex; align-items: flex-end; gap: 12px; }
+    .dtrow .f { flex: 1; }
+    .chk { display: flex; align-items: center; gap: 6px; height: 33px; font-size: 12.5px; color: var(--ink2); white-space: nowrap; }
+    .box { width: 15px; height: 15px; border-radius: 4px; border: 1.5px solid var(--rule2); background: var(--surface); flex: none; }
+
+    .bhead { display: flex; align-items: center; gap: 8px; padding: 14px 0 7px; }
+    .bhead .lb { font-size: 11.5px; font-weight: 500; color: var(--ink2); }
+    .bhead .hint { margin-left: auto; font-size: 11px; color: var(--ink3); }
+    .bhead .hint code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 10.5px; background: var(--surface2); border: 1px solid var(--rule); border-radius: 4px; padding: 1px 4px; }
+    .bul { display: flex; align-items: flex-start; gap: 7px; margin-bottom: 6px; }
+    .bul .grip { color: var(--ink3); opacity: 0.5; margin-top: 8px; }
+    .ta { flex: 1; min-width: 0; min-height: 33px; height: auto; display: block; padding: 8px 10px; line-height: 1.45; white-space: normal; font-size: 12.5px; }
+    .bul .xb { color: var(--ink3); opacity: 0.5; margin-top: 8px; }
+    .addb { display: flex; align-items: center; justify-content: center; gap: 7px; height: 32px; border: 1px dashed var(--rule2); border-radius: 8px; font-size: 12.5px; font-weight: 500; color: var(--ink2); margin-top: 2px; }
+    .adde { display: flex; align-items: center; justify-content: center; gap: 7px; height: 38px; border: 1px dashed var(--rule2); border-radius: 11px; font-size: 13px; font-weight: 500; color: var(--ink2); }
+
+    /* ---------- preview ---------- */
+    .prev { flex: 1; min-width: 0; display: flex; flex-direction: column; padding: 16px 18px 18px; }
+    .pchrome { display: flex; align-items: center; gap: 10px; padding: 0 2px 10px; }
+    .plabel { font-size: 10.5px; font-weight: 600; letter-spacing: 0.10em; text-transform: uppercase; color: var(--ink3); }
+    .pname { font-size: 12.5px; color: var(--ink2); }
+    .ppage { margin-left: auto; font-size: 12px; color: var(--ink3); font-variant-numeric: tabular-nums; }
+    .stage { flex: 1; min-height: 0; border-radius: 14px; background: #302d29; display: flex; align-items: flex-start; justify-content: center; padding: 22px 0 0; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.35); }
+
+    /* the rendered PDF page */
+    .page { width: 505px; height: 654px; background: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.35); padding: 34px 38px; font-family: Georgia, "Times New Roman", serif; color: #14130f; }
+    .pname-h { text-align: center; font-size: 25px; letter-spacing: 0.005em; }
+    .pcontact { text-align: center; font-size: 8.2px; color: var(--clay); padding-top: 7px; letter-spacing: 0.01em; }
+    .psec { font-size: 11px; font-weight: 700; color: var(--clay); margin: 13px 0 0; }
+    .prule { height: 0.9px; background: var(--clay); opacity: 0.85; margin: 2.5px 0 6px; }
+    .pbody { font-size: 8.4px; line-height: 1.5; }
+    .prow { display: flex; align-items: baseline; gap: 10px; }
+    .prow .l { flex: 1; }
+    .prow .r { font-size: 8.2px; white-space: nowrap; }
+    .pb { font-weight: 700; }
+    .pi { font-style: italic; }
+    .plist { margin: 3px 0 0; padding-left: 11px; }
+    .plist li { font-size: 8.4px; line-height: 1.55; margin-bottom: 1.5px; }
+    .pchips { display: flex; flex-wrap: wrap; gap: 4px; padding-top: 2px; }
+    .pchip { font-size: 7.8px; padding: 2px 5px; border-radius: 3px; background: var(--clay-sf); }
+    .plang { display: flex; align-items: center; gap: 8px; font-size: 8.4px; padding-top: 1px; }
+    .plang .nm { width: 54px; }
+    .pdots { display: flex; gap: 3px; }
+    .pdots i { width: 4.5px; height: 4.5px; border-radius: 50%; background: var(--clay); display: block; }
+    .pdots i.off { background: #d8d4cc; }
+  </style>
+</helmet>
+
+<div class="app">
+
+  <!-- ================= top bar ================= -->
+  <header class="bar">
+    <div class="brand">
+      <span class="mark"><svg class="i" viewBox="0 0 16 16"><path d="M4.5 2.5h5l3 3v8h-8z"/><path d="M9.5 2.5v3h3"/><path d="M6.2 9h3.6M6.2 11h2.2"/></svg></span>
+      <span class="wm">Resume Editor</span>
+    </div>
+    <div class="docchip">
+      <span>Alex Doe</span>
+      <span class="v">Main</span>
+      <svg class="i sm" viewBox="0 0 16 16"><path d="M4 6.5l4 4 4-4"/></svg>
+    </div>
+    <div class="grow"></div>
+    <span class="status"><i class="dot"></i>Compiled in 1.8s</span>
+    <div class="acts">
+      <span class="tbtn q">Import</span>
+      <span class="tbtn q">Export</span>
+      <span class="vr"></span>
+      <span class="tbtn out"><svg class="i" viewBox="0 0 16 16"><path d="M8 3v7.5M5 8l3 3 3-3M3.5 13h9"/></svg>PDF</span>
+      <span class="tbtn pri">Compile <kbd>&#8984;S</kbd></span>
+      <span class="vr"></span>
+      <span class="ibtn"><svg class="i" viewBox="0 0 16 16"><path d="M13 9.6A5.6 5.6 0 016.4 3 5.6 5.6 0 1013 9.6z"/></svg></span>
+    </div>
+  </header>
+
+  <div class="body">
+
+    <!-- ================= section rail ================= -->
+    <aside class="rail">
+      <div class="rlabel">Sections</div>
+      <div class="srow">
+        <span class="grip"><svg class="i dots" viewBox="0 0 16 16"><path d="M6 4h.01M10 4h.01M6 8h.01M10 8h.01M6 12h.01M10 12h.01"/></svg></span>
+        <svg class="i" viewBox="0 0 16 16"><circle cx="8" cy="5.6" r="2.4"/><path d="M3.6 13c0-2.4 2-3.9 4.4-3.9s4.4 1.5 4.4 3.9"/></svg>
+        Profile
+      </div>
+      <div class="srow on">
+        <span class="grip"><svg class="i dots" viewBox="0 0 16 16"><path d="M6 4h.01M10 4h.01M6 8h.01M10 8h.01M6 12h.01M10 12h.01"/></svg></span>
+        <svg class="i" viewBox="0 0 16 16"><path d="M8 3l6 2.8-6 2.8-6-2.8L8 3z"/><path d="M4.2 7.4V11c0 1 1.7 1.9 3.8 1.9s3.8-.9 3.8-1.9V7.4"/></svg>
+        Education
+        <span class="n">2</span>
+      </div>
+      <div class="srow">
+        <span class="grip"><svg class="i dots" viewBox="0 0 16 16"><path d="M6 4h.01M10 4h.01M6 8h.01M10 8h.01M6 12h.01M10 12h.01"/></svg></span>
+        <svg class="i" viewBox="0 0 16 16"><rect x="2.4" y="5" width="11.2" height="8" rx="1.6"/><path d="M6 5V3.6h4V5"/></svg>
+        Experience
+        <span class="n">2</span>
+      </div>
+      <div class="srow">
+        <span class="grip"><svg class="i dots" viewBox="0 0 16 16"><path d="M6 4h.01M10 4h.01M6 8h.01M10 8h.01M6 12h.01M10 12h.01"/></svg></span>
+        <svg class="i" viewBox="0 0 16 16"><path d="M2.4 4.4h4l1.5 2h5.7v6.2H2.4z"/></svg>
+        Projects
+        <span class="n">1</span>
+      </div>
+      <div class="srow">
+        <span class="grip"><svg class="i dots" viewBox="0 0 16 16"><path d="M6 4h.01M10 4h.01M6 8h.01M10 8h.01M6 12h.01M10 12h.01"/></svg></span>
+        <svg class="i" viewBox="0 0 16 16"><path d="M8.6 2.4H13v4.4L7.1 12.7 2.4 8z"/><path d="M10.5 5h.01"/></svg>
+        Skills
+        <span class="n">10</span>
+      </div>
+      <div class="srow">
+        <span class="grip"><svg class="i dots" viewBox="0 0 16 16"><path d="M6 4h.01M10 4h.01M6 8h.01M10 8h.01M6 12h.01M10 12h.01"/></svg></span>
+        <svg class="i" viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.5"/><path d="M2.5 8h11M8 2.5c1.6 2 1.6 9 0 11"/></svg>
+        Languages
+        <span class="n">3</span>
+      </div>
+      <div class="railfoot">
+        <div class="addsec"><svg class="i sm" viewBox="0 0 16 16"><path d="M8 3.5v9M3.5 8h9"/></svg>Add section</div>
+      </div>
+    </aside>
+
+    <!-- ================= structured editor ================= -->
+    <main class="edit">
+      <div class="ehead">
+        <span class="etitle">Education</span>
+        <span class="kind">Education</span>
+      </div>
+      <div class="esub">Fields follow the section type &mdash; no markup needed for structure.</div>
+
+      <div class="card">
+        <div class="chead">
+          <span class="grip"><svg class="i dots" viewBox="0 0 16 16"><path d="M6 4h.01M10 4h.01M6 8h.01M10 8h.01M6 12h.01M10 12h.01"/></svg></span>
+          <svg class="i sm" viewBox="0 0 16 16"><path d="M4 6.5l4 4 4-4"/></svg>
+          <span class="ctitle">State University</span>
+          <span class="ibtn"><svg class="i sm" viewBox="0 0 16 16"><path d="M8 4h.01M8 8h.01M8 12h.01"/></svg></span>
+        </div>
+        <div class="divide"></div>
+        <div class="cbody">
+          <div class="f" style="padding-bottom: 10px">
+            <label>School</label>
+            <div class="in focus">State University<i class="caret"></i></div>
+          </div>
+          <div class="grid2">
+            <div class="f">
+              <label>Degree</label>
+              <div class="in">Bachelor of Science</div>
+            </div>
+            <div class="f">
+              <label>Field of study</label>
+              <div class="in">Computer Science</div>
+            </div>
+            <div class="f">
+              <label>Location</label>
+              <div class="in">Ann Arbor, MI</div>
+            </div>
+            <div class="f">
+              <label>GPA <span style="color: var(--ink3); font-weight: 400">optional</span></label>
+              <div class="in">3.8 / 4.0</div>
+            </div>
+          </div>
+          <div class="dtrow" style="padding-top: 10px">
+            <div class="f">
+              <label>Start</label>
+              <div class="in"><span class="cal"><svg class="i sm" viewBox="0 0 16 16"><rect x="2.5" y="3.6" width="11" height="9.9" rx="1.5"/><path d="M2.5 6.6h11M5.6 2.2v2.6M10.4 2.2v2.6"/></svg></span>Sept<i class="sep"></i><span class="yr">2018</span></div>
+            </div>
+            <div class="f">
+              <label>End</label>
+              <div class="in"><span class="cal"><svg class="i sm" viewBox="0 0 16 16"><rect x="2.5" y="3.6" width="11" height="9.9" rx="1.5"/><path d="M2.5 6.6h11M5.6 2.2v2.6M10.4 2.2v2.6"/></svg></span>May<i class="sep"></i><span class="yr">2022</span></div>
+            </div>
+            <label class="chk"><i class="box"></i>Present</label>
+          </div>
+
+          <div class="bhead">
+            <span class="lb">Highlights</span>
+            <span class="hint">emphasis only: <code>**bold**</code></span>
+          </div>
+          <div class="bul">
+            <span class="grip"><svg class="i dots" viewBox="0 0 16 16"><path d="M6 4h.01M10 4h.01M6 8h.01M10 8h.01M6 12h.01M10 12h.01"/></svg></span>
+            <div class="in ta"><b>Coursework:</b> Algorithms, Operating Systems, Databases, Machine&nbsp;Learning</div>
+            <span class="xb"><svg class="i sm" viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8"/></svg></span>
+          </div>
+          <div class="bul">
+            <span class="grip"><svg class="i dots" viewBox="0 0 16 16"><path d="M6 4h.01M10 4h.01M6 8h.01M10 8h.01M6 12h.01M10 12h.01"/></svg></span>
+            <div class="in ta">Dean&#39;s List, 2019&ndash;2022</div>
+            <span class="xb"><svg class="i sm" viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8"/></svg></span>
+          </div>
+          <div class="addb"><svg class="i sm" viewBox="0 0 16 16"><path d="M8 3.5v9M3.5 8h9"/></svg>Add highlight</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="chead">
+          <span class="grip"><svg class="i dots" viewBox="0 0 16 16"><path d="M6 4h.01M10 4h.01M6 8h.01M10 8h.01M6 12h.01M10 12h.01"/></svg></span>
+          <svg class="i sm" viewBox="0 0 16 16" style="transform: rotate(-90deg)"><path d="M4 6.5l4 4 4-4"/></svg>
+          <span class="ctitle">Lakeside High School</span>
+          <span class="cmeta">2014 &ndash; 2018</span>
+        </div>
+      </div>
+
+      <div class="adde"><svg class="i sm" viewBox="0 0 16 16"><path d="M8 3.5v9M3.5 8h9"/></svg>Add education entry</div>
+    </main>
+
+    <!-- ================= preview ================= -->
+    <section class="prev">
+      <div class="pchrome">
+        <span class="plabel">Preview</span>
+        <span class="pname">Alex_Doe_Resume.pdf</span>
+        <span class="ppage">1 / 1</span>
+        <span class="ibtn"><svg class="i" viewBox="0 0 16 16"><path d="M9.6 2.5h4v4M6.4 13.5h-4v-4M13.6 2.5l-5.2 5.2M2.4 13.5l5.2-5.2"/></svg></span>
+      </div>
+      <div class="stage">
+        <div class="page">
+          <div class="pname-h">Alex Doe</div>
+          <div class="pcontact">alex@example.com &nbsp;|&nbsp; alexdoe.example.com &nbsp;|&nbsp; linkedin.com/in/alexdoe &nbsp;|&nbsp; github.com/alexdoe</div>
+
+          <div class="psec">Profile</div>
+          <div class="prule"></div>
+          <div class="pbody">Software engineer with 3+ years building web products end to end. Comfortable owning features from database to UI, with a soft spot for <span class="pi">fast feedback loops</span> and boring, reliable infrastructure.</div>
+
+          <div class="psec">Education</div>
+          <div class="prule"></div>
+          <div class="pbody">
+            <div class="prow">
+              <div class="l"><span class="pb">State University</span> &mdash; Ann Arbor, MI</div>
+              <div class="r">Sept 2018 &ndash; May 2022</div>
+            </div>
+            <div class="prow"><div class="l pi">BS in Computer Science &middot; GPA 3.8/4.0</div></div>
+            <ul class="plist">
+              <li><span class="pb">Coursework:</span> Algorithms, Operating Systems, Databases, Machine Learning</li>
+              <li>Dean&#39;s List, 2019&ndash;2022</li>
+            </ul>
+          </div>
+
+          <div class="psec">Experience</div>
+          <div class="prule"></div>
+          <div class="pbody">
+            <div class="prow">
+              <div class="l"><span class="pb">Software Engineer</span></div>
+              <div class="r">June 2022 &ndash; Present</div>
+            </div>
+            <div class="prow"><div class="l pi">Acme Corp &mdash; Remote</div></div>
+            <ul class="plist">
+              <li>Built and maintained a customer-facing analytics dashboard used by <span class="pb">5,000+</span> weekly active users</li>
+              <li>Reduced API p95 latency by 40% by profiling hot paths and adding query-level caching</li>
+              <li>Mentored two interns; both projects shipped to production</li>
+            </ul>
+            <div class="prow" style="padding-top: 5px">
+              <div class="l"><span class="pb">Software Engineering Intern</span></div>
+              <div class="r">May 2021 &ndash; Aug 2021</div>
+            </div>
+            <div class="prow"><div class="l pi">Widget Labs</div></div>
+            <ul class="plist">
+              <li>Prototyped an internal tool that cut weekly report preparation from hours to minutes</li>
+            </ul>
+          </div>
+
+          <div class="psec">Skills</div>
+          <div class="prule"></div>
+          <div class="pchips">
+            <span class="pchip">Python</span><span class="pchip">TypeScript</span><span class="pchip">React</span><span class="pchip">SQL</span><span class="pchip">C++</span><span class="pchip">Linux</span><span class="pchip">Git</span><span class="pchip">Docker</span><span class="pchip">PostgreSQL</span><span class="pchip">AWS</span>
+          </div>
+
+          <div class="psec">Languages</div>
+          <div class="prule"></div>
+          <div class="plang"><span class="nm">English</span><span class="pdots"><i></i><i></i><i></i><i></i><i></i></span></div>
+          <div class="plang"><span class="nm">Spanish</span><span class="pdots"><i></i><i></i><i></i><i class="off"></i><i class="off"></i></span></div>
+          <div class="plang"><span class="nm">German</span><span class="pdots"><i></i><i></i><i class="off"></i><i class="off"></i><i class="off"></i></span></div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

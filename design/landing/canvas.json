@@ -1,0 +1,18 @@
+{
+  "pages": [
+    { "id": "page-1", "name": "Landing" },
+    { "id": "page-2", "name": "Explored" }
+  ],
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 1440, "h": 900, "title": "Landing — two doors", "page": "page-1" },
+    { "file": "SignIn.dc.html", "x": 1560, "y": 0, "w": 920, "h": 800, "title": "Sign-in detail", "page": "page-1" },
+    { "file": "Manifesto.dc.html", "x": 0, "y": 0, "w": 1440, "h": 1180, "title": "A — Manifesto", "page": "page-2" },
+    { "file": "Specimen.dc.html", "x": 1560, "y": 0, "w": 1440, "h": 880, "title": "B — Specimen", "page": "page-2" }
+  ],
+  "annotations": [
+    { "id": "note-chosen", "x": 0, "y": -150, "w": 620, "page": "page-1", "text": "CHOSEN — Two doors\nThe page is the choice. Both storage options side by side with their honest trade-offs, including what each one costs you. White for local, black for Drive." },
+    { "id": "note-detail", "x": 1560, "y": -150, "w": 620, "page": "page-1", "text": "SIGN-IN DETAIL\nReference for the trust copy. The struck-through grants — see your other Drive files, know your name or email — are the strongest element and get folded into the build." },
+    { "id": "note-explored", "x": 0, "y": -150, "w": 620, "page": "page-2", "text": "NOT CHOSEN — kept for reference.\nA: manifesto, giant type, claim as hero.\nB: specimen, the typeset output as hero." }
+  ],
+  "launch": { "view": "canvas", "page": "page-1" }
+}

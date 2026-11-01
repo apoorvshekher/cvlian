@@ -1,0 +1,29 @@
+{
+  "name": "resume-editor",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build && node scripts/stamp-sw.mjs",
+    "preview": "vite preview",
+    "test": "node scripts/test-all.mjs",
+    "smoke": "npm run build && node scripts/smoke.mjs",
+    "check-migration": "node scripts/check-migration.mjs",
+    "check-sync": "node scripts/check-sync.mjs",
+    "check-sync-live": "node scripts/check-sync-live.mjs",
+    "make-og": "node scripts/make-og.mjs"
+  },
+  "dependencies": {
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.9",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.2",
+    "playwright-core": "^1.62.1",
+    "typescript": "^5.9.3",
+    "vite": "^8.2.1"
+  }
+}

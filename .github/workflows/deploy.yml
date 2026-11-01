@@ -1,0 +1,61 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Read-only by default. The build job runs npm ci, every package's install
+# scripts and the whole test suite, so it holds no write access at all; only
+# the deploy job, which runs nothing but GitHub's own Pages actions, may
+# publish (see its own permissions below).
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+
+      # Nothing reaches Pages that the suite has not driven in a real browser.
+      # The version is pinned to the playwright-core in the lock file so the
+      # two can never disagree about the protocol.
+      - name: Install Chromium
+        run: npx --yes playwright@$(node -p "require('playwright-core/package.json').version") install --with-deps chromium
+      - run: npm test
+
+      # The suite's last run rebuilds dist with a stub client id, so the real
+      # build happens after it, never before.
+      - run: npm run build
+        env:
+          # public identifier, not a secret — see docs/google-drive-setup.md
+          VITE_GOOGLE_CLIENT_ID: ${{ vars.GOOGLE_CLIENT_ID }}
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write      # to publish, and for configure-pages to enable Pages
+      id-token: write   # to prove the deployment comes from this workflow
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - id: deployment
+        uses: actions/deploy-pages@v4

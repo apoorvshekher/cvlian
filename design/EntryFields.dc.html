@@ -1,0 +1,226 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&display=swap">
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --w: #ffffff; --w2: #f6f6f4; --k: #0b0b0a; --k2: #55554f; --k3: #8b8b84;
+      --r: #e3e3df; --r2: #c9c9c3;
+      --red: #d8341f; --red-sf: rgba(216,52,31,0.07);
+      --sans: "Archivo", ui-sans-serif, system-ui, sans-serif;
+    }
+    body { margin: 0; font-family: var(--sans); color: var(--k); background: var(--w); }
+    a { color: var(--red); text-decoration: none; }
+    a:hover { color: #a82716; }
+    .i { width: 15px; height: 15px; flex: none; display: block; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: square; stroke-linejoin: miter; }
+    .i.dots { stroke-width: 2; stroke-linecap: round; }
+    .i.sm { width: 12px; height: 12px; }
+    .i.lg { width: 17px; height: 17px; }
+
+    .sheet { width: 940px; background: var(--w); padding: 42px 46px 50px; }
+    .h1 { font-size: 34px; font-weight: 700; letter-spacing: -0.03em; line-height: 1.05; }
+    .sub { font-size: 13.5px; color: var(--k2); line-height: 1.6; max-width: 640px; padding-top: 12px; }
+    .sub b { color: var(--k); font-weight: 600; }
+    .h2 { font-size: 10px; font-weight: 700; letter-spacing: 0.13em; text-transform: uppercase; color: var(--k3); padding: 38px 0 12px; border-bottom: 1px solid var(--k); margin-bottom: 16px; }
+
+    /* type picker */
+    .types { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border: 1px solid var(--k); }
+    .type { padding: 14px 15px; display: flex; flex-direction: column; gap: 6px; border-right: 1px solid var(--r); border-bottom: 1px solid var(--r); }
+    .type:nth-child(3n) { border-right: none; }
+    .type:nth-child(n+4) { border-bottom: none; }
+    .type.on { background: var(--k); color: var(--w); }
+    .type .tt { display: flex; align-items: center; gap: 9px; font-size: 13.5px; font-weight: 700; }
+    .type .tt .ic { color: var(--red); }
+    .type .fl { font-size: 11px; color: var(--k3); line-height: 1.5; }
+    .type.on .fl { color: rgba(255,255,255,0.6); }
+
+    /* form blocks */
+    .block { border: 1px solid var(--k); padding: 0 0 18px; }
+    .bt { display: flex; align-items: center; gap: 10px; padding: 12px 18px; background: var(--w2); border-bottom: 1px solid var(--k); margin-bottom: 6px; }
+    .bt .nm { font-size: 14px; font-weight: 700; }
+    .bt .kind { font-size: 9.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--red); }
+    .grid2, .grid3 { display: flex; border-bottom: 1px solid var(--r); }
+    .grid2 > .f, .grid3 > .f { flex: 1; min-width: 0; padding: 9px 18px; }
+    .grid2 > .f + .f, .grid3 > .f + .f { border-left: 1px solid var(--r); }
+    .f { min-width: 0; }
+    .f > label { display: block; font-size: 9.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--k3); padding-bottom: 4px; }
+    .f > label .opt { font-weight: 500; letter-spacing: 0; text-transform: none; font-size: 10px; }
+    .in { height: 21px; display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; border: none; border-radius: 0; background: transparent; padding: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .in.focus { box-shadow: inset 0 -2px 0 0 var(--red); }
+    .in.mute { color: var(--k3); font-weight: 400; }
+    .in .caret { width: 1.5px; height: 14px; background: var(--red); margin-left: -3px; }
+    .in .sep { width: 1px; height: 12px; background: var(--r2); }
+    .in .cal { color: var(--k3); }
+    .in .chev { margin-left: auto; color: var(--k3); }
+    .in .yr { color: var(--k2); }
+    .f.wide { padding: 9px 18px; border-bottom: 1px solid var(--r); }
+    .dtrow { display: flex; border-bottom: 1px solid var(--r); }
+    .dtrow .f { flex: 1; padding: 9px 18px; }
+    .dtrow .f + .f { border-left: 1px solid var(--r); }
+    .chk { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 500; color: var(--k2); white-space: nowrap; padding: 11px 18px; }
+    .box { width: 14px; height: 14px; border: 1.5px solid var(--k); flex: none; }
+    .box.on { background: var(--red); border-color: var(--red); color: var(--w); display: flex; align-items: center; justify-content: center; }
+    .box.on .i { width: 10px; height: 10px; stroke-width: 2.6; }
+
+    .bhead { display: flex; align-items: center; gap: 8px; padding: 14px 18px 8px; }
+    .bhead .lb { font-size: 9.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--k3); }
+    .bhead .hint { margin-left: auto; font-size: 10.5px; color: var(--k3); }
+    .bhead code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 10px; color: var(--red); }
+    .bul { display: flex; align-items: flex-start; gap: 10px; padding: 8px 18px; border-top: 1px solid var(--r); }
+    .bul .grip { color: var(--k3); margin-top: 2px; }
+    .ta { flex: 1; min-width: 0; padding: 0; border: none; border-radius: 0; background: transparent; font-size: 12.5px; line-height: 1.5; }
+    .ta b { font-weight: 700; }
+    .bul .xb { color: var(--k3); margin-top: 2px; }
+    .addb { display: flex; align-items: center; gap: 8px; padding: 11px 18px 0; margin-top: 8px; border-top: 1px solid var(--r); font-size: 10.5px; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--k2); }
+
+    .cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+
+    /* skills */
+    .chips { display: flex; flex-wrap: wrap; gap: 5px; padding: 9px 18px 0; }
+    .chip { display: flex; align-items: center; gap: 7px; padding: 4px 8px; background: var(--red-sf); color: var(--k); font-size: 12px; font-weight: 500; }
+    .chip .i { width: 10px; height: 10px; color: var(--k3); }
+    .chipin { font-size: 12px; color: var(--k3); padding: 4px 2px; }
+
+    /* language level */
+    .lrow { display: flex; align-items: center; gap: 14px; padding: 9px 18px; border-top: 1px solid var(--r); }
+    .lrow .in { flex: 1; }
+    .dots5 { display: flex; gap: 4px; }
+    .dots5 i { width: 12px; height: 12px; border: 1.5px solid var(--r2); display: block; }
+    .dots5 i.on { background: var(--red); border-color: var(--red); }
+    .lvl { font-size: 10.5px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--k3); width: 96px; }
+
+    .note { display: flex; gap: 13px; align-items: flex-start; border: 1px solid var(--k); border-left: 4px solid var(--red); padding: 15px 17px; margin-top: 18px; }
+    .note .ic { color: var(--red); margin-top: 1px; }
+    .note .tx { font-size: 12.5px; line-height: 1.6; color: var(--k2); }
+    .note .tx b { color: var(--k); font-weight: 600; }
+    .note code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 11px; color: var(--red); }
+  </style>
+</helmet>
+
+<div class="sheet">
+  <div class="h1">Structured fields, by section type</div>
+  <div class="sub">Choosing a section type decides its fields. <b>Structure comes from the form</b> &mdash; school, dates, role &mdash; so the theme decides how each part is set. Markdown survives only for <b>emphasis inside prose</b>.</div>
+
+  <div class="h2">Section type &mdash; picked once, when you add the section</div>
+  <div class="types">
+    <div class="type">
+      <div class="tt"><span class="ic"><svg class="i lg" viewBox="0 0 16 16"><rect x="2.4" y="5" width="11.2" height="8" rx="1.6"/><path d="M6 5V3.6h4V5"/></svg></span>Experience</div>
+      <div class="fl">Role &middot; Company &middot; Location &middot; Dates &middot; Bullets</div>
+    </div>
+    <div class="type on">
+      <div class="tt"><span class="ic"><svg class="i lg" viewBox="0 0 16 16"><path d="M8 3l6 2.8-6 2.8-6-2.8L8 3z"/><path d="M4.2 7.4V11c0 1 1.7 1.9 3.8 1.9s3.8-.9 3.8-1.9V7.4"/></svg></span>Education</div>
+      <div class="fl">School &middot; Degree &middot; Field &middot; GPA &middot; Dates</div>
+    </div>
+    <div class="type">
+      <div class="tt"><span class="ic"><svg class="i lg" viewBox="0 0 16 16"><path d="M2.4 4.4h4l1.5 2h5.7v6.2H2.4z"/></svg></span>Projects</div>
+      <div class="fl">Name &middot; Link &middot; Stack &middot; Dates &middot; Bullets</div>
+    </div>
+    <div class="type">
+      <div class="tt"><span class="ic"><svg class="i lg" viewBox="0 0 16 16"><path d="M8.6 2.4H13v4.4L7.1 12.7 2.4 8z"/><path d="M10.5 5h.01"/></svg></span>Skills</div>
+      <div class="fl">Group label &middot; Tags</div>
+    </div>
+    <div class="type">
+      <div class="tt"><span class="ic"><svg class="i lg" viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.5"/><path d="M2.5 8h11M8 2.5c1.6 2 1.6 9 0 11"/></svg></span>Languages</div>
+      <div class="fl">Language &middot; Proficiency</div>
+    </div>
+    <div class="type">
+      <div class="tt"><span class="ic"><svg class="i lg" viewBox="0 0 16 16"><path d="M8 2.6v10.8M2.6 8h10.8"/><circle cx="8" cy="8" r="5.6" stroke-dasharray="2 2"/></svg></span>Custom</div>
+      <div class="fl">Free-form left / right / bullets</div>
+    </div>
+  </div>
+
+  <div class="h2">Education entry</div>
+  <div class="block">
+    <div class="bt"><span class="nm">State University</span><span class="kind">Education</span></div>
+    <div class="f wide">
+      <label>School</label>
+      <div class="in focus">State University<i class="caret"></i></div>
+    </div>
+    <div class="grid2">
+      <div class="f"><label>Degree</label><div class="in">Bachelor of Science<span class="chev"><svg class="i sm" viewBox="0 0 16 16"><path d="M4 6.5l4 4 4-4"/></svg></span></div></div>
+      <div class="f"><label>Field of study</label><div class="in">Computer Science</div></div>
+      <div class="f"><label>Location <span class="opt">optional</span></label><div class="in">Ann Arbor, MI</div></div>
+      <div class="f"><label>GPA <span class="opt">optional</span></label><div class="in">3.8 / 4.0</div></div>
+    </div>
+    <div class="dtrow">
+      <div class="f"><label>Start</label><div class="in"><span class="cal"><svg class="i sm" viewBox="0 0 16 16"><rect x="2.5" y="3.6" width="11" height="9.9" rx="1.5"/><path d="M2.5 6.6h11M5.6 2.2v2.6M10.4 2.2v2.6"/></svg></span>Sept<i class="sep"></i><span class="yr">2018</span></div></div>
+      <div class="f"><label>End</label><div class="in"><span class="cal"><svg class="i sm" viewBox="0 0 16 16"><rect x="2.5" y="3.6" width="11" height="9.9" rx="1.5"/><path d="M2.5 6.6h11M5.6 2.2v2.6M10.4 2.2v2.6"/></svg></span>May<i class="sep"></i><span class="yr">2022</span></div></div>
+      <label class="chk"><i class="box"></i>Present</label>
+    </div>
+    <div class="bhead"><span class="lb">Highlights</span><span class="hint">emphasis only: <code>**bold**</code> <code>*italic*</code></span></div>
+    <div class="bul">
+      <span class="grip"><svg class="i dots" viewBox="0 0 16 16"><path d="M6 4h.01M10 4h.01M6 8h.01M10 8h.01M6 12h.01M10 12h.01"/></svg></span>
+      <div class="ta"><b>Coursework:</b> Algorithms, Operating Systems, Databases, Machine Learning</div>
+      <span class="xb"><svg class="i sm" viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8"/></svg></span>
+    </div>
+    <div class="addb"><svg class="i sm" viewBox="0 0 16 16"><path d="M8 3.5v9M3.5 8h9"/></svg>Add highlight</div>
+  </div>
+
+  <div class="h2">Experience entry</div>
+  <div class="block">
+    <div class="bt"><span class="nm">Software Engineer</span><span class="kind">Experience</span></div>
+    <div class="grid2">
+      <div class="f"><label>Role</label><div class="in">Software Engineer</div></div>
+      <div class="f"><label>Company</label><div class="in">Acme Corp</div></div>
+    </div>
+    <div class="grid3">
+      <div class="f"><label>Location</label><div class="in">Remote</div></div>
+      <div class="f"><label>Start</label><div class="in"><span class="cal"><svg class="i sm" viewBox="0 0 16 16"><rect x="2.5" y="3.6" width="11" height="9.9" rx="1.5"/><path d="M2.5 6.6h11M5.6 2.2v2.6M10.4 2.2v2.6"/></svg></span>June<i class="sep"></i><span class="yr">2022</span></div></div>
+      <div class="f"><label>End</label><div class="in mute">&mdash;</div></div>
+    </div>
+    <label class="chk"><i class="box on"><svg class="i" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-6"/></svg></i>Currently working here &mdash; renders as &ldquo;Present&rdquo;</label>
+    <div class="bhead"><span class="lb">Bullets</span><span class="hint">drag to reorder</span></div>
+    <div class="bul">
+      <span class="grip"><svg class="i dots" viewBox="0 0 16 16"><path d="M6 4h.01M10 4h.01M6 8h.01M10 8h.01M6 12h.01M10 12h.01"/></svg></span>
+      <div class="ta">Built and maintained a customer-facing analytics dashboard used by <b>5,000+</b> weekly active users</div>
+      <span class="xb"><svg class="i sm" viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8"/></svg></span>
+    </div>
+    <div class="bul">
+      <span class="grip"><svg class="i dots" viewBox="0 0 16 16"><path d="M6 4h.01M10 4h.01M6 8h.01M10 8h.01M6 12h.01M10 12h.01"/></svg></span>
+      <div class="ta">Reduced API p95 latency by 40% by profiling hot paths and adding query-level caching</div>
+      <span class="xb"><svg class="i sm" viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8"/></svg></span>
+    </div>
+    <div class="addb"><svg class="i sm" viewBox="0 0 16 16"><path d="M8 3.5v9M3.5 8h9"/></svg>Add bullet</div>
+  </div>
+
+  <div class="h2">Skills and Languages</div>
+  <div class="cols">
+    <div class="block">
+      <div class="bt"><span class="nm">Skills</span><span class="kind">Tags</span></div>
+      <div class="f wide"><label>Group label <span class="opt">optional</span></label><div class="in">Languages &amp; tools</div></div>
+      <div class="f">
+        <label>Tags</label>
+        <div class="chips">
+          <span class="chip">Python<svg class="i" viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8"/></svg></span>
+          <span class="chip">TypeScript<svg class="i" viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8"/></svg></span>
+          <span class="chip">React<svg class="i" viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8"/></svg></span>
+          <span class="chip">SQL<svg class="i" viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8"/></svg></span>
+          <span class="chip">Docker<svg class="i" viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8"/></svg></span>
+          <span class="chipin">type and press enter&hellip;</span>
+        </div>
+      </div>
+    </div>
+    <div class="block">
+      <div class="bt"><span class="nm">Languages</span><span class="kind">Levels</span></div>
+      <div class="lrow"><div class="in">English</div><span class="dots5"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span><span class="lvl">Native</span></div>
+      <div class="lrow"><div class="in">Spanish</div><span class="dots5"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span><span class="lvl">Conversational</span></div>
+      <div class="lrow"><div class="in">German</div><span class="dots5"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span><span class="lvl">Basic</span></div>
+      <div class="addb"><svg class="i sm" viewBox="0 0 16 16"><path d="M8 3.5v9M3.5 8h9"/></svg>Add language</div>
+    </div>
+  </div>
+
+  <div class="note">
+    <span class="ic"><svg class="i lg" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M8 5.2h.01M8 7.4v3.6"/></svg></span>
+    <span class="tx">Anything that doesn&#39;t fit a type keeps the old free-form shape under <b>Custom</b> &mdash; a left column, a right column and bullets. Existing resumes import into Custom untouched, then upgrade to a type whenever you want. Because dates are now real fields, a theme can right-align them, stack them, or drop them into a sidebar without you re-typing anything.</span>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

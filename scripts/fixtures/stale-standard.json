@@ -1,0 +1,63 @@
+{
+  "exportedAt": "2025-07-14T00:00:00.000Z",
+  "activeId": "legacy-1",
+  "branches": [
+    {
+      "id": "legacy-1",
+      "name": "Before typed fields",
+      "createdAt": "2025-07-14T00:00:00.000Z",
+      "updatedAt": "2025-07-14T00:00:00.000Z",
+      "versions": [],
+      "data": {
+        "personal": { "name": "Robin Fixture", "contacts": [] },
+        "sections": [
+          {
+            "id": "s1",
+            "title": "Experience",
+            "kind": "standard",
+            "side": false,
+            "entries": [
+              {
+                "id": "e1",
+                "kind": "standard",
+                "left": "**Systems Engineer**\n*Northwind Tools — Leeds*",
+                "right": "Feb 2021 - Present",
+                "bullets": [{ "id": "b1", "text": "Kept the build honest" }]
+              }
+            ]
+          }
+        ],
+        "design": {}
+      }
+    },
+    {
+      "id": "custom-1",
+      "name": "Custom on purpose",
+      "createdAt": "2026-09-13T00:00:00.000Z",
+      "updatedAt": "2026-09-13T00:00:00.000Z",
+      "versions": [],
+      "data": {
+        "v": 1,
+        "personal": { "name": "Robin Fixture", "contacts": [] },
+        "sections": [
+          {
+            "id": "s2",
+            "title": "Experience",
+            "kind": "standard",
+            "side": false,
+            "entries": [
+              {
+                "id": "e2",
+                "kind": "standard",
+                "left": "**Systems Engineer**\n*Northwind Tools — Leeds*",
+                "right": "Feb 2021 - Present",
+                "bullets": [{ "id": "b2", "text": "Kept the build honest" }]
+              }
+            ]
+          }
+        ],
+        "design": {}
+      }
+    }
+  ]
+}

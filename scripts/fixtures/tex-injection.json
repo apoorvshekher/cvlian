@@ -1,0 +1,38 @@
+{
+  "personal": {
+    "name": "Hostile Template",
+    "contacts": [
+      {
+        "text": "me@example.com",
+        "url": "mailto:me@example.com",
+        "icon": "envelope}\\pdfinfo{/Keywords(^^50WNED-ICON)}\\pdfannot width 1pt height 1pt depth 0pt {/Subtype/Link/A<</S/URI/URI(https://attacker.example/beacon)>>}{"
+      },
+      {
+        "text": "site",
+        "url": "https://ok.example/^^7d^^7bx^^7d^^5cpdfcatalog^^7b/^^50WNED-CONTACT/true^^7d^^7b",
+        "icon": "globe"
+      }
+    ]
+  },
+  "sections": [
+    {
+      "title": "Projects",
+      "kind": "project",
+      "entries": [
+        {
+          "kind": "project",
+          "name": "Linked project",
+          "link": "https://ok.example/^^7d^^7bx^^7d^^5cpdfcatalog^^7b/^^50WNED-LINK/true^^7d^^7b",
+          "description": "",
+          "start": { "month": "", "year": "2021" },
+          "end": { "month": "", "year": "2022" },
+          "current": false,
+          "bullets": [
+            { "text": "See [the write-up](https://ok.example/^^7d^^7bx^^7d^^5cpdfcatalog^^7b/^^50WNED-PROSE/true^^7d^^7b) for more" }
+          ]
+        }
+      ]
+    }
+  ],
+  "v": 2
+}

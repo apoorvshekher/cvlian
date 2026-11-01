@@ -1,0 +1,147 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+</head>
+<body>
+
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&display=swap">
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --w: #ffffff; --w2: #f6f6f4; --k: #0b0b0a; --k2: #55554f; --k3: #8b8b84;
+      --r: #e3e3df; --r2: #c9c9c3; --red: #d8341f; --red-sf: rgba(216,52,31,0.07);
+      --sans: "Archivo", ui-sans-serif, system-ui, "Helvetica Neue", Arial, sans-serif;
+    }
+    body { margin: 0; font-family: var(--sans); color: var(--k); background: var(--w); }
+    a { color: var(--red); text-decoration: none; }
+    a:hover { color: #a82716; }
+    .page { width: 1440px; min-height: 880px; display: flex; flex-direction: column; }
+
+    .nav { display: flex; align-items: center; height: 62px; padding: 0 48px; border-bottom: 1px solid var(--k); }
+    .wm { font-size: 15px; font-weight: 700; letter-spacing: -0.02em; text-transform: uppercase; }
+    .wm i { color: var(--red); font-style: normal; }
+    .navlinks { margin-left: auto; display: flex; gap: 26px; }
+    .navlinks span { font-size: 11px; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--k2); }
+
+    .split { display: flex; flex: 1; min-height: 0; }
+    .left { width: 47%; padding: 64px 48px 40px; border-right: 1px solid var(--k); }
+    .right { flex: 1; background: var(--w2); display: flex; align-items: flex-start; justify-content: center; padding: 56px 0 0; }
+
+    .kicker { font-size: 11px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--red); padding-bottom: 22px; }
+    h1 { margin: 0; font-size: 62px; line-height: 1; letter-spacing: -0.04em; font-weight: 700; }
+    h1 em { font-style: italic; font-weight: 400; }
+    .lede { margin: 26px 0 0; font-size: 16.5px; line-height: 1.6; color: var(--k2); max-width: 520px; }
+    .lede b { color: var(--k); font-weight: 600; }
+
+    .cta { display: flex; flex-direction: column; gap: 10px; padding: 34px 0 0; max-width: 400px; }
+    .btn { display: flex; align-items: center; justify-content: center; gap: 11px; height: 52px;
+      font-size: 13.5px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+      border: 1px solid var(--k); background: var(--k); color: var(--w); }
+    .btn.alt { background: var(--w); color: var(--k); }
+    .gmark { width: 18px; height: 18px; flex: none; display: block; }
+    .hint { font-size: 11.5px; line-height: 1.55; color: var(--k3); max-width: 400px; padding-top: 4px; }
+
+    .feats { padding: 40px 0 0; }
+    .feat { display: flex; gap: 14px; padding: 13px 0; border-top: 1px solid var(--r); }
+    .feat .n { font-size: 10.5px; font-weight: 700; color: var(--red); letter-spacing: 0.1em; padding-top: 3px; width: 20px; flex: none; }
+    .feat .t { font-size: 13.5px; line-height: 1.55; color: var(--k2); }
+    .feat .t b { color: var(--k); font-weight: 600; }
+
+    /* the typeset page, as a specimen */
+    .sheet { width: 520px; background: #fff; border: 1px solid var(--r2); padding: 38px 44px;
+      font-family: Georgia, "Times New Roman", serif; color: #14130f; box-shadow: 0 20px 50px -30px rgba(0,0,0,0.45); }
+    .sname { text-align: center; font-size: 27px; }
+    .scontact { text-align: center; font-size: 8.4px; color: var(--red); padding-top: 8px; }
+    .ssec { font-size: 10.5px; font-weight: 700; margin: 15px 0 0; letter-spacing: 0.06em; text-transform: uppercase; }
+    .srule { height: 1.6px; background: #14130f; margin: 3px 0 6px; }
+    .sbody { font-size: 8.6px; line-height: 1.5; }
+    .srow { display: flex; align-items: baseline; gap: 10px; }
+    .srow .l { flex: 1; }
+    .srow .r { white-space: nowrap; font-size: 8.4px; }
+    .b { font-weight: 700; } .i { font-style: italic; }
+    .slist { margin: 3px 0 0; padding-left: 12px; }
+    .slist li { font-size: 8.6px; line-height: 1.55; margin-bottom: 1.5px; }
+    .schips { display: flex; flex-wrap: wrap; gap: 4px; padding-top: 3px; }
+    .schips span { font-size: 8px; padding: 2px 5px; background: var(--red-sf); }
+    .caption { text-align: center; font-size: 10.5px; font-weight: 700; letter-spacing: 0.11em;
+      text-transform: uppercase; color: var(--k3); padding-top: 16px; }
+  </style>
+
+
+<div class="page">
+  <div class="nav">
+    <span class="wm">Resume<i>&#8202;/&#8202;</i>Editor</span>
+    <span class="navlinks"><span>How it works</span><span>Themes</span><span>Source</span></span>
+  </div>
+
+  <div class="split">
+    <div class="left">
+      <div class="kicker">Free &middot; no account required</div>
+      <h1>Typeset.<br>Not <em>templated</em>.</h1>
+      <p class="lede">
+        Most résumé builders draw a box and call it typography. This one runs
+        <b>real pdfTeX</b> in your browser and hands you the PDF a typesetter
+        would have produced &mdash; ligatures, kerning, proper en dashes and all.
+      </p>
+
+      <div class="cta">
+        <span class="btn">
+          <svg class="gmark" viewBox="0 0 18 18" aria-hidden="true">
+            <path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 01-1.8 2.72v2.26h2.92c1.7-1.57 2.68-3.88 2.68-6.62z"/>
+            <path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.92-2.26c-.81.54-1.84.86-3.04.86-2.34 0-4.32-1.58-5.03-3.7H.96v2.33A9 9 0 009 18z"/>
+            <path fill="#FBBC05" d="M3.97 10.72a5.41 5.41 0 010-3.44V4.95H.96a9 9 0 000 8.1l3.01-2.33z"/>
+            <path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 00.96 4.95l3.01 2.33C4.68 5.16 6.66 3.58 9 3.58z"/>
+          </svg>
+          Continue with Google
+        </span>
+        <span class="btn alt">Start without an account</span>
+        <p class="hint">
+          Google keeps one file in your own Drive so your résumé follows you between
+          machines. Without an account everything stays in this browser.
+        </p>
+      </div>
+
+      <div class="feats">
+        <div class="feat"><span class="n">01</span><span class="t"><b>Typed fields.</b> School, degree, year from, year to &mdash; no markup for structure.</span></div>
+        <div class="feat"><span class="n">02</span><span class="t"><b>Branches.</b> One résumé per rôle, each with its own saved history.</span></div>
+        <div class="feat"><span class="n">03</span><span class="t"><b>Three themes.</b> Classic, sidebar and banner, each with four typefaces.</span></div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div>
+        <div class="sheet">
+          <div class="sname">Alex Doe</div>
+          <div class="scontact">alex@example.com &nbsp;|&nbsp; alexdoe.example.com &nbsp;|&nbsp; github.com/alexdoe</div>
+          <div class="ssec">Profile</div><div class="srule"></div>
+          <div class="sbody">Software engineer with 3+ years building web products end to end. Comfortable owning features from database to UI, with a soft spot for <span class="i">fast feedback loops</span> and boring, reliable infrastructure.</div>
+          <div class="ssec">Education</div><div class="srule"></div>
+          <div class="sbody">
+            <div class="srow"><div class="l"><span class="b">State University</span> &mdash; Ann Arbor, MI</div><div class="r">Sept 2018 &ndash; May 2022</div></div>
+            <div class="srow"><div class="l i">BS in Computer Science &middot; GPA 3.8/4.0</div></div>
+            <ul class="slist"><li><span class="b">Coursework:</span> Algorithms, Operating Systems, Databases</li></ul>
+          </div>
+          <div class="ssec">Experience</div><div class="srule"></div>
+          <div class="sbody">
+            <div class="srow"><div class="l"><span class="b">Software Engineer</span></div><div class="r">June 2022 &ndash; Present</div></div>
+            <div class="srow"><div class="l i">Acme Corp &mdash; Remote</div></div>
+            <ul class="slist">
+              <li>Built an analytics dashboard used by <span class="b">5,000+</span> weekly active users</li>
+              <li>Reduced API p95 latency by 40% with query-level caching</li>
+              <li>Mentored two interns; both projects shipped to production</li>
+            </ul>
+          </div>
+          <div class="ssec">Skills</div><div class="srule"></div>
+          <div class="schips"><span>Python</span><span>TypeScript</span><span>React</span><span>SQL</span><span>Docker</span><span>PostgreSQL</span><span>AWS</span></div>
+        </div>
+        <div class="caption">Actual output &middot; classic theme &middot; charter</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

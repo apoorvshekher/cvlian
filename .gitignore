@@ -1,0 +1,24 @@
+# local artifacts
+node_modules/
+dist/
+.venv/
+build/
+__pycache__/
+*.aux
+*.log
+*.out
+
+# personal resume data — never commit (the repo/Pages site is public;
+# the static app ships only docs/sample.json)
+resume.json
+main.original.tex
+Master_Resume.pdf
+
+# design canvas working previews and local UI screenshots
+design/.prev/
+design/.shots/
+
+# local env (client id is public, but keep local overrides out of git)
+.env.local
+.env*.local
+CLAUDE.md

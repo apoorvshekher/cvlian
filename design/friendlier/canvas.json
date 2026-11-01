@@ -1,0 +1,245 @@
+{
+  "pages": [
+    {
+      "id": "page-1",
+      "name": "Flow"
+    },
+    {
+      "id": "page-6",
+      "name": "Master & library"
+    },
+    {
+      "id": "page-5",
+      "name": "Copies & history"
+    },
+    {
+      "id": "page-2",
+      "name": "Screens"
+    },
+    {
+      "id": "page-3",
+      "name": "Shared fixes"
+    },
+    {
+      "id": "page-4",
+      "name": "Not chosen"
+    }
+  ],
+  "artboards": [
+    {
+      "file": "Flow.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 2320,
+      "h": 1900,
+      "title": "The whole flow",
+      "page": "page-1"
+    },
+    {
+      "file": "FirstRun.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "1 · First run",
+      "page": "page-2"
+    },
+    {
+      "file": "FirstStrip.dc.html",
+      "x": 1580,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "2 · The first minute",
+      "page": "page-2"
+    },
+    {
+      "file": "Main.dc.html",
+      "x": 3160,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "3 · The editor",
+      "page": "page-2"
+    },
+    {
+      "file": "Details.dc.html",
+      "x": 4740,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "4 · Your details",
+      "page": "page-2"
+    },
+    {
+      "file": "LookFeel.dc.html",
+      "x": 0,
+      "y": 1180,
+      "w": 1440,
+      "h": 900,
+      "title": "5 · Look & feel",
+      "page": "page-2"
+    },
+    {
+      "file": "Copies.dc.html",
+      "x": 1580,
+      "y": 1180,
+      "w": 1440,
+      "h": 900,
+      "title": "6 · Copies & snapshots",
+      "page": "page-2"
+    },
+    {
+      "file": "Trouble.dc.html",
+      "x": 3160,
+      "y": 1180,
+      "w": 1440,
+      "h": 900,
+      "title": "7 · When it breaks",
+      "page": "page-2"
+    },
+    {
+      "file": "Patterns.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 1240,
+      "h": 1960,
+      "title": "The six small ones",
+      "page": "page-3"
+    },
+    {
+      "file": "OptionB.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "B — Click the page",
+      "page": "page-4"
+    },
+    {
+      "file": "OptionC.dc.html",
+      "x": 1580,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "C — Guided",
+      "page": "page-4"
+    },
+    {
+      "file": "History.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "Browsing a copy",
+      "page": "page-5"
+    },
+    {
+      "file": "HistoryEmpty.dc.html",
+      "x": 1580,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "Before anything is kept",
+      "page": "page-5"
+    },
+    {
+      "file": "HistoryRestore.dc.html",
+      "x": 3160,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "Looking back",
+      "page": "page-5"
+    },
+    {
+      "file": "Master.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "The master",
+      "page": "page-6"
+    },
+    {
+      "file": "MasterReview.dc.html",
+      "x": 1580,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "What hasn't reached it",
+      "page": "page-6"
+    },
+    {
+      "file": "Library.dc.html",
+      "x": 3160,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "Add from your library",
+      "page": "page-6"
+    }
+  ],
+  "annotations": [
+    {
+      "id": "note-decided",
+      "x": 0,
+      "y": -300,
+      "w": 900,
+      "page": "page-1",
+      "text": "DECIDED — the three rulings, folded in\n\n1 · A two-second pause before the page redraws. Long enough that a sentence gets finished first, and few enough compiles to keep a laptop quiet. It buys silence: the old page holds still until the new one is ready, so no flicker, no spinner over the page, no scroll jump. Ctrl+S still forces one.\n\n2 · The first-minute strip stays. Drawn as screen 2 on the Screens page. It is the only genuinely new thing in the flow; everything else is a rename, a dialog, or moving something that already exists.\n\n3 · \"Copy\" is an interface word only. Export keeps writing {branches: [...]} and normalizeStore keeps reading both shapes, so no backup anyone already has stops importing, and there is no third format to support forever."
+    },
+    {
+      "id": "note-screens-1",
+      "x": 0,
+      "y": -190,
+      "w": 760,
+      "page": "page-2",
+      "text": "The seven screens the flow names, in the order a person meets them. All in Direction A's system — Figtree, warm paper, one sage accent, 9–12px radii — with your real sample data so the type and the spacing are being judged on real strings."
+    },
+    {
+      "id": "note-screens-2",
+      "x": 0,
+      "y": 1000,
+      "w": 760,
+      "page": "page-2",
+      "text": "5, 6 and 7 are the ones with no equivalent today: a visual Look & feel, one panel that answers \"where is my work\", and a failure that keeps the last good page on screen instead of blanking it and printing a TeX log."
+    },
+    {
+      "id": "note-patterns",
+      "x": 0,
+      "y": -240,
+      "w": 620,
+      "page": "page-3",
+      "text": "These land whichever way the layout goes — they are independent of the flow.\n\nAuto-compile is the only one that reaches into the serialized compile queue in App.tsx. The rest are vocabulary, six replaced browser dialogs, one visual picker and a friendlier reading of the TeX log."
+    },
+    {
+      "id": "note-notchosen",
+      "x": 0,
+      "y": -200,
+      "w": 620,
+      "page": "page-4",
+      "text": "NOT CHOSEN — kept for reference.\n\nB: the page is the interface, click a line and type into it. Needed a second HTML rendering of the resume alongside the PDF.\nC: one step at a time with a progress spine and per-step writing checks."
+    },
+    {
+      "id": "note-history",
+      "x": 0,
+      "y": -430,
+      "w": 980,
+      "page": "page-5",
+      "text": "WHY THE OLD PANEL DID NOT READ\n\nThe model is a tree with a timeline — copies, each with its own past — and I drew it as two flat lists that never touched. Nothing said the snapshots belonged to the copy you were in, nothing said where a copy came from, and the list was empty for almost everyone because it only filled up if you remembered to press save.\n\nFOUR CHANGES, IN ORDER OF HOW MUCH THEY MATTER\n\n1 · You can SEE them. A copy is a page, not a row of text. Which is the two-pager? Which one leads with ML? Answered at a glance, and that is most of the confusion gone.\n\n2 · The history fills itself. Points are kept as you work, not only when you remember. Named ones stay for good, unnamed ones thin out after a month. An empty list taught nobody anything.\n\n3 · Looking is not switching. You can open any copy's past while still editing another — the header says so. Today, seeing a copy means leaving the one you are in.\n\n4 · Putting a point back is not a one-way door. Restore keeps where you are now as a point first. That single rule is what lets the button read \"Put this back\" instead of a warning.\n\nAND ONE THING THE SHAPE EARNS FOR FREE: the oldest point in a tailored copy is \"Made from Main\", so the timeline shows where the copy came from without drawing a git graph at anybody."
+    },
+    {
+      "id": "note-master",
+      "x": 0,
+      "y": -470,
+      "w": 1000,
+      "page": "page-6",
+      "text": "A MASTER RÉSUMÉ, AND WHAT MAY FLOW INTO IT\n\nThe pain is real and old: you write a sharp bullet for one application, it lives only in that copy, and six months later you cannot find it. Keeping one long document and cutting it down per application is what career advice has always said to do.\n\nWHAT MAKES IT TRACTABLE HERE\n\nCopies already share entry ids — newCopy structuredClones, and normalizeData preserves ids rather than minting new ones. So \"which entries in this variant does the master not have\" is a set difference on ids. Exact, today, no guessing.\n\nTHE LINE THAT SAME FACT DRAWS\n\nAn ADDED entry has an id the master has never seen: unambiguous, safe to offer. An EDITED entry has the same id and different words — and those words are tailored on purpose. Flow that back and you have overwritten the master with role-specific phrasing. So additions may travel; rewordings never do. The footnote on the review says exactly that, because it is the one rule a user has to trust.\n\nWHY IT IS OFFERED, NOT AUTOMATIC\n\nA master that silently absorbs everything typed into a variant is a junk drawer inside a month — half-written drafts, abandoned lines, experiments. The value of a master is that it is curated. One click per item is not a chore; an uncurated master is useless.\n\nWHAT IS DELIBERATELY NOT HERE\n\nThe master is an ordinary copy, flagged — not a second kind of document. Make it its own thing and the page count, the PDF button and the compile all start lying about it. And matching is id-only: two entries typed independently in different copies will not pair up. Fuzzy-matching job titles is where this sort of feature starts being wrong confidently, so it is left out."
+    }
+  ],
+  "launch": {
+    "view": "canvas",
+    "page": "page-6"
+  }
+}

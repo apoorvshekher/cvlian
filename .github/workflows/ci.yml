@@ -1,0 +1,29 @@
+name: Tests
+
+on:
+  push:
+    branches-ignore: [main]   # main is covered by the deploy workflow
+  pull_request:
+  workflow_dispatch:
+
+# The suite only reads the checkout; without this the token gets whatever
+# the repository's default is, which may be write access.
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # the suite drives the real app in a real browser against the real
+      # WASM engine; the version is pinned to the playwright-core in the lock
+      # file so the two can never disagree about the protocol
+      - name: Install Chromium
+        run: npx --yes playwright@$(node -p "require('playwright-core/package.json').version") install --with-deps chromium
+      - run: npm test

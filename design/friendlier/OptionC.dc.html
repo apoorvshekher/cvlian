@@ -1,0 +1,415 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Public+Sans:wght@400;500;600&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --bg: #f7f4ef; --card: #ffffff; --sink: #f1ece4;
+      --ink: #241f1a; --ink2: #6b6257; --ink3: #9a9083;
+      --rule: #e7e0d5; --rule2: #d8cfc0;
+      --acc: #a8622a; --acc-dk: #8a4f20; --acc-sf: #f8ece1; --acc-rg: #e6c9ad;
+      --ok: #3f7a4e;
+      --disp: "Bricolage Grotesque", ui-sans-serif, system-ui, "Helvetica Neue", Arial, sans-serif;
+      --sans: "Public Sans", ui-sans-serif, system-ui, "Helvetica Neue", Arial, sans-serif;
+      --serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+    }
+    body { margin: 0; font-family: var(--sans); color: var(--ink); background: var(--bg); }
+    a { color: var(--acc); text-decoration: none; }
+    a:hover { color: var(--acc-dk); }
+    .i { width: 16px; height: 16px; flex: none; display: block; stroke: currentColor; fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+    .i.sm { width: 13px; height: 13px; }
+    .i.dots { stroke-width: 2.2; }
+    .spacer { flex: 1; }
+
+    .app { width: 1440px; height: 900px; display: flex; background: var(--bg); overflow: hidden; }
+
+    /* ---------- left rail ---------- */
+    .rail { width: 300px; flex: none; background: var(--card); border-right: 1px solid var(--rule); display: flex; flex-direction: column; padding: 20px 18px 18px; }
+    .brandrow { display: flex; align-items: center; gap: 9px; }
+    .mark { width: 26px; height: 26px; border-radius: 8px; background: var(--acc); color: #fff; display: flex; align-items: center; justify-content: center; }
+    .wordmark { font-family: var(--disp); font-size: 14.5px; font-weight: 600; letter-spacing: -0.01em; }
+    .who { padding-top: 22px; display: flex; flex-direction: column; gap: 3px; }
+    .who .wn { font-family: var(--disp); font-size: 19px; font-weight: 600; letter-spacing: -0.015em; }
+    .who .wc { display: flex; align-items: center; gap: 5px; font-size: 12.5px; color: var(--ink2); }
+
+    .prog { margin-top: 18px; border: 1px solid var(--rule); border-radius: 12px; padding: 13px 14px; display: flex; flex-direction: column; gap: 9px; background: var(--sink); }
+    .prog .pt { display: flex; align-items: baseline; gap: 6px; }
+    .prog .pn { font-family: var(--disp); font-size: 15px; font-weight: 600; }
+    .prog .ps { font-size: 12px; color: var(--ink2); }
+    .segs { display: flex; gap: 4px; }
+    .segs i { flex: 1; height: 6px; border-radius: 4px; background: var(--rule2); }
+    .segs i.on { background: var(--acc); }
+    .segs i.now { background: var(--acc-rg); }
+
+    .steps { padding-top: 20px; display: flex; flex-direction: column; gap: 2px; }
+    .slabel { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink3); padding: 0 6px 8px; }
+    .step { display: flex; align-items: center; gap: 11px; padding: 9px 10px; border-radius: 10px; }
+    .step.on { background: var(--acc-sf); }
+    .sdot { width: 22px; height: 22px; border-radius: 50%; flex: none; display: flex; align-items: center; justify-content: center; border: 1.5px solid var(--rule2); color: var(--ink3); font-size: 11px; font-weight: 600; }
+    .sdot.done { background: var(--ok); border-color: var(--ok); color: #fff; }
+    .sdot.cur { border-color: var(--acc); border-width: 2px; color: var(--acc); background: #fff; }
+    .step .sn { font-size: 13.5px; font-weight: 500; }
+    .step.on .sn { color: var(--acc-dk); font-weight: 600; }
+    .step .ss { font-size: 11.5px; color: var(--ink3); }
+    .stext { display: flex; flex-direction: column; gap: 1px; flex: 1; min-width: 0; }
+    .railfoot { margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
+    .escape { display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 12px; border: 1px solid var(--rule2); border-radius: 10px; font-size: 13px; color: var(--ink2); font-weight: 500; }
+
+    /* ---------- centre ---------- */
+    .main { width: 660px; flex: none; display: flex; flex-direction: column; border-right: 1px solid var(--rule); }
+    .mhead { display: flex; align-items: center; padding: 26px 34px 0; }
+    .eyebrow { font-size: 11.5px; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: var(--acc); }
+    .autosave { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ink3); }
+    .adot { width: 6px; height: 6px; border-radius: 50%; background: var(--ok); }
+    .mbody { flex: 1; padding: 6px 34px 0; display: flex; flex-direction: column; gap: 12px; overflow: hidden; }
+    h1 { font-family: var(--disp); font-size: 28px; font-weight: 600; letter-spacing: -0.025em; margin: 0; }
+    .lede { font-size: 14px; line-height: 1.5; color: var(--ink2); margin: 0; max-width: 54ch; }
+
+    .job { border: 1px solid var(--rule); border-radius: 14px; background: var(--card); }
+    .job.open { border-color: var(--acc-rg); box-shadow: 0 1px 2px rgba(36,31,26,0.04), 0 8px 24px rgba(36,31,26,0.06); }
+    .jhd { display: flex; align-items: center; gap: 10px; padding: 14px 16px; }
+    .jhd .grip { color: var(--rule2); }
+    .jt { font-size: 14.5px; font-weight: 600; }
+    .js { font-size: 13px; color: var(--ink2); }
+    .jw { font-size: 12.5px; color: var(--ink3); margin-left: auto; }
+    .jfields { padding: 0 16px 16px; display: flex; flex-direction: column; gap: 10px; }
+    .frow { display: flex; gap: 10px; }
+    .fld { flex: 1; display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+    .fld label { font-size: 12.5px; font-weight: 500; color: var(--ink2); }
+    .in { height: 40px; border: 1px solid var(--rule2); border-radius: 10px; display: flex; align-items: center; padding: 0 12px; font-size: 14px; background: var(--card); }
+    .in.focus { border-color: var(--acc); box-shadow: 0 0 0 3px var(--acc-sf); }
+    .in.off { background: var(--sink); color: var(--ink3); border-color: var(--rule); }
+    .dsel { width: 92px; justify-content: space-between; color: var(--ink2); }
+    .switchrow { display: flex; align-items: center; gap: 9px; font-size: 13.5px; }
+    .switch { width: 36px; height: 21px; border-radius: 20px; background: var(--acc); position: relative; flex: none; }
+    .switch i { position: absolute; top: 2.5px; left: 18px; width: 16px; height: 16px; border-radius: 50%; background: #fff; }
+
+    .blabel { font-size: 12.5px; font-weight: 600; color: var(--ink2); }
+    .brow { display: flex; align-items: flex-start; gap: 9px; padding: 9px 12px; border: 1px solid var(--rule); border-radius: 10px; font-size: 13.5px; line-height: 1.5; }
+    .brow .grip { color: var(--rule2); margin-top: 2px; }
+    .brow .bm { width: 5px; height: 5px; border-radius: 50%; background: var(--ink3); flex: none; margin-top: 7px; }
+    .brow b { font-weight: 700; }
+    .coach { border: 1px solid var(--acc-rg); background: var(--acc-sf); border-radius: 11px; padding: 11px 13px; display: flex; flex-direction: column; gap: 7px; }
+    .ctitle { font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--acc-dk); }
+    .crow { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; line-height: 1.45; color: var(--ink); }
+    .crow .ok { color: var(--ok); margin-top: 1px; }
+    .crow .todo { color: var(--acc); margin-top: 1px; }
+    .addb { display: flex; align-items: center; gap: 8px; align-self: flex-start; height: 34px; padding: 0 12px 0 10px; border-radius: 9px; color: var(--ink2); font-size: 13px; font-weight: 500; background: var(--sink); }
+    .addjob { display: flex; align-items: center; justify-content: center; gap: 8px; height: 48px; border: 1px dashed var(--rule2); border-radius: 13px; color: var(--acc-dk); font-size: 14px; font-weight: 600; }
+
+    .mfoot { flex: none; display: flex; align-items: center; gap: 12px; padding: 14px 34px; border-top: 1px solid var(--rule); background: var(--card); }
+    .btn { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 18px; border: 1px solid var(--rule2); border-radius: 11px; background: var(--card); color: var(--ink); font-size: 14px; font-weight: 500; }
+    .btn.primary { background: var(--acc); border-color: var(--acc); color: #fff; font-weight: 600; }
+    .btn.ghost { border-color: transparent; color: var(--ink2); }
+
+    /* ---------- right preview ---------- */
+    .side { flex: 1; min-width: 0; display: flex; flex-direction: column; padding: 22px 28px; gap: 12px; }
+    .sidehead { display: flex; align-items: center; gap: 8px; }
+    .sidehead .sl { font-size: 12.5px; font-weight: 600; color: var(--ink2); }
+    .chip { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 10px; border-radius: 20px; font-size: 12px; font-weight: 500; background: #e8f1e9; color: #2f6b3d; }
+    .chip .i { color: #3f7a4e; }
+    .expand { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--ink3); border: 1px solid var(--rule); }
+
+    .page { width: 424px; height: 549px; background: #fff; border: 1px solid var(--rule2); box-shadow: 0 2px 6px rgba(36,31,26,0.06), 0 16px 36px rgba(36,31,26,0.08); padding: 26px 30px; font-family: var(--serif); color: #14130f; overflow: hidden; }
+    .rname { text-align: center; font-size: 17px; }
+    .rcontacts { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px; font-size: 6px; color: #3a382f; padding-top: 4px; }
+    .rsec { padding-top: 9px; }
+    .rsh { font-size: 7.6px; font-weight: 700; border-bottom: 0.7px solid #14130f; padding-bottom: 1px; }
+    .rp { font-size: 6.3px; line-height: 1.45; padding-top: 3px; }
+    .rp i { font-style: italic; }
+    .rentry { padding-top: 4px; }
+    .rtop { display: flex; justify-content: space-between; gap: 10px; font-size: 6.5px; }
+    .rtop b { font-weight: 700; }
+    .rsub { font-size: 6.3px; font-style: italic; color: #2c2a23; }
+    .rbul { font-size: 6.2px; line-height: 1.45; padding-left: 8px; position: relative; }
+    .rbul::before { content: "•"; position: absolute; left: 2px; }
+    .rbul b { font-weight: 700; }
+    .rtags { display: flex; flex-wrap: wrap; gap: 3px; padding-top: 3px; }
+    .rtags span { font-size: 5.8px; background: #f1efe9; padding: 1px 3px; }
+    .rlev { display: flex; justify-content: space-between; font-size: 6.3px; }
+    .rlev i { display: flex; gap: 2px; align-items: center; font-style: normal; }
+    .rlev u { width: 3px; height: 3px; border-radius: 50%; background: #14130f; display: block; }
+    .rlev u.o { background: transparent; border: 0.6px solid #14130f; }
+    .live { background: var(--acc-sf); box-shadow: 0 0 0 4px var(--acc-sf); border-radius: 2px; }
+    .sidenote { font-size: 12.5px; line-height: 1.5; color: var(--ink3); max-width: 40ch; }
+  </style>
+</helmet>
+
+<div class="app">
+
+  <!-- ===== left rail: where you are ===== -->
+  <aside class="rail">
+    <div class="brandrow">
+      <div class="mark">
+        <svg class="i sm" viewBox="0 0 16 16"><path d="M4 2h5l3 3v9H4z"></path><path d="M9 2v3h3"></path><path d="M6 8.5h4M6 11h3"></path></svg>
+      </div>
+      <div class="wordmark">Resume Editor</div>
+    </div>
+
+    <div class="who">
+      <div class="wn">Alex Doe's resume</div>
+      <div class="wc">
+        Main copy
+        <svg class="i sm" viewBox="0 0 16 16"><path d="M4 6.5 8 10.5 12 6.5"></path></svg>
+      </div>
+    </div>
+
+    <div class="prog">
+      <div class="pt">
+        <span class="pn">3 of 6 done</span>
+        <span class="ps">· about 5 minutes left</span>
+      </div>
+      <div class="segs">
+        <i class="on"></i><i class="now"></i><i class="on"></i><i class="on"></i><i></i><i></i>
+      </div>
+    </div>
+
+    <div class="steps">
+      <div class="slabel">Steps</div>
+
+      <div class="step">
+        <span class="sdot done"><svg class="i sm" viewBox="0 0 16 16"><path d="M4 8.4 6.8 11.2 12 5.6"></path></svg></span>
+        <span class="stext"><span class="sn">The basics</span><span class="ss">Name and ways to reach you</span></span>
+      </div>
+
+      <div class="step on">
+        <span class="sdot cur">2</span>
+        <span class="stext"><span class="sn">Your experience</span><span class="ss">2 jobs so far</span></span>
+        <svg class="i sm" viewBox="0 0 16 16" style="color:#a8622a"><path d="M6 4l4 4-4 4"></path></svg>
+      </div>
+
+      <div class="step">
+        <span class="sdot done"><svg class="i sm" viewBox="0 0 16 16"><path d="M4 8.4 6.8 11.2 12 5.6"></path></svg></span>
+        <span class="stext"><span class="sn">Education</span><span class="ss">State University</span></span>
+      </div>
+
+      <div class="step">
+        <span class="sdot done"><svg class="i sm" viewBox="0 0 16 16"><path d="M4 8.4 6.8 11.2 12 5.6"></path></svg></span>
+        <span class="stext"><span class="sn">Skills &amp; languages</span><span class="ss">10 skills · 3 languages</span></span>
+      </div>
+
+      <div class="step">
+        <span class="sdot">5</span>
+        <span class="stext"><span class="sn">Look &amp; feel</span><span class="ss">Layout, type, spacing</span></span>
+      </div>
+
+      <div class="step">
+        <span class="sdot">6</span>
+        <span class="stext"><span class="sn">Download</span><span class="ss">PDF, or keep a snapshot</span></span>
+      </div>
+    </div>
+
+    <div class="railfoot">
+      <div class="escape">
+        <svg class="i" viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="10" rx="1.6"></rect><path d="M6.5 3v10"></path></svg>
+        Skip to the full editor
+        <span class="spacer"></span>
+        <svg class="i sm" viewBox="0 0 16 16"><path d="M6 4l4 4-4 4"></path></svg>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ===== centre: one step at a time ===== -->
+  <section class="main">
+    <div class="mhead">
+      <span class="eyebrow">Step 2 of 6</span>
+      <span class="spacer"></span>
+      <span class="autosave"><i class="adot"></i>Saved automatically</span>
+    </div>
+
+    <div class="mbody">
+      <h1>Your work experience</h1>
+      <p class="lede">Newest job first, and drag to reorder. Only the ones worth the reader's attention.</p>
+
+      <div class="job open">
+        <div class="jhd">
+          <svg class="i dots grip" viewBox="0 0 16 16"><circle cx="6" cy="4" r=".7"></circle><circle cx="10" cy="4" r=".7"></circle><circle cx="6" cy="8" r=".7"></circle><circle cx="10" cy="8" r=".7"></circle><circle cx="6" cy="12" r=".7"></circle><circle cx="10" cy="12" r=".7"></circle></svg>
+          <span class="jt">Software Engineer</span>
+          <span class="js">Acme Corp</span>
+          <span class="jw">Jun 2022 – now</span>
+          <svg class="i sm" viewBox="0 0 16 16" style="color:#9a9083"><path d="M4 9.5 8 5.5l4 4"></path></svg>
+        </div>
+
+        <div class="jfields">
+          <div class="frow">
+            <div class="fld">
+              <label>Job title</label>
+              <div class="in focus">Software Engineer</div>
+            </div>
+            <div class="fld">
+              <label>Company</label>
+              <div class="in">Acme Corp</div>
+            </div>
+          </div>
+
+          <div class="frow">
+            <div class="fld">
+              <label>City, or remote</label>
+              <div class="in">Remote</div>
+            </div>
+            <div class="fld">
+              <label>Started</label>
+              <div class="frow">
+                <div class="in dsel">June <svg class="i sm" viewBox="0 0 16 16"><path d="M4 6.5 8 10.5 12 6.5"></path></svg></div>
+                <div class="in" style="flex:1">2022</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="switchrow">
+            <span class="switch"><i></i></span>
+            I still work here
+          </div>
+
+          <div class="blabel">What you did there</div>
+          <div class="brow">
+            <svg class="i dots grip" viewBox="0 0 16 16"><circle cx="6" cy="4" r=".7"></circle><circle cx="10" cy="4" r=".7"></circle><circle cx="6" cy="8" r=".7"></circle><circle cx="10" cy="8" r=".7"></circle><circle cx="6" cy="12" r=".7"></circle><circle cx="10" cy="12" r=".7"></circle></svg>
+            <i class="bm"></i>
+            <span>Built and maintained a customer-facing analytics dashboard used by <b>5,000+</b> weekly active users</span>
+          </div>
+          <div class="brow">
+            <svg class="i dots grip" viewBox="0 0 16 16"><circle cx="6" cy="4" r=".7"></circle><circle cx="10" cy="4" r=".7"></circle><circle cx="6" cy="8" r=".7"></circle><circle cx="10" cy="8" r=".7"></circle><circle cx="6" cy="12" r=".7"></circle><circle cx="10" cy="12" r=".7"></circle></svg>
+            <i class="bm"></i>
+            <span>Mentored two interns; both projects shipped to production</span>
+          </div>
+
+          <div class="coach">
+            <div class="ctitle">Two quick checks</div>
+            <div class="crow">
+              <svg class="i sm ok" viewBox="0 0 16 16"><path d="M4 8.4 6.8 11.2 12 5.6"></path></svg>
+              Every bullet opens with an action verb — built, reduced, mentored.
+            </div>
+            <div class="crow">
+              <svg class="i sm todo" viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.4"></circle></svg>
+              Two of your three bullets carry a number. The third one could use one.
+            </div>
+          </div>
+
+          <div class="addb">
+            <svg class="i sm" viewBox="0 0 16 16"><path d="M8 3.5v9M3.5 8h9"></path></svg>
+            Add a bullet
+          </div>
+        </div>
+      </div>
+
+      <div class="job">
+        <div class="jhd">
+          <svg class="i dots grip" viewBox="0 0 16 16"><circle cx="6" cy="4" r=".7"></circle><circle cx="10" cy="4" r=".7"></circle><circle cx="6" cy="8" r=".7"></circle><circle cx="10" cy="8" r=".7"></circle><circle cx="6" cy="12" r=".7"></circle><circle cx="10" cy="12" r=".7"></circle></svg>
+          <span class="jt">Software Engineering Intern</span>
+          <span class="js">Widget Labs</span>
+          <span class="jw">May – Aug 2021</span>
+          <svg class="i sm" viewBox="0 0 16 16" style="color:#9a9083"><path d="M4 6.5 8 10.5 12 6.5"></path></svg>
+        </div>
+      </div>
+
+      <div class="addjob">
+        <svg class="i" viewBox="0 0 16 16"><path d="M8 3.5v9M3.5 8h9"></path></svg>
+        Add another job
+      </div>
+    </div>
+
+    <div class="mfoot">
+      <div class="btn ghost">
+        <svg class="i" viewBox="0 0 16 16"><path d="M10 4 6 8l4 4"></path></svg>
+        Back
+      </div>
+      <span class="spacer"></span>
+      <div class="btn primary">
+        Next: education
+        <svg class="i" viewBox="0 0 16 16"><path d="M6 4l4 4-4 4"></path></svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== right: the page, as it stands ===== -->
+  <aside class="side">
+    <div class="sidehead">
+      <span class="sl">Your resume so far</span>
+      <span class="spacer"></span>
+      <span class="chip">
+        <svg class="i sm" viewBox="0 0 16 16"><path d="M4 8.4 6.8 11.2 12 5.6"></path></svg>
+        Fits on one page
+      </span>
+      <span class="expand">
+        <svg class="i sm" viewBox="0 0 16 16"><path d="M9 3h4v4"></path><path d="M13 3 7.5 8.5"></path><path d="M7 13H3V9"></path><path d="M3 13l4.5-4.5"></path></svg>
+      </span>
+    </div>
+
+    <div class="page">
+      <div class="rname">Alex Doe</div>
+      <div class="rcontacts">
+        <span>alex@example.com</span><span>·</span>
+        <span>alexdoe.example.com</span><span>·</span>
+        <span>linkedin.com/in/alexdoe</span><span>·</span>
+        <span>github.com/alexdoe</span>
+      </div>
+
+      <div class="rsec">
+        <div class="rsh">Profile</div>
+        <div class="rp">Software engineer with 3+ years building web products end to end. Comfortable owning features from database to UI, with a soft spot for <i>fast feedback loops</i> and boring, reliable infrastructure.</div>
+      </div>
+
+      <div class="rsec">
+        <div class="rsh">Education</div>
+        <div class="rentry">
+          <div class="rtop"><span><b>State University</b> — Ann Arbor, MI</span><span>Sept 2018 – May 2022</span></div>
+          <div class="rsub">Bachelor of Science in Computer Science · GPA 3.8/4.0</div>
+          <div class="rbul"><b>Coursework:</b> Algorithms, Operating Systems, Databases, Machine Learning</div>
+          <div class="rbul">Dean's List, 2019–2022</div>
+        </div>
+      </div>
+
+      <div class="rsec live">
+        <div class="rsh">Experience</div>
+        <div class="rentry">
+          <div class="rtop"><span><b>Software Engineer</b></span><span>June 2022 – Present</span></div>
+          <div class="rsub">Acme Corp — Remote</div>
+          <div class="rbul">Built and maintained a customer-facing analytics dashboard used by <b>5,000+</b> weekly active users</div>
+          <div class="rbul">Mentored two interns; both projects shipped to production</div>
+        </div>
+        <div class="rentry">
+          <div class="rtop"><span><b>Software Engineering Intern</b></span><span>May 2021 – Aug 2021</span></div>
+          <div class="rsub">Widget Labs</div>
+          <div class="rbul">Prototyped an internal tool that cut weekly report preparation from hours to minutes</div>
+        </div>
+      </div>
+
+      <div class="rsec">
+        <div class="rsh">Projects</div>
+        <div class="rentry">
+          <div class="rtop"><span><b>Resume Editor</b> — this resume was written in it</span><span></span></div>
+          <div class="rbul">Browser-based editor that compiles LaTeX to PDF entirely client-side via WebAssembly</div>
+        </div>
+      </div>
+
+      <div class="rsec">
+        <div class="rsh">Skills</div>
+        <div class="rtags">
+          <span>Python</span><span>TypeScript</span><span>React</span><span>SQL</span><span>C++</span><span>Linux</span><span>Git</span><span>Docker</span><span>PostgreSQL</span><span>AWS</span>
+        </div>
+      </div>
+
+      <div class="rsec">
+        <div class="rsh">Languages</div>
+        <div class="rentry">
+          <div class="rlev"><span>English</span><i><u></u><u></u><u></u><u></u><u></u></i></div>
+          <div class="rlev"><span>Spanish</span><i><u></u><u></u><u></u><u class="o"></u><u class="o"></u></i></div>
+          <div class="rlev"><span>German</span><i><u></u><u></u><u class="o"></u><u class="o"></u><u class="o"></u></i></div>
+        </div>
+      </div>
+    </div>
+
+    <p class="sidenote">The page updates as you type — the step you're on is tinted so you can see where your words land.</p>
+  </aside>
+
+</div>
+</x-dc>
+</body>
+</html>

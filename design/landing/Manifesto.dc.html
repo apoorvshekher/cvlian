@@ -1,0 +1,147 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&display=swap">
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --w: #ffffff; --w2: #f6f6f4; --k: #0b0b0a; --k2: #55554f; --k3: #8b8b84;
+      --r: #e3e3df; --r2: #c9c9c3; --red: #d8341f; --red-sf: rgba(216,52,31,0.07);
+      --sans: "Archivo", ui-sans-serif, system-ui, "Helvetica Neue", Arial, sans-serif;
+    }
+    body { margin: 0; font-family: var(--sans); color: var(--k); background: var(--w); }
+    a { color: var(--red); text-decoration: none; }
+    a:hover { color: #a82716; }
+    .page { width: 1440px; min-height: 1180px; display: flex; flex-direction: column; }
+
+    .nav { display: flex; align-items: center; gap: 18px; height: 62px; padding: 0 56px; border-bottom: 1px solid var(--k); }
+    .wm { font-size: 15px; font-weight: 700; letter-spacing: -0.02em; text-transform: uppercase; }
+    .wm i { color: var(--red); font-style: normal; }
+    .navlinks { margin-left: auto; display: flex; gap: 26px; }
+    .navlinks span { font-size: 11px; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--k2); }
+
+    .hero { padding: 74px 56px 0; }
+    .kicker { font-size: 11px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--k3); padding-bottom: 26px; }
+    h1 { margin: 0; font-size: 78px; line-height: 0.96; letter-spacing: -0.042em; font-weight: 700; max-width: 1120px; }
+    h1 em { font-style: normal; color: var(--red); }
+    .lede { margin: 30px 0 0; font-size: 17.5px; line-height: 1.55; color: var(--k2); max-width: 640px; }
+    .lede b { color: var(--k); font-weight: 600; }
+
+    .cta { display: flex; gap: 14px; padding: 38px 0 0; align-items: stretch; }
+    .btn {
+      display: flex; align-items: center; gap: 11px; height: 54px; padding: 0 24px;
+      font-size: 14px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+      border: 1px solid var(--k); background: var(--k); color: var(--w);
+    }
+    .btn.alt { background: var(--w); color: var(--k); }
+    .gmark { width: 19px; height: 19px; flex: none; display: block; }
+    .ctahint { display: flex; gap: 14px; padding-top: 11px; }
+    .ctahint span { font-size: 11.5px; color: var(--k3); line-height: 1.5; }
+    .ctahint span:first-child { width: 274px; }
+
+    .facts { display: flex; margin: 72px 56px 0; border-top: 1px solid var(--k); border-bottom: 1px solid var(--r); }
+    .fact { flex: 1; padding: 22px 0 20px; }
+    .fact + .fact { border-left: 1px solid var(--r); padding-left: 26px; }
+    .fnum { font-size: 30px; font-weight: 700; letter-spacing: -0.03em; }
+    .fnum small { font-size: 15px; font-weight: 600; color: var(--k3); }
+    .flabel { font-size: 10.5px; font-weight: 700; letter-spacing: 0.11em; text-transform: uppercase; color: var(--k3); padding-top: 5px; }
+
+    .cols { display: grid; grid-template-columns: repeat(3, 1fr); margin: 0 56px; border-bottom: 1px solid var(--k); }
+    .col { padding: 30px 30px 34px 0; }
+    .col + .col { border-left: 1px solid var(--r); padding-left: 30px; }
+    .cnum { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: var(--red); padding-bottom: 12px; }
+    .ctitle { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; padding-bottom: 9px; }
+    .ctext { font-size: 13.5px; line-height: 1.62; color: var(--k2); }
+    .ctext code { font-size: 12px; background: var(--w2); padding: 1px 4px; color: var(--k); }
+
+    .foot { margin-top: auto; display: flex; align-items: center; gap: 16px; padding: 22px 56px 26px; }
+    .foot span { font-size: 11.5px; color: var(--k3); }
+    .foot .sep { width: 3px; height: 3px; background: var(--r2); }
+  </style>
+</helmet>
+
+<div class="page">
+  <div class="nav">
+    <span class="wm">Resume<i>&#8202;/&#8202;</i>Editor</span>
+    <span class="navlinks"><span>How it works</span><span>Themes</span><span>Source</span></span>
+  </div>
+
+  <div class="hero">
+    <div class="kicker">Free &middot; no account required &middot; open source</div>
+    <h1>Real LaTeX.<br>No server.<br>Your resume never <em>leaves your machine</em>.</h1>
+    <p class="lede">
+      The same <b>pdfTeX</b> that typesets academic papers, compiled to WebAssembly and
+      running in your browser. Type into structured fields, watch a properly
+      typeset PDF appear beside them. Nothing is uploaded, because there is
+      nowhere to upload it to.
+    </p>
+
+    <div class="cta">
+      <span class="btn">
+        <svg class="gmark" viewBox="0 0 18 18" aria-hidden="true">
+          <path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 01-1.8 2.72v2.26h2.92c1.7-1.57 2.68-3.88 2.68-6.62z"/>
+          <path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.92-2.26c-.81.54-1.84.86-3.04.86-2.34 0-4.32-1.58-5.03-3.7H.96v2.33A9 9 0 009 18z"/>
+          <path fill="#FBBC05" d="M3.97 10.72a5.41 5.41 0 010-3.44V4.95H.96a9 9 0 000 8.1l3.01-2.33z"/>
+          <path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 00.96 4.95l3.01 2.33C4.68 5.16 6.66 3.58 9 3.58z"/>
+        </svg>
+        Continue with Google
+      </span>
+      <span class="btn alt">Start without an account</span>
+    </div>
+    <div class="ctahint">
+      <span>Syncs to a single file in your own Drive. We can only see the file we create &mdash; never the rest of your Drive.</span>
+      <span>Stays in this browser. Export a backup whenever you like.</span>
+    </div>
+  </div>
+
+  <div class="facts">
+    <div class="fact"><div class="fnum">1.5<small>s</small></div><div class="flabel">to compile a page</div></div>
+    <div class="fact"><div class="fnum">3</div><div class="flabel">typeset themes</div></div>
+    <div class="fact"><div class="fnum">4</div><div class="flabel">typefaces</div></div>
+    <div class="fact"><div class="fnum">0</div><div class="flabel">servers holding your data</div></div>
+  </div>
+
+  <div class="cols">
+    <div class="col">
+      <div class="cnum">01</div>
+      <div class="ctitle">Fields, not markup</div>
+      <div class="ctext">
+        School, degree, year from, year to. Structure comes from the form, so
+        <code>**asterisks**</code> are left to do what they are for &mdash;
+        emphasis inside a sentence.
+      </div>
+    </div>
+    <div class="col">
+      <div class="cnum">02</div>
+      <div class="ctitle">Branches and versions</div>
+      <div class="ctext">
+        Keep a Data Scientist résumé beside an ML Engineer one. Save a version
+        before you tailor it for an application, and restore it after.
+      </div>
+    </div>
+    <div class="col">
+      <div class="cnum">03</div>
+      <div class="ctitle">Storage you already own</div>
+      <div class="ctext">
+        Your workspace lives in this browser and, if you want it, one JSON file
+        in your own Drive. There is no database on our side to leak.
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <span>Compiles locally with SwiftLaTeX</span><i class="sep"></i>
+    <span>Hosted on GitHub Pages</span><i class="sep"></i>
+    <span>Privacy</span><i class="sep"></i>
+    <span>Terms</span>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

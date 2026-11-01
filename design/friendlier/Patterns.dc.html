@@ -1,0 +1,427 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --paper: #faf8f5; --card: #ffffff; --sink: #f3f0ea;
+      --ink: #1b1a17; --ink2: #5c584f; --ink3: #8d887c;
+      --rule: #e8e3da; --rule2: #d8d1c4;
+      --acc: #2f7a5f; --acc-dk: #24614b; --acc-sf: #e9f2ee; --acc-rg: #bcd8cd;
+      --old: #b3261e; --old-sf: #fbeceb;
+      --sans: "Figtree", ui-sans-serif, system-ui, "Helvetica Neue", Arial, sans-serif;
+      --serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+    body { margin: 0; font-family: var(--sans); color: var(--ink); background: var(--paper); }
+    a { color: var(--acc); text-decoration: none; }
+    a:hover { color: var(--acc-dk); }
+    .i { width: 16px; height: 16px; flex: none; display: block; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+    .i.sm { width: 13px; height: 13px; }
+    .i.dots { stroke-width: 2.2; }
+    .spacer { flex: 1; }
+
+    .sheet { width: 1240px; min-height: 1560px; background: var(--paper); padding: 44px 44px 56px; display: flex; flex-direction: column; gap: 30px; }
+
+    .head { display: flex; flex-direction: column; gap: 9px; max-width: 74ch; }
+    .head h1 { font-size: 32px; font-weight: 700; letter-spacing: -0.03em; margin: 0; }
+    .head p { font-size: 15px; line-height: 1.55; color: var(--ink2); margin: 0; }
+    .head .tagline { display: inline-flex; align-items: center; gap: 7px; align-self: flex-start; height: 26px; padding: 0 11px; border-radius: 20px; background: var(--acc-sf); color: var(--acc-dk); font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 30px; }
+    .panel { background: var(--card); border: 1px solid var(--rule); border-radius: 16px; padding: 22px 24px 24px; display: flex; flex-direction: column; gap: 8px; }
+    .panel h2 { font-size: 18px; font-weight: 600; letter-spacing: -0.015em; margin: 0; }
+    .panel .why { font-size: 13.5px; line-height: 1.5; color: var(--ink2); margin: 0 0 6px; }
+    .band { display: flex; flex-direction: column; gap: 9px; padding-top: 6px; }
+    .blabel { display: flex; align-items: center; gap: 7px; font-size: 11px; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: var(--ink3); }
+    .blabel.now i { width: 6px; height: 6px; border-radius: 50%; background: var(--old); }
+    .blabel.next i { width: 6px; height: 6px; border-radius: 50%; background: var(--acc); }
+    .demo { border: 1px solid var(--rule); border-radius: 12px; padding: 14px; background: var(--sink); }
+    .demo.clean { background: var(--card); }
+    .cap { font-size: 12.5px; line-height: 1.5; color: var(--ink3); }
+    code { font-family: var(--mono); font-size: 12px; background: var(--sink); padding: 1px 5px; border-radius: 4px; }
+
+    /* --- shared bits --- */
+    .btn { display: inline-flex; align-items: center; gap: 7px; height: 34px; padding: 0 12px; border: 1px solid var(--rule2); border-radius: 9px; background: var(--card); color: var(--ink); font-size: 13px; font-weight: 500; }
+    .btn.primary { background: var(--acc); border-color: var(--acc); color: #fff; font-weight: 600; }
+    .btn.black { background: #0b0b0a; border-color: #0b0b0a; color: #fff; border-radius: 0; font-weight: 600; }
+    .btn.sm { height: 30px; font-size: 12.5px; padding: 0 10px; }
+    .in { height: 36px; border: 1px solid var(--rule2); border-radius: 9px; background: var(--card); display: flex; align-items: center; padding: 0 11px; font-size: 13.5px; }
+    .in.focus { border-color: var(--acc); box-shadow: 0 0 0 3px var(--acc-sf); }
+    .row { display: flex; align-items: center; gap: 8px; }
+
+    /* --- 1: browser dialog --- */
+    .osdlg { border-radius: 10px; overflow: hidden; border: 1px solid #c9c5bc; background: #fff; box-shadow: 0 10px 26px rgba(27,26,23,0.14); }
+    .osdlg .obar { height: 30px; background: #eceae5; border-bottom: 1px solid #dcd8d0; display: flex; align-items: center; padding: 0 12px; font-size: 12px; color: #55534c; }
+    .osdlg .obody { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 11px; }
+    .osdlg .otext { font-size: 13.5px; color: #1b1a17; }
+    .osdlg .oin { height: 30px; border: 1px solid #b9b5ac; border-radius: 4px; background: #fff; }
+    .osdlg .oacts { display: flex; justify-content: flex-end; gap: 8px; }
+    .osdlg .obtn { height: 30px; padding: 0 16px; border-radius: 6px; border: 1px solid #c1bdb4; background: #f6f5f2; font-size: 12.5px; display: flex; align-items: center; }
+    .osdlg .obtn.ok { background: #1a73e8; border-color: #1a73e8; color: #fff; }
+
+    /* --- 2: copies --- */
+    .oldbar { display: flex; align-items: center; gap: 6px; }
+    .oldsel { display: flex; align-items: center; gap: 8px; height: 30px; padding: 0 10px; border: 1px solid #c9c9c3; font-size: 13px; }
+    .oldicon { width: 30px; height: 30px; border: 1px solid #c9c9c3; display: flex; align-items: center; justify-content: center; color: #55554f; }
+    .oldghost { height: 30px; padding: 0 10px; border: 1px solid #c9c9c3; font-size: 13px; display: flex; align-items: center; gap: 6px; }
+    .hcount { background: #0b0b0a; color: #fff; font-size: 11px; padding: 1px 5px; }
+    .drop { border: 1px solid var(--rule); border-radius: 12px; background: var(--card); box-shadow: 0 8px 22px rgba(27,26,23,0.08); overflow: hidden; }
+    .dsec { padding: 11px 13px 6px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink3); }
+    .drow { display: flex; align-items: center; gap: 10px; padding: 9px 13px; font-size: 13.5px; }
+    .drow.on { background: var(--acc-sf); }
+    .drow .dn { font-weight: 600; }
+    .drow .dm { font-size: 12px; color: var(--ink3); margin-left: auto; }
+    .drow .tag { font-size: 11px; font-weight: 600; color: var(--acc-dk); background: #fff; border-radius: 20px; padding: 2px 8px; }
+    .ddiv { height: 1px; background: var(--rule); }
+
+    /* --- 3: status --- */
+    .statusrow { display: flex; flex-direction: column; gap: 8px; }
+    .st { display: flex; align-items: center; gap: 9px; font-size: 13.5px; color: var(--ink2); background: var(--card); border: 1px solid var(--rule); border-radius: 9px; padding: 9px 12px; }
+    .st .d { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+    .st .d.grey { background: var(--rule2); }
+    .st .d.busy { background: transparent; border: 2px solid var(--acc-rg); border-top-color: var(--acc); }
+    .st .d.ok { background: var(--acc); }
+    .oldstatus { display: flex; align-items: center; gap: 10px; }
+    .oldstatus .sq { width: 8px; height: 8px; background: #d8341f; }
+    .oldstatus .tx { font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: #55554f; }
+    kbd { font-family: var(--mono); font-size: 11px; background: rgba(255,255,255,0.18); padding: 2px 5px; border-radius: 3px; }
+
+    /* --- 4: theme thumbs --- */
+    .thumbs { display: flex; gap: 12px; }
+    .thumb { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+    .tframe { height: 128px; border: 1px solid var(--rule2); border-radius: 9px; background: #fff; padding: 9px; position: relative; overflow: hidden; }
+    .thumb.sel .tframe { border-color: var(--acc); box-shadow: 0 0 0 3px var(--acc-sf); }
+    .tname { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; justify-content: center; }
+    .thumb.sel .tname { color: var(--acc-dk); font-weight: 600; }
+    .tl { height: 3px; background: #ddd9d0; border-radius: 2px; }
+    .tl.dark { background: #b4afa4; }
+    .tl.w70 { width: 70%; } .tl.w50 { width: 50%; } .tl.w90 { width: 90%; } .tl.w40 { width: 40%; }
+    .tstack { display: flex; flex-direction: column; gap: 5px; }
+    .tcenter { align-items: center; }
+    .tcols { display: flex; gap: 7px; height: 100%; }
+    .tside { width: 34%; background: var(--sink); border-radius: 3px; padding: 6px; display: flex; flex-direction: column; gap: 4px; }
+    .tmain { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+    .tbanner { height: 24px; background: var(--acc-rg); border-radius: 3px; margin: -9px -9px 8px; }
+    .oldseg { display: inline-flex; border: 1px solid #c9c9c3; }
+    .oldseg span { padding: 6px 14px; font-size: 12.5px; color: #55554f; border-right: 1px solid #c9c9c3; }
+    .oldseg span:last-child { border-right: 0; }
+    .oldseg span.on { background: #0b0b0a; color: #fff; }
+    .oldsliders { display: flex; flex-direction: column; gap: 7px; padding-top: 10px; }
+    .oldsl { display: flex; align-items: center; gap: 9px; font-size: 11.5px; color: #8b8b84; }
+    .oldsl .tr { flex: 1; height: 3px; background: #d9d9d3; position: relative; }
+    .oldsl .tr i { position: absolute; top: -3px; width: 9px; height: 9px; background: #55554f; border-radius: 50%; }
+
+    /* --- 5: errors --- */
+    .log { font-family: var(--mono); font-size: 11.5px; line-height: 1.65; color: #7a2018; background: var(--old-sf); border: 1px solid #eccfcc; border-radius: 9px; padding: 11px 13px; white-space: pre-wrap; }
+    .errcard { border: 1px solid var(--rule2); border-radius: 12px; background: var(--card); padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+    .errtop { display: flex; align-items: flex-start; gap: 10px; }
+    .errtop .ic { color: #b3261e; margin-top: 1px; }
+    .errtop .tx { font-size: 14px; font-weight: 600; line-height: 1.4; }
+    .quote { font-size: 13px; line-height: 1.5; color: var(--ink2); border-left: 2px solid var(--rule2); padding-left: 11px; }
+    .quote mark { background: #fde9d0; color: #8a4f20; font-weight: 700; border-radius: 3px; padding: 0 2px; }
+
+    /* --- 6: contacts --- */
+    .oldtable { border: 1px solid #e3e3df; }
+    .oldtr { display: flex; align-items: center; gap: 0; border-bottom: 1px solid #e3e3df; font-size: 12.5px; color: #0b0b0a; }
+    .oldtr:last-child { border-bottom: 0; }
+    .oldtd { padding: 9px 10px; border-right: 1px solid #e3e3df; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .oldtd.a { width: 90px; } .oldtd.b { width: 160px; } .oldtd.c { flex: 1; border-right: 0; color: #55554f; }
+    .crow2 { display: flex; align-items: flex-end; gap: 9px; }
+    .iconpick { display: flex; align-items: center; gap: 7px; height: 36px; padding: 0 10px; border: 1px solid var(--rule2); border-radius: 9px; color: var(--ink2); font-size: 13px; }
+    .fld { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 0; }
+    .fld label { font-size: 12px; font-weight: 500; color: var(--ink2); }
+    .auto { font-size: 12px; color: var(--acc-dk); background: var(--acc-sf); border-radius: 7px; padding: 6px 9px; display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; }
+  </style>
+</helmet>
+
+<div class="sheet">
+
+  <div class="head">
+    <span class="tagline">Shared across all three</span>
+    <h1>Friendlier is mostly a hundred small things</h1>
+    <p>These six pieces of friction sit in the app today, underneath whichever direction you pick. They are drawn in Direction A's styling, but each one applies unchanged to B and C.</p>
+  </div>
+
+  <div class="grid">
+
+    <!-- 1 -->
+    <div class="panel">
+      <h2>Ask in the page, not in a system popup</h2>
+      <p class="why">Naming a copy, naming a snapshot, confirming a delete — all of it currently goes through <code>prompt()</code> and <code>confirm()</code>, which look like the browser warning you about something.</p>
+
+      <div class="band">
+        <div class="blabel now"><i></i>Today</div>
+        <div class="demo">
+          <div class="osdlg">
+            <div class="obar">alexdoe.github.io says</div>
+            <div class="obody">
+              <div class="otext">Name for the new branch (a copy of "Main"):</div>
+              <div class="oin"></div>
+              <div class="oacts">
+                <span class="obtn">Cancel</span>
+                <span class="obtn ok">OK</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="band">
+        <div class="blabel next"><i></i>Friendlier</div>
+        <div class="demo clean">
+          <div class="row">
+            <div class="in focus" style="flex:1">Data Scientist</div>
+            <span class="btn primary sm">Save</span>
+            <span class="btn sm">Cancel</span>
+          </div>
+          <p class="cap" style="padding-top:10px">The field opens where the name already is. Deleting works the same way — an inline "Delete this copy? · Delete · Keep" strip, undoable for a few seconds.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="panel">
+      <h2>Say "copy", not "branch"</h2>
+      <p class="why">Branches and version history are exactly the right model for tailoring a resume per job — the words are the problem, not the feature.</p>
+
+      <div class="band">
+        <div class="blabel now"><i></i>Today</div>
+        <div class="demo">
+          <div class="oldbar">
+            <span class="oldsel">Main <svg class="i sm" viewBox="0 0 16 16"><path d="M4 6.5 8 10.5 12 6.5"></path></svg></span>
+            <span class="oldicon"><svg class="i sm" viewBox="0 0 16 16"><path d="M8 3.5v9M3.5 8h9"></path></svg></span>
+            <span class="oldicon"><svg class="i sm" viewBox="0 0 16 16"><path d="M11.5 3.2 12.8 4.5 6 11.3l-2 .7.7-2z"></path></svg></span>
+            <span class="oldicon" style="color:#d8341f"><svg class="i sm" viewBox="0 0 16 16"><path d="M3.5 4.5h9"></path><path d="M4.7 4.5 5.2 13h5.6l.5-8.5"></path></svg></span>
+            <span class="oldghost">History <i class="hcount">3</i></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="band">
+        <div class="blabel next"><i></i>Friendlier</div>
+        <div class="demo clean" style="padding:0;border:0">
+          <div class="drop">
+            <div class="dsec">Copies of this resume</div>
+            <div class="drow on">
+              <span class="dn">Main copy</span>
+              <span class="tag">editing now</span>
+              <span class="dm">2 min ago</span>
+            </div>
+            <div class="drow">
+              <span class="dn">Data Scientist</span>
+              <span class="dm">Tuesday</span>
+            </div>
+            <div class="drow" style="color:#5c584f">
+              <svg class="i sm" viewBox="0 0 16 16"><path d="M8 3.5v9M3.5 8h9"></path></svg>
+              New copy, tailored for a job
+            </div>
+            <div class="ddiv"></div>
+            <div class="dsec">Snapshots of Main copy</div>
+            <div class="drow">
+              <span>Before the big rewrite</span>
+              <span class="dm">Tue 14:20</span>
+              <span class="btn sm">Restore</span>
+            </div>
+            <div class="drow" style="color:#5c584f">
+              <svg class="i sm" viewBox="0 0 16 16"><path d="M8 3.5v9M3.5 8h9"></path></svg>
+              Keep a snapshot of today
+            </div>
+          </div>
+          <p class="cap" style="padding-top:12px">The interface only. Export keeps writing <code>branches</code> and <code>normalizeStore</code> keeps reading it, so no backup anyone already has stops importing.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="panel">
+      <h2>Nothing to press to see your changes</h2>
+      <p class="why">The compile step is the app's biggest tell that something technical is happening. It can run on its own, a beat after you stop typing.</p>
+
+      <div class="band">
+        <div class="blabel now"><i></i>Today</div>
+        <div class="demo">
+          <div class="row" style="justify-content:space-between">
+            <span class="oldstatus"><i class="sq"></i><span class="tx">Saved locally — Ctrl+S to compile</span></span>
+            <span class="btn black">Compile <kbd>Ctrl+S</kbd></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="band">
+        <div class="blabel next"><i></i>Friendlier</div>
+        <div class="demo clean">
+          <div class="statusrow">
+            <div class="st"><i class="d grey"></i>Typing…</div>
+            <div class="st"><i class="d busy"></i>Updating the preview…</div>
+            <div class="st"><i class="d ok"></i>Saved · preview up to date</div>
+          </div>
+          <p class="cap" style="padding-top:10px">Compiling starts after a short pause in typing and never blocks the editor. Ctrl+S still works; the button moves into the ⋯ menu for a forced re-run.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 -->
+    <div class="panel">
+      <h2>Pick a look by looking at it</h2>
+      <p class="why">Three themes and eight numeric settings arrive as words and sliders, so choosing means guessing and then compiling to check.</p>
+
+      <div class="band">
+        <div class="blabel now"><i></i>Today</div>
+        <div class="demo">
+          <div class="oldseg"><span class="on">Classic</span><span>Sidebar</span><span>Banner</span></div>
+          <div class="oldsliders">
+            <div class="oldsl">Margins <span class="tr"><i style="left:38%"></i></span> 1.8 cm</div>
+            <div class="oldsl">Spacing <span class="tr"><i style="left:52%"></i></span> ×1.05</div>
+            <div class="oldsl">Date column <span class="tr"><i style="left:44%"></i></span> 4.2 cm</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="band">
+        <div class="blabel next"><i></i>Friendlier</div>
+        <div class="demo clean">
+          <div class="thumbs">
+            <div class="thumb sel">
+              <div class="tframe">
+                <div class="tstack tcenter">
+                  <div class="tl dark w50"></div>
+                  <div class="tl w70" style="height:2px"></div>
+                </div>
+                <div class="tstack" style="padding-top:10px">
+                  <div class="tl dark w40"></div>
+                  <div class="tl w90"></div><div class="tl w90"></div>
+                  <div class="tl dark w40" style="margin-top:6px"></div>
+                  <div class="tl w90"></div><div class="tl w70"></div>
+                </div>
+              </div>
+              <div class="tname">
+                <svg class="i sm" viewBox="0 0 16 16"><path d="M4 8.4 6.8 11.2 12 5.6"></path></svg>
+                Classic
+              </div>
+            </div>
+            <div class="thumb">
+              <div class="tframe">
+                <div class="tcols">
+                  <div class="tside">
+                    <div class="tl dark w70"></div><div class="tl w90"></div><div class="tl w90"></div>
+                    <div class="tl dark w70" style="margin-top:5px"></div><div class="tl w90"></div>
+                  </div>
+                  <div class="tmain">
+                    <div class="tl dark w50"></div>
+                    <div class="tl w90"></div><div class="tl w90"></div><div class="tl w70"></div>
+                    <div class="tl dark w40" style="margin-top:5px"></div>
+                    <div class="tl w90"></div><div class="tl w70"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="tname">Sidebar</div>
+            </div>
+            <div class="thumb">
+              <div class="tframe">
+                <div class="tbanner"></div>
+                <div class="tstack">
+                  <div class="tl dark w40"></div>
+                  <div class="tl w90"></div><div class="tl w90"></div>
+                  <div class="tl dark w40" style="margin-top:6px"></div>
+                  <div class="tl w90"></div><div class="tl w70"></div>
+                </div>
+              </div>
+              <div class="tname">Banner</div>
+            </div>
+          </div>
+          <p class="cap" style="padding-top:12px">Font and accent get the same treatment — real specimens. The numeric settings move behind "Fine-tune", for the people who came for them.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5 -->
+    <div class="panel">
+      <h2>Errors in words, not in log lines</h2>
+      <p class="why">When a compile fails, the panel shows raw TeX. Almost every real failure is a stray character in a bullet, and the app knows which one.</p>
+
+      <div class="band">
+        <div class="blabel now"><i></i>Today</div>
+        <div class="demo">
+          <div class="log">! Undefined control sequence.
+l.42 \item Reduced API p95 latency by 40\
+                                          % by profiling hot paths</div>
+        </div>
+      </div>
+
+      <div class="band">
+        <div class="blabel next"><i></i>Friendlier</div>
+        <div class="demo clean">
+          <div class="errcard">
+            <div class="errtop">
+              <svg class="i ic" viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.8"></circle><path d="M8 5.2v3.4M8 10.6v.4"></path></svg>
+              <span class="tx">A stray backslash in one of your Experience bullets stopped the page from building.</span>
+            </div>
+            <div class="quote">Reduced API p95 latency by 40<mark>\</mark>% by profiling hot paths and adding query-level caching</div>
+            <div class="row">
+              <span class="btn primary sm">Remove the backslash</span>
+              <span class="btn sm">Take me to it</span>
+              <span class="spacer"></span>
+              <span class="cap">Technical log</span>
+            </div>
+          </div>
+          <p class="cap" style="padding-top:10px">The last good preview stays on screen, so the page never goes blank while you fix it.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6 -->
+    <div class="panel">
+      <h2>Contact details that explain themselves</h2>
+      <p class="why">The header editor is three unlabelled columns: an icon <em>name</em>, the text, and a URL — both of them cut off mid-string.</p>
+
+      <div class="band">
+        <div class="blabel now"><i></i>Today</div>
+        <div class="demo">
+          <div class="oldtable">
+            <div class="oldtr"><span class="oldtd a">envelope</span><span class="oldtd b">alex@example.com</span><span class="oldtd c">mailto:alex@example.co…</span></div>
+            <div class="oldtr"><span class="oldtd a">globe</span><span class="oldtd b">alexdoe.example.co…</span><span class="oldtd c">https://alexdoe.example…</span></div>
+            <div class="oldtr"><span class="oldtd a">linkedin</span><span class="oldtd b">linkedin.com/in/ale…</span><span class="oldtd c">https://linkedin.com/in/…</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="band">
+        <div class="blabel next"><i></i>Friendlier</div>
+        <div class="demo clean">
+          <div class="crow2">
+            <span class="iconpick">
+              <svg class="i" viewBox="0 0 16 16"><rect x="2" y="3.5" width="12" height="9" rx="1.4"></rect><path d="m2.6 4.6 5.4 4 5.4-4"></path></svg>
+              <svg class="i sm" viewBox="0 0 16 16"><path d="M4 6.5 8 10.5 12 6.5"></path></svg>
+            </span>
+            <div class="fld">
+              <label>What it says on the page</label>
+              <div class="in">alex@example.com</div>
+            </div>
+          </div>
+          <div class="crow2" style="padding-top:10px">
+            <div class="fld">
+              <label>Where it goes when clicked</label>
+              <div class="in" style="color:#5c584f">mailto:alex@example.com</div>
+            </div>
+          </div>
+          <div class="auto" style="margin-top:10px">
+            <svg class="i sm" viewBox="0 0 16 16"><path d="M4 8.4 6.8 11.2 12 5.6"></path></svg>
+            Filled in for you — an address became a mailto:, a handle became the full profile link
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

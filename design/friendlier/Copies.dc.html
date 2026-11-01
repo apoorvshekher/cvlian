@@ -1,0 +1,495 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --paper: #faf8f5; --card: #ffffff; --sink: #f3f0ea;
+      --ink: #1b1a17; --ink2: #5c584f; --ink3: #8d887c;
+      --rule: #e8e3da; --rule2: #d8d1c4;
+      --acc: #2f7a5f; --acc-dk: #24614b; --acc-sf: #e9f2ee; --acc-rg: #bcd8cd;
+      --sans: "Figtree", ui-sans-serif, system-ui, "Helvetica Neue", Arial, sans-serif;
+      --serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+    }
+    body { margin: 0; font-family: var(--sans); color: var(--ink); background: var(--paper); }
+    a { color: var(--acc); text-decoration: none; }
+    a:hover { color: var(--acc-dk); }
+    .i { width: 16px; height: 16px; flex: none; display: block; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+    .i.sm { width: 13px; height: 13px; }
+    .i.lg { width: 18px; height: 18px; }
+    .i.dots { stroke-width: 2.2; }
+
+    .app { width: 1440px; height: 900px; display: flex; flex-direction: column; background: var(--paper); overflow: hidden; }
+
+    /* ---------- top bar ---------- */
+    .bar { height: 62px; flex: none; display: flex; align-items: center; gap: 14px; padding: 0 20px; background: var(--card); border-bottom: 1px solid var(--rule); }
+    .mark { width: 28px; height: 28px; border-radius: 8px; background: var(--acc); color: #fff; display: flex; align-items: center; justify-content: center; }
+    .wordmark { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
+    .docchip { display: flex; align-items: center; gap: 8px; height: 34px; padding: 0 10px 0 12px; border-radius: 9px; background: var(--sink); color: var(--ink); }
+    .docchip .dn { font-size: 14px; font-weight: 600; }
+    .docchip .dv { font-size: 12.5px; color: var(--ink2); }
+    .spacer { flex: 1; }
+    .saved { display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--ink2); }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--acc); flex: none; }
+    .btn { display: inline-flex; align-items: center; gap: 7px; height: 36px; padding: 0 13px; border: 1px solid var(--rule2); border-radius: 9px; background: var(--card); color: var(--ink); font-size: 13.5px; font-weight: 500; }
+    .btn.quiet { border-color: transparent; background: transparent; color: var(--ink2); }
+    .btn.primary { background: var(--acc); border-color: var(--acc); color: #fff; font-weight: 600; }
+    .btn.drive { gap: 6px; color: var(--ink2); }
+    .sep { width: 1px; height: 24px; background: var(--rule); }
+
+    /* ---------- shell ---------- */
+    .body { flex: 1; display: flex; min-height: 0; }
+
+    /* ---------- left nav ---------- */
+    .nav { width: 232px; flex: none; border-right: 1px solid var(--rule); display: flex; flex-direction: column; padding: 14px 12px; gap: 3px; }
+    .nrow { display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 10px; border-radius: 9px; color: var(--ink2); font-size: 13.5px; font-weight: 500; }
+    .nrow .nm { flex: 1; color: var(--ink); }
+    .nrow.on { background: var(--acc-sf); color: var(--acc-dk); }
+    .nrow.on .nm { color: var(--acc-dk); font-weight: 600; }
+    .ncount { font-size: 11.5px; color: var(--ink3); background: var(--sink); border-radius: 20px; padding: 2px 7px; font-weight: 500; }
+    .nrow.on .ncount { background: #fff; color: var(--acc-dk); }
+    .nlabel { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink3); padding: 16px 10px 7px; }
+    .nlist { display: flex; flex-direction: column; gap: 2px; }
+    .ndrag { color: var(--rule2); }
+    .nadd { margin-top: auto; display: flex; align-items: center; gap: 9px; height: 40px; padding: 0 10px; border-radius: 9px; border: 1px dashed var(--rule2); color: var(--ink2); font-size: 13.5px; font-weight: 500; }
+
+    /* ---------- editor ---------- */
+    .edit { width: 508px; flex: none; background: var(--card); border-right: 1px solid var(--rule); display: flex; flex-direction: column; }
+    .ehead { padding: 22px 26px 16px; border-bottom: 1px solid var(--rule); display: flex; flex-direction: column; gap: 5px; }
+    .etitle-row { display: flex; align-items: center; gap: 10px; }
+    .etitle { font-size: 23px; font-weight: 600; letter-spacing: -0.02em; border-bottom: 1px dashed var(--rule2); padding-bottom: 1px; }
+    .ehelp { font-size: 12.5px; color: var(--ink3); line-height: 1.5; }
+    .ebody { flex: 1; padding: 18px 26px 24px; display: flex; flex-direction: column; gap: 12px; overflow: hidden; }
+
+    .entry { border: 1px solid var(--rule); border-radius: 12px; background: var(--card); }
+    .entry.open { border-color: var(--acc-rg); box-shadow: 0 1px 2px rgba(27,26,23,0.04), 0 6px 18px rgba(27,26,23,0.05); }
+    .ehd { display: flex; align-items: center; gap: 10px; padding: 13px 14px; }
+    .ehd .grip { color: var(--rule2); }
+    .ehd .t { font-size: 14px; font-weight: 600; }
+    .ehd .s { font-size: 12.5px; color: var(--ink2); }
+    .ehd .when { font-size: 12.5px; color: var(--ink3); margin-left: auto; }
+    .fields { padding: 4px 14px 14px; display: flex; flex-direction: column; gap: 12px; }
+    .frow { display: flex; gap: 10px; }
+    .fld { flex: 1; display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+    .fld label { font-size: 12px; font-weight: 500; color: var(--ink2); }
+    .in { height: 38px; border: 1px solid var(--rule2); border-radius: 9px; background: var(--card); display: flex; align-items: center; padding: 0 11px; font-size: 13.5px; }
+    .in.ph { color: var(--ink3); }
+    .in.focus { border-color: var(--acc); box-shadow: 0 0 0 3px var(--acc-sf); }
+    .dates { display: flex; gap: 6px; }
+    .dates .m { width: 82px; justify-content: space-between; gap: 6px; color: var(--ink2); }
+    .dates .y { flex: 1; }
+    .off { background: var(--sink); color: var(--ink3); border-color: var(--rule); }
+    .switchrow { display: flex; align-items: center; gap: 9px; font-size: 13px; color: var(--ink); }
+    .switch { width: 36px; height: 21px; border-radius: 20px; background: var(--acc); position: relative; flex: none; }
+    .switch i { position: absolute; top: 2.5px; left: 18px; width: 16px; height: 16px; border-radius: 50%; background: #fff; }
+
+    .blabel { display: flex; align-items: baseline; gap: 8px; font-size: 12px; font-weight: 500; color: var(--ink2); }
+    .bullets { display: flex; flex-direction: column; gap: 7px; }
+    .brow { display: flex; align-items: flex-start; gap: 9px; padding: 9px 11px; border: 1px solid var(--rule); border-radius: 9px; font-size: 13.5px; line-height: 1.5; }
+    .brow .grip { color: var(--rule2); margin-top: 2px; }
+    .brow .bm { width: 5px; height: 5px; border-radius: 50%; background: var(--ink3); flex: none; margin-top: 7px; }
+    .brow .bt { flex: 1; }
+    .brow b { font-weight: 700; }
+    .tip { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--ink2); background: var(--acc-sf); border-radius: 9px; padding: 9px 11px; }
+    .tip .i { color: var(--acc); }
+    .addb { display: flex; align-items: center; gap: 8px; align-self: flex-start; height: 34px; padding: 0 12px 0 10px; border-radius: 9px; color: var(--ink2); font-size: 13px; font-weight: 500; background: var(--sink); }
+    .addbig { display: flex; align-items: center; justify-content: center; gap: 8px; height: 46px; border: 1px dashed var(--rule2); border-radius: 12px; color: var(--acc-dk); background: var(--acc-sf); font-size: 13.5px; font-weight: 600; }
+
+    /* ---------- preview ---------- */
+    .prev { flex: 1; min-width: 0; display: flex; flex-direction: column; background: var(--paper); }
+    .pchrome { height: 44px; flex: none; display: flex; align-items: center; gap: 12px; padding: 0 20px; border-bottom: 1px solid var(--rule); }
+    .pchrome .pl { font-size: 12.5px; color: var(--ink3); }
+    .zoom { display: flex; align-items: center; gap: 4px; height: 28px; padding: 0 4px 0 10px; border-radius: 8px; background: var(--sink); font-size: 12.5px; color: var(--ink2); }
+    .pstage { flex: 1; display: flex; align-items: flex-start; justify-content: center; padding: 22px 0 0; }
+
+    .page { width: 566px; height: 734px; background: #fff; border: 1px solid var(--rule2); box-shadow: 0 2px 6px rgba(27,26,23,0.06), 0 18px 40px rgba(27,26,23,0.07); padding: 34px 40px; font-family: var(--serif); color: #14130f; overflow: hidden; }
+    .rname { text-align: center; font-size: 22px; font-weight: 400; letter-spacing: 0.01em; }
+    .rcontacts { display: flex; justify-content: center; flex-wrap: wrap; gap: 9px; font-size: 8px; color: #3a382f; padding-top: 6px; }
+    .rcontacts span { display: flex; align-items: center; gap: 3px; }
+    .rsec { padding-top: 13px; }
+    .rsh { font-size: 10px; font-weight: 700; border-bottom: 0.8px solid #14130f; padding-bottom: 1.5px; }
+    .rp { font-size: 8.4px; line-height: 1.45; padding-top: 4px; }
+    .rp i { font-style: italic; }
+    .rentry { padding-top: 5px; }
+    .rtop { display: flex; justify-content: space-between; gap: 12px; font-size: 8.6px; }
+    .rtop b { font-weight: 700; }
+    .rsub { font-size: 8.4px; font-style: italic; color: #2c2a23; }
+    .rbul { font-size: 8.2px; line-height: 1.45; padding-left: 11px; position: relative; }
+    .rbul::before { content: "•"; position: absolute; left: 3px; }
+    .rbul b { font-weight: 700; }
+    .rtags { display: flex; flex-wrap: wrap; gap: 4px; padding-top: 4px; }
+    .rtags span { font-size: 7.6px; background: #f1efe9; padding: 1.5px 4px; }
+    .rlev { display: flex; justify-content: space-between; font-size: 8.4px; }
+    .rlev i { display: flex; gap: 2.5px; align-items: center; font-style: normal; }
+    .rlev u { width: 4px; height: 4px; border-radius: 50%; background: #14130f; display: block; }
+    .rlev u.o { background: transparent; border: 0.8px solid #14130f; }
+    .live { background: var(--acc-sf); box-shadow: 0 0 0 5px var(--acc-sf); border-radius: 2px; }
+    .rsh.withtag { display: flex; align-items: baseline; justify-content: space-between; }
+    .etag { font-family: var(--sans); font-size: 7.4px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--acc-dk); }
+  
+    /* ---------- added for the other screens ---------- */
+    .app { position: relative; }
+    .pnote { display: flex; gap: 9px; font-size: 12.5px; line-height: 1.5; color: var(--ink2); background: var(--sink); border-radius: 10px; padding: 11px 12px; }
+    .pnote .i { color: var(--ink3); margin-top: 1px; }
+    .seclabel { display: flex; align-items: baseline; gap: 9px; padding-top: 4px; }
+    .seclabel .sl { font-size: 12.5px; font-weight: 600; color: var(--ink); }
+    .seclabel .sh { font-size: 12px; color: var(--ink3); }
+
+    /* contact rows */
+    .crow { display: flex; align-items: center; gap: 10px; border: 1px solid var(--rule); border-radius: 11px; padding: 11px 12px; }
+    .crow .grip { color: var(--rule2); }
+    .iconpick { display: flex; align-items: center; gap: 6px; height: 36px; padding: 0 9px; border: 1px solid var(--rule2); border-radius: 9px; color: var(--ink2); flex: none; }
+    .cstack { flex: 1; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+    .cline { display: flex; align-items: center; gap: 9px; }
+    .cline .ck { font-size: 11.5px; color: var(--ink3); width: 62px; flex: none; }
+    .cline .cv { flex: 1; height: 32px; border: 1px solid var(--rule2); border-radius: 8px; display: flex; align-items: center; padding: 0 10px; font-size: 13px; }
+    .cline .cv.dim { color: var(--ink2); background: var(--sink); border-color: var(--rule); }
+    .xbtn { color: var(--ink3); }
+    .autochip { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; color: var(--acc-dk); background: var(--acc-sf); border-radius: 8px; padding: 8px 10px; align-self: flex-start; }
+
+    /* look and feel */
+    .thumbs { display: flex; gap: 11px; }
+    .thumb { flex: 1; display: flex; flex-direction: column; gap: 7px; }
+    .tframe { height: 132px; border: 1px solid var(--rule2); border-radius: 10px; background: #fff; padding: 9px; overflow: hidden; }
+    .thumb.sel .tframe { border-color: var(--acc); box-shadow: 0 0 0 3px var(--acc-sf); }
+    .tname { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 12.5px; font-weight: 500; color: var(--ink2); }
+    .thumb.sel .tname { color: var(--acc-dk); font-weight: 600; }
+    .tl { height: 3px; background: #ddd9d0; border-radius: 2px; }
+    .tl.dark { background: #b4afa4; }
+    .tstack { display: flex; flex-direction: column; gap: 5px; }
+    .tstack.mid { align-items: center; }
+    .tcols { display: flex; gap: 7px; height: 100%; }
+    .tside { width: 34%; background: var(--sink); border-radius: 3px; padding: 6px; display: flex; flex-direction: column; gap: 4px; }
+    .tmain { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+    .tbanner { height: 26px; background: var(--acc-rg); border-radius: 3px; margin: -9px -9px 9px; }
+
+    .specs { display: flex; gap: 10px; }
+    .spec { flex: 1; border: 1px solid var(--rule2); border-radius: 10px; padding: 10px 11px 9px; display: flex; flex-direction: column; gap: 3px; align-items: center; }
+    .spec.sel { border-color: var(--acc); box-shadow: 0 0 0 3px var(--acc-sf); }
+    .spec .sp { font-family: var(--serif); font-size: 19px; line-height: 1.1; }
+    .spec .sn { font-size: 11.5px; color: var(--ink3); }
+    .spec.sel .sn { color: var(--acc-dk); font-weight: 600; }
+    .spec.lm .sp { font-family: "Latin Modern Roman", "Computer Modern", Georgia, serif; }
+    .spec.pal .sp { font-family: Palatino, "Palatino Linotype", "Book Antiqua", Georgia, serif; }
+    .spec.tim .sp { font-family: "Times New Roman", Times, serif; }
+
+    .swatches { display: flex; align-items: center; gap: 8px; }
+    .sw { width: 30px; height: 30px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.10); }
+    .sw.sel { box-shadow: 0 0 0 2px var(--card), 0 0 0 4px var(--acc); }
+    .swcustom { width: 30px; height: 30px; border-radius: 8px; border: 1px dashed var(--rule2); display: flex; align-items: center; justify-content: center; color: var(--ink3); }
+
+    .seg { display: inline-flex; border: 1px solid var(--rule2); border-radius: 9px; overflow: hidden; }
+    .seg span { padding: 8px 15px; font-size: 13px; color: var(--ink2); border-right: 1px solid var(--rule2); }
+    .seg span:last-child { border-right: 0; }
+    .seg span.on { background: var(--acc-sf); color: var(--acc-dk); font-weight: 600; }
+
+    .fold { display: flex; align-items: center; gap: 11px; border: 1px solid var(--rule); border-radius: 11px; padding: 13px 14px; }
+    .fold .ft { font-size: 13.5px; font-weight: 500; }
+    .fold .fs { font-size: 12.3px; color: var(--ink3); }
+    .quietlink { font-size: 12.8px; color: var(--ink2); align-self: flex-start; }
+
+    /* copies panel */
+    .panel { position: absolute; top: 68px; right: 196px; width: 396px; background: var(--card); border: 1px solid var(--rule); border-radius: 14px; box-shadow: 0 2px 6px rgba(27,26,23,0.06), 0 22px 50px rgba(27,26,23,0.14); overflow: hidden; z-index: 5; }
+    .ptip { position: absolute; top: -7px; right: 26px; width: 13px; height: 13px; background: var(--card); border-left: 1px solid var(--rule); border-top: 1px solid var(--rule); transform: rotate(45deg); }
+    .phead { display: flex; align-items: center; gap: 9px; padding: 14px 15px 12px; border-bottom: 1px solid var(--rule); }
+    .phead .pt { font-size: 14.5px; font-weight: 600; }
+    .psec { padding: 13px 15px 5px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink3); }
+    .prow { display: flex; align-items: center; gap: 10px; padding: 10px 15px; font-size: 13.5px; }
+    .prow.on { background: var(--acc-sf); }
+    .prow .pn { font-weight: 600; }
+    .prow .pw { font-size: 12px; color: var(--ink3); margin-left: auto; }
+    .prow .ptag { font-size: 11px; font-weight: 600; color: var(--acc-dk); background: var(--card); border-radius: 20px; padding: 2px 8px; }
+    .prow.add { color: var(--ink2); }
+    .pact { height: 28px; padding: 0 10px; border: 1px solid var(--rule2); border-radius: 8px; font-size: 12.5px; display: flex; align-items: center; }
+    .pdiv { height: 1px; background: var(--rule); margin: 8px 0; }
+    .pfoot { display: flex; align-items: center; gap: 10px; padding: 12px 15px; background: var(--sink); border-top: 1px solid var(--rule); font-size: 12.5px; color: var(--ink2); }
+    .pfoot .fdot { width: 7px; height: 7px; border-radius: 50%; background: var(--acc); flex: none; }
+
+    /* trouble */
+    .dot.amber { background: var(--amb); }
+    .errbar { flex: none; display: flex; align-items: flex-start; gap: 13px; padding: 15px 20px; background: var(--amb-sf); border-bottom: 1px solid var(--amb-rg); }
+    .errbar .eicon { color: var(--amb); margin-top: 1px; }
+    .errbar .etx { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 0; }
+    .errbar .e1 { font-size: 14px; font-weight: 600; }
+    .errbar .e2 { font-size: 13px; line-height: 1.5; color: #6f3f18; }
+    .errbar .e2 mark { background: #f4d6b2; color: #6f3f18; font-weight: 700; border-radius: 3px; padding: 0 3px; }
+    .errbar .eacts { display: flex; align-items: center; gap: 8px; }
+    .btn.amber { background: var(--amb); border-color: var(--amb); color: #fff; font-weight: 600; }
+    .bad { border-color: var(--amb-rg); background: #fffaf5; }
+    .stale { display: inline-flex; align-items: center; gap: 7px; height: 24px; padding: 0 10px; border-radius: 20px; background: var(--amb-sf); color: #6f3f18; font-size: 12px; font-weight: 500; }
+    .scaled { transform: scale(0.92); transform-origin: top center; }
+    :root { --amb: #a8622a; --amb-sf: #f8ece1; --amb-rg: #e6c9ad; }
+
+    /* landing */
+    .land { width: 1440px; height: 900px; background: var(--paper); display: flex; flex-direction: column; align-items: center; padding: 54px 60px 40px; overflow: hidden; }
+    .lbrand { display: flex; align-items: center; gap: 9px; }
+    .lmark { width: 28px; height: 28px; border-radius: 8px; background: var(--acc); color: #fff; display: flex; align-items: center; justify-content: center; }
+    .lwm { font-size: 15px; font-weight: 600; }
+    .lhead { display: flex; flex-direction: column; align-items: center; gap: 14px; padding-top: 34px; text-align: center; }
+    .lhead h1 { font-size: 42px; font-weight: 700; letter-spacing: -0.035em; line-height: 1.12; margin: 0; max-width: 20ch; }
+    .lhead p { font-size: 16px; line-height: 1.55; color: var(--ink2); margin: 0; max-width: 60ch; }
+    .lhead p b { font-weight: 600; color: var(--ink); }
+    .ldoors { display: flex; gap: 22px; padding-top: 38px; }
+    .ldoor { width: 420px; background: var(--card); border: 1px solid var(--rule); border-radius: 18px; padding: 26px 26px 24px; display: flex; flex-direction: column; gap: 13px; }
+    .ldoor.pick { border-color: var(--acc-rg); box-shadow: 0 2px 6px rgba(27,26,23,0.05), 0 18px 44px rgba(27,26,23,0.07); }
+    .ldoor h2 { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; margin: 0; }
+    .ldoor .lsub { font-size: 14px; line-height: 1.55; color: var(--ink2); margin: 0; }
+    .lpoints { display: flex; flex-direction: column; gap: 9px; padding: 2px 0 0; margin: 0; list-style: none; }
+    .lpoints li { display: flex; gap: 9px; font-size: 13.4px; line-height: 1.5; color: var(--ink2); }
+    .lpoints .tk { color: var(--acc); flex: none; margin-top: 1px; }
+    .lpoints .mn { color: var(--ink3); flex: none; margin-top: 1px; }
+    .lbtn { display: flex; align-items: center; justify-content: center; gap: 10px; height: 50px; border-radius: 12px; background: var(--acc); color: #fff; font-size: 15px; font-weight: 600; margin-top: auto; }
+    .lbtn.plain { background: var(--card); color: var(--ink); border: 1px solid var(--rule2); }
+    .lfine { font-size: 12.3px; line-height: 1.5; color: var(--ink3); text-align: center; }
+    .lfoot { display: flex; align-items: center; gap: 10px; margin-top: auto; font-size: 13.4px; color: var(--ink2); background: var(--card); border: 1px solid var(--rule); border-radius: 12px; padding: 13px 18px; }
+    .lfoot b { font-weight: 600; color: var(--ink); }
+  </style>
+</helmet>
+
+<div class="app">
+  <header class="bar">
+    <div class="mark">
+      <svg class="i sm" viewBox="0 0 16 16"><path d="M4 2h5l3 3v9H4z"></path><path d="M9 2v3h3"></path><path d="M6 8.5h4M6 11h3"></path></svg>
+    </div>
+    <div class="wordmark">Resume Editor</div>
+    <div class="sep"></div>
+    <div class="docchip">
+      <span class="dn">Alex Doe</span>
+      <span class="dv">Main copy</span>
+      <svg class="i sm" viewBox="0 0 16 16"><path d="M4 6.5 8 10.5 12 6.5"></path></svg>
+    </div>
+    <div class="spacer"></div>
+    <div class="saved"><i class="dot"></i>Saved · preview up to date</div>
+    <div class="sep"></div>
+    <div class="btn drive"><svg class="i" viewBox="0 0 16 16"><path d="M4.5 10.5a2.8 2.8 0 0 1 .3-5.6 3.7 3.7 0 0 1 7-1 3 3 0 0 1 .5 6"></path><path d="M6 11.5 7.6 13l3-3.6"></path></svg>Drive</div>
+    <div class="btn" style="border-color:#2f7a5f;background:#e9f2ee;color:#24614b;font-weight:600">Snapshots</div>
+    <div class="btn primary"><svg class="i" viewBox="0 0 16 16"><path d="M8 2.5v8"></path><path d="M4.8 7.6 8 10.8l3.2-3.2"></path><path d="M3 13h10"></path></svg>Download PDF</div>
+  </header>
+
+  <div class="panel">
+    <i class="ptip"></i>
+    <div class="phead">
+      <span class="pt">Copies &amp; snapshots</span>
+      <div class="spacer"></div>
+      <span class="xbtn"><svg class="i sm" viewBox="0 0 16 16"><path d="M4.5 4.5 11.5 11.5M11.5 4.5 4.5 11.5"></path></svg></span>
+    </div>
+
+    <div class="psec">Copies of this resume</div>
+    <div class="prow on">
+      <span class="pn">Main copy</span>
+      <span class="ptag">editing now</span>
+      <span class="pw">2 min ago</span>
+    </div>
+    <div class="prow">
+      <span class="pn">Data Scientist</span>
+      <span class="pw">Tuesday</span>
+      <svg class="i dots" viewBox="0 0 16 16" style="color:#8d887c"><circle cx="3.5" cy="8" r=".8"></circle><circle cx="8" cy="8" r=".8"></circle><circle cx="12.5" cy="8" r=".8"></circle></svg>
+    </div>
+    <div class="prow add">
+      <svg class="i sm" viewBox="0 0 16 16"><path d="M8 3.5v9M3.5 8h9"></path></svg>
+      New copy, tailored for a job
+    </div>
+
+    <div class="pdiv"></div>
+
+    <div class="psec">Snapshots of Main copy</div>
+    <div class="prow">
+      <span>Before the big rewrite</span>
+      <span class="pw">Tue 14:20</span>
+      <span class="pact">Restore</span>
+      <svg class="i dots" viewBox="0 0 16 16" style="color:#8d887c"><circle cx="3.5" cy="8" r=".8"></circle><circle cx="8" cy="8" r=".8"></circle><circle cx="12.5" cy="8" r=".8"></circle></svg>
+    </div>
+    <div class="prow">
+      <span>Two pages, before trimming</span>
+      <span class="pw">Mon 21:05</span>
+      <span class="pact">Restore</span>
+      <svg class="i dots" viewBox="0 0 16 16" style="color:#8d887c"><circle cx="3.5" cy="8" r=".8"></circle><circle cx="8" cy="8" r=".8"></circle><circle cx="12.5" cy="8" r=".8"></circle></svg>
+    </div>
+    <div class="prow add">
+      <svg class="i sm" viewBox="0 0 16 16"><path d="M8 3.5v9M3.5 8h9"></path></svg>
+      Keep a snapshot of it as it is now
+    </div>
+
+    <div class="pfoot">
+      <i class="fdot"></i>
+      Also kept in your Google Drive · synced 12:04
+      <div class="spacer"></div>
+      <span class="pact">Change</span>
+    </div>
+  </div>
+
+  <div class="body">
+    <nav class="nav">
+      <div class="nrow">
+        <svg class="i" viewBox="0 0 16 16"><circle cx="8" cy="5.5" r="2.6"></circle><path d="M3 13.5c.6-2.4 2.5-3.6 5-3.6s4.4 1.2 5 3.6"></path></svg>
+        <span class="nm">Your details</span>
+      </div>
+      <div class="nrow">
+        <svg class="i" viewBox="0 0 16 16"><path d="M2.5 5h11M2.5 11h11"></path><circle cx="6" cy="5" r="1.9"></circle><circle cx="10.5" cy="11" r="1.9"></circle></svg>
+        <span class="nm">Look &amp; feel</span>
+      </div>
+
+      <div class="nlabel">Sections</div>
+      <div class="nlist">
+        <div class="nrow">
+          <svg class="i dots ndrag" viewBox="0 0 16 16"><circle cx="6" cy="4" r=".7"></circle><circle cx="10" cy="4" r=".7"></circle><circle cx="6" cy="8" r=".7"></circle><circle cx="10" cy="8" r=".7"></circle><circle cx="6" cy="12" r=".7"></circle><circle cx="10" cy="12" r=".7"></circle></svg>
+          <span class="nm">Profile</span><span class="ncount">1</span>
+        </div>
+        <div class="nrow">
+          <svg class="i dots ndrag" viewBox="0 0 16 16"><circle cx="6" cy="4" r=".7"></circle><circle cx="10" cy="4" r=".7"></circle><circle cx="6" cy="8" r=".7"></circle><circle cx="10" cy="8" r=".7"></circle><circle cx="6" cy="12" r=".7"></circle><circle cx="10" cy="12" r=".7"></circle></svg>
+          <span class="nm">Education</span><span class="ncount">1</span>
+        </div>
+        <div class="nrow on">
+          <svg class="i dots ndrag" viewBox="0 0 16 16"><circle cx="6" cy="4" r=".7"></circle><circle cx="10" cy="4" r=".7"></circle><circle cx="6" cy="8" r=".7"></circle><circle cx="10" cy="8" r=".7"></circle><circle cx="6" cy="12" r=".7"></circle><circle cx="10" cy="12" r=".7"></circle></svg>
+          <span class="nm">Experience</span><span class="ncount">2</span>
+        </div>
+        <div class="nrow">
+          <svg class="i dots ndrag" viewBox="0 0 16 16"><circle cx="6" cy="4" r=".7"></circle><circle cx="10" cy="4" r=".7"></circle><circle cx="6" cy="8" r=".7"></circle><circle cx="10" cy="8" r=".7"></circle><circle cx="6" cy="12" r=".7"></circle><circle cx="10" cy="12" r=".7"></circle></svg>
+          <span class="nm">Projects</span><span class="ncount">1</span>
+        </div>
+        <div class="nrow">
+          <svg class="i dots ndrag" viewBox="0 0 16 16"><circle cx="6" cy="4" r=".7"></circle><circle cx="10" cy="4" r=".7"></circle><circle cx="6" cy="8" r=".7"></circle><circle cx="10" cy="8" r=".7"></circle><circle cx="6" cy="12" r=".7"></circle><circle cx="10" cy="12" r=".7"></circle></svg>
+          <span class="nm">Skills</span><span class="ncount">1</span>
+        </div>
+        <div class="nrow">
+          <svg class="i dots ndrag" viewBox="0 0 16 16"><circle cx="6" cy="4" r=".7"></circle><circle cx="10" cy="4" r=".7"></circle><circle cx="6" cy="8" r=".7"></circle><circle cx="10" cy="8" r=".7"></circle><circle cx="6" cy="12" r=".7"></circle><circle cx="10" cy="12" r=".7"></circle></svg>
+          <span class="nm">Languages</span><span class="ncount">1</span>
+        </div>
+      </div>
+
+      <div class="nadd">
+        <svg class="i" viewBox="0 0 16 16"><path d="M8 3.5v9M3.5 8h9"></path></svg>
+        Add a section
+      </div>
+    </nav>
+
+    <section class="edit">
+      <div class="ehead">
+        <div class="etitle-row">
+          <span class="etitle">Experience</span>
+          <div class="spacer"></div>
+          <svg class="i dots" viewBox="0 0 16 16" style="color:#8d887c"><circle cx="3.5" cy="8" r=".8"></circle><circle cx="8" cy="8" r=".8"></circle><circle cx="12.5" cy="8" r=".8"></circle></svg>
+        </div>
+        <div class="ehelp">Jobs, internships and volunteering — newest first. Click the title to rename it.</div>
+      </div>
+
+      <div class="ebody">
+        <div class="entry">
+          <div class="ehd">
+            <svg class="i dots grip" viewBox="0 0 16 16"><circle cx="6" cy="4" r=".7"></circle><circle cx="10" cy="4" r=".7"></circle><circle cx="6" cy="8" r=".7"></circle><circle cx="10" cy="8" r=".7"></circle><circle cx="6" cy="12" r=".7"></circle><circle cx="10" cy="12" r=".7"></circle></svg>
+            <span class="t">Software Engineer</span>
+            <span class="s">Acme Corp</span>
+            <span class="when">Jun 2022 – now</span>
+            <svg class="i sm" viewBox="0 0 16 16" style="color:#8d887c"><path d="M4 6.5 8 10.5 12 6.5"></path></svg>
+          </div>
+        </div>
+        <div class="entry">
+          <div class="ehd">
+            <svg class="i dots grip" viewBox="0 0 16 16"><circle cx="6" cy="4" r=".7"></circle><circle cx="10" cy="4" r=".7"></circle><circle cx="6" cy="8" r=".7"></circle><circle cx="10" cy="8" r=".7"></circle><circle cx="6" cy="12" r=".7"></circle><circle cx="10" cy="12" r=".7"></circle></svg>
+            <span class="t">Software Engineering Intern</span>
+            <span class="s">Widget Labs</span>
+            <span class="when">May – Aug 2021</span>
+            <svg class="i sm" viewBox="0 0 16 16" style="color:#8d887c"><path d="M4 6.5 8 10.5 12 6.5"></path></svg>
+          </div>
+        </div>
+
+        <div class="addbig">
+          <svg class="i" viewBox="0 0 16 16"><path d="M8 3.5v9M3.5 8h9"></path></svg>
+          Add a job
+        </div>
+
+        <div class="pnote" style="margin-top:auto">
+          <svg class="i sm" viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.6"></circle><path d="M8 7.4v3.4M8 5.3v.5"></path></svg>
+          A <b style="font-weight:600">copy</b> is a whole resume you keep in parallel — one per job worth tailoring for. A <b style="font-weight:600">snapshot</b> is a named point inside one copy that you can come back to. Both live in this one panel, because "where is my work" should have one answer.
+        </div>
+      </div>
+    </section>
+
+    <section class="prev">
+      <div class="pchrome">
+        <span class="pl">Page 1 of 1</span>
+        <div class="spacer"></div>
+        <div class="zoom">Fit <svg class="i sm" viewBox="0 0 16 16"><path d="M4 6.5 8 10.5 12 6.5"></path></svg></div>
+        <svg class="i" viewBox="0 0 16 16" style="color:#8d887c"><path d="M9 3h4v4"></path><path d="M13 3 7.5 8.5"></path><path d="M12 10v2.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-8a.5.5 0 0 1 .5-.5H6"></path></svg>
+      </div>
+
+      <div class="pstage">
+        <div class="page">
+          <div class="rname">Alex Doe</div>
+          <div class="rcontacts">
+            <span>alex@example.com</span><span>·</span>
+            <span>alexdoe.example.com</span><span>·</span>
+            <span>linkedin.com/in/alexdoe</span><span>·</span>
+            <span>github.com/alexdoe</span>
+          </div>
+
+          <div class="rsec">
+            <div class="rsh">Profile</div>
+            <div class="rp">Software engineer with 3+ years building web products end to end. Comfortable owning features from database to UI, with a soft spot for <i>fast feedback loops</i> and boring, reliable infrastructure.</div>
+          </div>
+
+          <div class="rsec">
+            <div class="rsh">Education</div>
+            <div class="rentry">
+              <div class="rtop"><span><b>State University</b> — Ann Arbor, MI</span><span>Sept 2018 – May 2022</span></div>
+              <div class="rsub">Bachelor of Science in Computer Science · GPA 3.8/4.0</div>
+              <div class="rbul"><b>Coursework:</b> Algorithms, Operating Systems, Databases, Machine Learning</div>
+              <div class="rbul">Dean's List, 2019–2022</div>
+            </div>
+          </div>
+
+          <div class="rsec live">
+            <div class="rsh withtag">Experience<span class="etag">editing</span></div>
+            <div class="rentry">
+              <div class="rtop"><span><b>Software Engineer</b></span><span>June 2022 – Present</span></div>
+              <div class="rsub">Acme Corp — Remote</div>
+              <div class="rbul">Built and maintained a customer-facing analytics dashboard used by <b>5,000+</b> weekly active users</div>
+              <div class="rbul">Reduced API p95 latency by 40% by profiling hot paths and adding query-level caching</div>
+              <div class="rbul">Mentored two interns; both projects shipped to production</div>
+            </div>
+            <div class="rentry">
+              <div class="rtop"><span><b>Software Engineering Intern</b></span><span>May 2021 – Aug 2021</span></div>
+              <div class="rsub">Widget Labs</div>
+              <div class="rbul">Prototyped an internal tool that cut weekly report preparation from hours to minutes</div>
+            </div>
+          </div>
+
+          <div class="rsec">
+            <div class="rsh">Projects</div>
+            <div class="rentry">
+              <div class="rtop"><span><b>Resume Editor</b> — this resume was written in it</span><span></span></div>
+              <div class="rbul">Browser-based editor that compiles LaTeX to PDF entirely client-side via WebAssembly</div>
+            </div>
+          </div>
+
+          <div class="rsec">
+            <div class="rsh">Skills</div>
+            <div class="rtags">
+              <span>Python</span><span>TypeScript</span><span>React</span><span>SQL</span><span>C++</span><span>Linux</span><span>Git</span><span>Docker</span><span>PostgreSQL</span><span>AWS</span>
+            </div>
+          </div>
+
+          <div class="rsec">
+            <div class="rsh">Languages</div>
+            <div class="rentry">
+              <div class="rlev"><span>English</span><i><u></u><u></u><u></u><u></u><u></u></i></div>
+              <div class="rlev"><span>Spanish</span><i><u></u><u></u><u></u><u class="o"></u><u class="o"></u></i></div>
+              <div class="rlev"><span>German</span><i><u></u><u></u><u class="o"></u><u class="o"></u><u class="o"></u></i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+</x-dc>
+</body>
+</html>
