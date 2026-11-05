@@ -33,10 +33,13 @@ const build = h.digest("hex").slice(0, 12);
 
 /* What a visit needs before it can do anything at all: the page, its hashed
  * bundles, the icon, the sample résumé and the WASM engine. Everything under
- * texlive/ is left out on purpose — see the note in sw.js. */
+ * texlive/ is left out on purpose — see the note in sw.js — and so is PDF.js
+ * (assets/pdfjs/, named in vite.config.ts): half a megabyte that only a
+ * browser with no PDF viewer of its own ever loads, cached when it does. */
 const shell = files
   .map((f) => f.slice(DIST.length + 1).split(sep).join("/"))
   .filter((f) => f === "index.html" || f.startsWith("assets/") || f === "icon.svg" || f === "sample.json" || f.startsWith("swiftlatexpdftex."))
+  .filter((f) => !f.startsWith("assets/pdfjs/"))
   .filter((f) => !f.endsWith(".map"));
 
 const sw = join(DIST, "sw.js");

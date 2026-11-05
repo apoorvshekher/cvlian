@@ -1193,6 +1193,30 @@ input[type="range"] {
 }
 .preview-empty svg.icon { width: 42px; height: 42px; stroke-width: 1; }
 .preview-empty p { margin: 0; font-size: 12px; }
+/* Where the browser has no PDF viewer of its own (Android), the pages are
+   drawn instead (PdfPages.tsx): white sheets on the warm ground, scrolled the
+   way a viewer would. The padding is PAD there — the canvases are painted to
+   exactly the width left inside it. */
+.pdf-pages {
+  position: absolute;
+  inset: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  background: var(--w3);
+}
+.pdf-sheet { display: flex; flex-direction: column; gap: 12px; padding: 12px; }
+.pdf-sheet:empty { display: none; }
+.pdf-sheet canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #fff;
+  border-radius: 3px;
+  /* a ring rather than a border, so the bitmap is shown at the size it was
+     painted at and not squeezed by two pixels */
+  box-shadow: 0 0 0 1px var(--r2);
+}
 
 /* ---------- beside the page ----------
    A third column for what is about the page itself — its measure (Check)

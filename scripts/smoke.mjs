@@ -148,6 +148,15 @@ function linkPages(buf) {
   return { pages: pages.length, where };
 }
 
+/* After a reload the landing page comes back first; take whichever local
+ * door it offers. */
+async function enterAgain(page) {
+  const door = await page
+    .waitForSelector('.dbtn:has-text("Continue as guest"), .dbtn:has-text("Start writing")', { timeout: 15000 })
+    .catch(() => null);
+  if (door) await door.click();
+}
+
 /* Select the nth content section in the rail and return its pane. */
 async function openSection(page, n) {
   await page.click(`.rail-list .rrow:not(.pinned) >> nth=${n}`);
@@ -169,12 +178,7 @@ const STEPS = {
     await page.waitForFunction(() => !!navigator.serviceWorker?.controller, { timeout: 20000 });
     console.log("ok: the service worker took control of the page");
 
-    const enter = async () => {
-      const door = await page
-        .waitForSelector('.dbtn:has-text("Continue as guest"), .dbtn:has-text("Start writing")', { timeout: 15000 })
-        .catch(() => null);
-      if (door) await door.click();
-    };
+    const enter = () => enterAgain(page);
 
     /* an online, worker-controlled pass: this is what fills the cache */
     await page.reload({ waitUntil: "domcontentloaded" });
@@ -246,6 +250,100 @@ const STEPS = {
       throw new Error("the preview frames are still loading each other after settling");
     }
     console.log("ok: the preview swapped frames and stayed settled on one");
+  },
+
+  /* Android's Chrome has no PDF viewer of its own: a PDF in an iframe there
+   * is an Open button that downloads the file, so on a tablet the preview
+   * was a download link. Where the browser says so (pdfViewerEnabled is
+   * false) PdfPages draws the pages with PDF.js. Headless Chrome has a
+   * viewer, so this takes it away before the app loads and checks what a
+   * tablet would show: every page drawn, with ink on it; a compile redrawing
+   * it without losing the place; and — because PDF.js is kept out of the
+   * precache and cached on first use instead — still drawn offline. */
+  async noviewer({ page, check }) {
+    await page.waitForFunction(() => !!navigator.serviceWorker?.controller, { timeout: 20000 });
+    await page.addInitScript(() =>
+      Object.defineProperty(Navigator.prototype, "pdfViewerEnabled", { configurable: true, get: () => false }),
+    );
+
+    const drawn = async (label, notSrc = null) => {
+      await page.waitForFunction(
+        (prev) => {
+          const box = document.querySelector(".pdf-pages");
+          return Number(box?.dataset.pages) > 0 && box.dataset.src !== prev;
+        },
+        notSrc,
+        { timeout: 30000 },
+      );
+      const seen = await page.evaluate(() => {
+        const box = document.querySelector(".pdf-pages");
+        const canvases = [...box.querySelectorAll(".pdf-sheet canvas")];
+        return {
+          src: box.dataset.src,
+          pages: Number(box.dataset.pages),
+          canvases: canvases.length,
+          frames: document.querySelectorAll(".preview iframe").length,
+          /* share of each page that is dark: text, rules, the name */
+          ink: canvases.map((c) => {
+            const d = c.getContext("2d").getImageData(0, 0, c.width, c.height).data;
+            let dark = 0;
+            for (let i = 0; i < d.length; i += 4) if (d[i + 3] > 0 && d[i] + d[i + 1] + d[i + 2] < 384) dark++;
+            return dark / (c.width * c.height);
+          }),
+          blurry: canvases.filter((c) => c.width < c.clientWidth).length,
+        };
+      });
+      if (seen.frames) throw new Error(`${label}: the preview is still an iframe with no PDF viewer to fill it`);
+      if (seen.canvases !== seen.pages) throw new Error(`${label}: ${seen.pages} page(s) but ${seen.canvases} drawn`);
+      const blank = seen.ink.findIndex((r) => r < 0.001);
+      if (blank >= 0) throw new Error(`${label}: page ${blank + 1} was drawn blank`);
+      if (seen.blurry) throw new Error(`${label}: a page was painted at fewer pixels than it is shown at`);
+      console.log(`ok: ${label} (${seen.pages} page(s) drawn)`);
+      return seen;
+    };
+
+    /* online and worker-controlled: this is the first use that caches PDF.js */
+    await page.reload({ waitUntil: "domcontentloaded" });
+    await enterAgain(page);
+    await check("with no PDF viewer, the sample still compiles");
+    const first = await drawn("with no PDF viewer, the page is drawn instead of offered as a download");
+
+    const [dl] = await Promise.all([page.waitForEvent("download"), page.click('.btn:has-text("PDF")')]);
+    const { pages } = linkPages(await readFile(await dl.path()));
+    if (pages !== first.pages) throw new Error(`the PDF has ${pages} page(s) but the preview drew ${first.pages}`);
+    console.log("ok: it draws every page the PDF has");
+
+    /* a compile replaces the drawing in one step, so the place is kept. At
+     * the default window the sample's one page fits without scrolling, which
+     * would make this pass on nothing — so the window is made short first,
+     * and the check refuses to run without room to scroll. */
+    await page.setViewportSize({ width: 1280, height: 520 });
+    const box = page.locator(".pdf-pages");
+    const room = await box.evaluate((el) => el.scrollHeight - el.clientHeight);
+    if (room < 40) throw new Error(`the preview has ${room}px to scroll; the scroll check needs room to mean anything`);
+    const scrolled = await box.evaluate((el) => {
+      el.scrollTop = Math.min(120, el.scrollHeight - el.clientHeight);
+      return el.scrollTop;
+    });
+    await openSection(page, 0);
+    await page.locator(".pane-head .ptitle").pressSequentially("Q", { delay: 60 });
+    await page.keyboard.press("Control+s");
+    await page.waitForSelector(".status.ok", { state: "hidden", timeout: 20000 }).catch(() => {});
+    await page.waitForSelector(".status.ok", { timeout: 120000 });
+    await drawn("a compile redraws the page", first.src);
+    const kept = await box.evaluate((el) => el.scrollTop);
+    if (Math.abs(kept - scrolled) > 1) throw new Error(`a compile moved the preview from ${scrolled}px to ${kept}px`);
+    console.log(`ok: and keeps the place it was scrolled to (${scrolled}px down)`);
+
+    await page.context().setOffline(true);
+    try {
+      await page.reload({ waitUntil: "domcontentloaded" });
+      await enterAgain(page);
+      await page.waitForSelector(".status.ok", { timeout: 120000 });
+      await drawn("with the network off, the page is still drawn");
+    } finally {
+      await page.context().setOffline(false);
+    }
   },
 
   /* Exercise every design control at its extremes; any missing vendored

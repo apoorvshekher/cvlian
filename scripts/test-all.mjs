@@ -17,6 +17,7 @@ const RUNS = [
   ["build + the sample compiles as plain static files", "npm", ["run", "smoke"]],
   ["every design control at its extremes", "node", ["scripts/smoke.mjs", "--steps", "design,fonts,themes"]],
   ["typing never compiles or saves; Ctrl+S does", "node", ["scripts/smoke.mjs", "--steps", "compile"]],
+  ["with no PDF viewer (Android), the page is drawn, not offered as a download", "node", ["scripts/smoke.mjs", "--steps", "noviewer"]],
   ["beside the page: the check measures it, Look & feel lives there", "node", ["scripts/smoke.mjs", "--steps", "beside"]],
   ["every contact icon, and a URL full of TeX specials", "node", ["scripts/smoke.mjs", "--steps", "contacts"]],
   ["a new copy says where it came from; copy commands stick", "node", ["scripts/smoke.mjs", "--steps", "copies"]],
